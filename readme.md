@@ -1,4 +1,4 @@
-# Box
+# Microsoft Graph API
 
 A Laravel package for working with Microsoft Graph API, this includes authentication use Oauth2.
 
