@@ -4,10 +4,8 @@ namespace DaveismynameLaravel\MsGraph\Api;
 
 trait Contacts {
 
-    public function contacts($limit = 25, $offset = 0, $skip = 0)
+    public function contacts($limit = 25, $offset = 50, $skip = 0)
     {
-        //$limit = 25;
-		//$offset = 50;
 		$skip = request('next', $skip);
 
 		$messageQueryParams = array (

@@ -6,7 +6,9 @@ namespace DaveismynameLaravel\MsGraph;
 * msgraph api documenation can be found at https://developer.msgraph.com/reference
 **/
 
+use DaveismynameLaravel\MsGraph\Facades\MsGraph as Api;
 use DaveismynameLaravel\MsGraph\Api\Contacts;
+use DaveismynameLaravel\MsGraph\Api\Emails;
 use DaveismynameLaravel\MsGraph\Models\MsGraphToken;
 
 use League\OAuth2\Client\Provider\GenericProvider;
@@ -17,6 +19,7 @@ use Exception;
 class MsGraph
 {
     use Contacts;
+    use Emails;
 
     protected static $baseUrl = 'https://graph.microsoft.com/beta/';
 
@@ -71,15 +74,16 @@ class MsGraph
                 return redirect(config('msgraph.msgraphLandingUri'));
 
             } catch (IdentityProviderException $e) {
-                die(trans('microsoftapps::module.oauth.identityException').":" . $e->getMessage());
+                die('error:'.$e->getMessage());
             }
 
         }
     }
 
-    public function getAccessToken()
+    public function getAccessToken($id = null)
     {
-        $token = MsGraphToken::where('user_id', auth()->id())->first();
+        $id    = ($id) ? $id : auth()->id();
+        $token = MsGraphToken::where('user_id', $id)->first();
 
         // Check if tokens exist otherwise run the oauth request
         if (!isset($token->access_token)) {
@@ -94,13 +98,13 @@ class MsGraph
 
             // Initialize the OAuth client
             $oauthClient = new GenericProvider([
-                'clientId'                => config('microsoftapps.clientId'),
-                'clientSecret'            => config('microsoftapps.clientSecret'),
-                'redirectUri'             => config('microsoftapps.redirectUri'),
-                'urlAuthorize'            => config('microsoftapps.urlAuthorize'),
-                'urlAccessToken'          => config('microsoftapps.urlAccessToken'),
-                'urlResourceOwnerDetails' => config('microsoftapps.urlResourceOwnerDetails'),
-                'scopes'                  => config('microsoftapps.scopes')
+                'clientId'                => config('msgraph.clientId'),
+                'clientSecret'            => config('msgraph.clientSecret'),
+                'redirectUri'             => config('msgraph.redirectUri'),
+                'urlAuthorize'            => config('msgraph.urlAuthorize'),
+                'urlAccessToken'          => config('msgraph.urlAccessToken'),
+                'urlResourceOwnerDetails' => config('msgraph.urlResourceOwnerDetails'),
+                'scopes'                  => config('msgraph.scopes')
             ]);
 
             $newToken = $oauthClient->getAccessToken('refresh_token', ['refresh_token' => $token->refresh_token]);
@@ -119,7 +123,7 @@ class MsGraph
     protected function storeToken($access_token, $refresh_token, $expires)
     {
         //cretate a new record or if the user id exists update record
-        MsGraphToken::updateOrCreate(['user_id' => auth()->id()], [
+        return MsGraphToken::updateOrCreate(['user_id' => auth()->id()], [
             'user_id'       => auth()->id(),
             'access_token'  => $access_token,
             'expires'       => $expires,

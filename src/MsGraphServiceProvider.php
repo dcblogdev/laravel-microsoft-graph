@@ -13,10 +13,7 @@ class MsGraphServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'daveismynamelaravel');
-        // $this->loadViewsFrom(__DIR__.'/../resources/views', 'daveismynamelaravel');
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
-        $this->loadRoutesFrom(__DIR__.'/routes.php');
 
         // Publishing is only necessary when using the CLI.
         if ($this->app->runningInConsole()) {
@@ -30,25 +27,7 @@ class MsGraphServiceProvider extends ServiceProvider
 
             $this->publishes([
                 __DIR__.'/../database/migrations/create_ms_graph_tokens_tables.php.stub' => $this->app->databasePath()."/migrations/{$timestamp}_create_ms_graph_tokens_tables.php",
-            ], 'migrations');
-
-            // Publishing the views.
-            /*$this->publishes([
-                __DIR__.'/../resources/views' => base_path('resources/views/vendor/daveismynamelaravel'),
-            ], 'msgraph.views');*/
-
-            // Publishing assets.
-            /*$this->publishes([
-                __DIR__.'/../resources/assets' => public_path('vendor/daveismynamelaravel'),
-            ], 'msgraph.views');*/
-
-            // Publishing the translation files.
-            /*$this->publishes([
-                __DIR__.'/../resources/lang' => resource_path('lang/vendor/daveismynamelaravel'),
-            ], 'msgraph.views');*/
-
-            // Registering package commands.
-            // $this->commands([]);
+            ], 'migrations');            
         }
     }
 

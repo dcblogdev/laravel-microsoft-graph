@@ -16,6 +16,7 @@ class CreateMsGraphTokensTable extends Migration
         Schema::create('ms_graph_tokens', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id');
+            $table->string('email')->nullable();
             $table->text('access_token');
             $table->text('refresh_token');
             $table->string('expires');
