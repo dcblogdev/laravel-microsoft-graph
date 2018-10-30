@@ -10,7 +10,7 @@ Via Composer
 $ composer require daveismynamelaravel/msgraph
 ```
 
-TO Document:
+To Document:
 * run migration,
 * Publish config
 * Edit config
