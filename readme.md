@@ -145,7 +145,7 @@ Route::group(['middleware' => ['web', 'auth']], function(){
     Route::get('msgraph', function(){
 
         if (!is_string(MsGraph::getAccessToken())) {
-            return redirect('msgraph/oauth');
+            return redirect(env('MSGRAPH_OAUTH_URL'));
         } else {
             //display your details
             return MsGraph::get('me');
