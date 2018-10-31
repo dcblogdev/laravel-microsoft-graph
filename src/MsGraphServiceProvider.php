@@ -26,7 +26,7 @@ class MsGraphServiceProvider extends ServiceProvider
             $timestamp = date('Y_m_d_His', time());
 
             $this->publishes([
-                __DIR__.'/../database/migrations/create_ms_graph_tokens_tables.php.stub' => $this->app->databasePath()."/migrations/{$timestamp}_create_ms_graph_tokens_tables.php",
+                __DIR__.'/database/migrations/create_ms_graph_tokens_table.php' => $this->app->databasePath()."/migrations/{$timestamp}_create_ms_graph_tokens_table.php",
             ], 'migrations');            
         }
     }
