@@ -21,7 +21,7 @@ class MsGraphServiceProvider extends ServiceProvider
             // Publishing the configuration file.
             $this->publishes([
                 __DIR__.'/../config/msgraph.php' => config_path('msgraph.php'),
-            ], 'msgraph.config');
+            ], 'config');
 
             $timestamp = date('Y_m_d_His', time());
 
