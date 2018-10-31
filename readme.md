@@ -50,7 +50,9 @@ In Laravel 5.5 the service provider will automatically get registered. In older 
 
 You can publish the migration with:
 
+```
 php artisan vendor:publish --provider="DaveismynameLaravel\MsGraph\MsGraphServiceProvider" --tag="migrations"
+```
 
 After the migration has been published you can create the tokens tables by running the migration:
 
