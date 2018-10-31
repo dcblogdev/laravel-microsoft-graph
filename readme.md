@@ -160,11 +160,15 @@ Route::group(['middleware' => ['web', 'auth']], function(){
 
 Once authenticated you can call MsGraph:: with the following verbs:
 
-MsGraph::get()
-MsGraph::post()
-MsGraph::put()
-MsGraph::patch()
-MsGraph::delete()
+```
+MsGraph::get($endpoint, $array = [])
+MsGraph::post($endpoint, $array = [])
+MsGraph::put($endpoint, $array = [])
+MsGraph::patch($endpoint, $array = [])
+MsGraph::delete($endpoint, $array = [])
+```
+
+The second param of array is not always required, it's requirement is determined from the endpoint being called, see the API documentation for more details.
 
 These expect the API endpoints to be passed, the url https://graph.microsoft.com/beta/ is provided, only endpoints after this should be used ie:
 
