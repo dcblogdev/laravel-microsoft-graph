@@ -235,10 +235,6 @@ Contributions are accepted via Pull Requests on [Github](https://github.com/dave
 
 If you discover any security related issues, please email dave@daveismyname.com email instead of using the issue tracker.
 
-## Credits
-
-- [David Carr][dave@daveismyname.com]
-
 ## License
 
 license. Please see the [license file](license.md) for more information.
