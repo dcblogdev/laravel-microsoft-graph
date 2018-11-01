@@ -3,6 +3,7 @@
 namespace DaveismynameLaravel\MsGraph;
 
 use Illuminate\Support\ServiceProvider;
+use DaveismynameLaravel\MsGraph\MsGraphAuthenticated;
 
 class MsGraphServiceProvider extends ServiceProvider
 {
@@ -11,7 +12,7 @@ class MsGraphServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(\Illuminate\Routing\Router $router)
     {
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
@@ -29,6 +30,9 @@ class MsGraphServiceProvider extends ServiceProvider
                 __DIR__.'/database/migrations/create_ms_graph_tokens_table.php' => $this->app->databasePath()."/migrations/{$timestamp}_create_ms_graph_tokens_table.php",
             ], 'migrations');            
         }
+
+        //add middleware
+        $router->aliasMiddleware('MsGraphAuthenticated', MsGraphAuthenticated::class);
     }
 
     /**
