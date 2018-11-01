@@ -211,6 +211,11 @@ Add MsGraphAuthenticated to routes to ensure the user is authenticated:
 Route::group(['middleware' => ['web', 'MsGraphAuthenticated'], function()
 ```
 
+Access token model, to access the model reference this ORM model
+
+```
+use DaveismynameLaravel\MsGraph\Models\MsGraphToken;
+```
 
 ## Change log
 
