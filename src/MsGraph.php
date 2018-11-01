@@ -120,6 +120,12 @@ class MsGraph
         }
     }
 
+    public function getTokenData($id = null)
+    {
+        $id = ($id) ? $id : auth()->id();
+        return MsGraphToken::where('user_id', $id)->first();
+    }
+
     protected function storeToken($access_token, $refresh_token, $expires)
     {
         //cretate a new record or if the user id exists update record
