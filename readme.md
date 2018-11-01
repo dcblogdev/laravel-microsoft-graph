@@ -6,12 +6,7 @@ A Laravel package for working with Microsoft Graph API, this includes authentica
 
 To use Microsoft Grapth API an application needs creating at https://apps.dev.microsoft.com
 
-Create a new application, name the application
-
-![Create](images/create-name.png)
-click continue the Application Id will then be displayed.
-
-![Create](images/applicationId.png)
+Create a new application, name the application. Click continue the Application Id will then be displayed.
 
 Next click Generate New Password under Application Secrets it won't be shown again so ensure you've copied it and added to .env more details further down.
 
@@ -20,15 +15,11 @@ MSGRAPH_CLIENT_ID=
 MSGRAPH_SECRET_ID=
 ```
 
-Now click Add Platform under Platforms and select web
-
-![Create](images/platforms.png)
+Now click Add Platform under Platforms and select web.
 
 Enter you desired redirect url. This is the url you're application will use to connect to Graph API.
 
 Now under Microsoft Grpaph Permissions click add and select which permissions to use, a maximum of 20 can be selected.
-
-![Create](images/permissions.png)
 
 The other options are optional, click save at the bottom of the page to save your changes.
 
