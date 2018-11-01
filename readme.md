@@ -212,6 +212,14 @@ MsGraph::emails(50);
 
 More trais will be added over the coming months.
 
+To restrict access to routes only to authenticated users there is a middleware route called 'MsGraphAuthenticated'
+
+Add MsGraphAuthenticated to routes to ensure the user is authenticated:
+
+```
+Route::group(['middleware' => ['web', 'MsGraphAuthenticated'], function()
+```
+
 
 ## Change log
 
