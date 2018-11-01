@@ -15,3 +15,10 @@ All notable changes to `MsGraph` will be documented in this file.
 
 ## Version 1.1.1
 - corrected config publish path
+
+## Version 1.1.2
+Add MsGraphAuthenticated to routes to ensure the user is authenticated id:
+
+```
+Route::group(['middleware' => ['web', 'MsGraphAuthenticated'], function()
+```
