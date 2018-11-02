@@ -17,8 +17,17 @@ All notable changes to `MsGraph` will be documented in this file.
 - corrected config publish path
 
 ## Version 1.1.2
-Add MsGraphAuthenticated to routes to ensure the user is authenticated id:
+Added MsGraphAuthenticated to routes to ensure the user is authenticated id:
 
 ```
 Route::group(['middleware' => ['web', 'MsGraphAuthenticated'], function()
+```
+
+Added method getTokenData($id) to return the model object based on the matching user_id from $id
+```
+public function getTokenData($id = null)
+{
+    $id = ($id) ? $id : auth()->id();
+    return MsGraphToken::where('user_id', $id)->first();
+}
 ```
