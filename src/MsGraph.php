@@ -52,8 +52,13 @@ class MsGraph
      * Make a connection or return a token where it's valid
      * @return mixed
      */
-    public function connect()
+    public function connect($id = null)
     {
+        //if no id passed get logged in user
+        if ($id == null) {
+            $id = auth()->id();
+        }
+
         //set up the provides loaded values from the config
         $provider = new GenericProvider([
             'clientId'                => config('msgraph.clientId'),
@@ -79,7 +84,7 @@ class MsGraph
                     'code' => request('code')
                 ]);
 
-                $result = $this->storeToken($accessToken->getToken(), $accessToken->getRefreshToken(), $accessToken->getExpires());
+                $result = $this->storeToken($accessToken->getToken(), $accessToken->getRefreshToken(), $accessToken->getExpires(), $id);
 
                 //get user details
                 $me = Api::get('me');
