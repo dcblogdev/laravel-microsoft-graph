@@ -151,6 +151,16 @@ Route::group(['middleware' => ['web', 'auth']], function(){
 });
 ```
 
+Or using a middleware route, if user does not have a graph token then automatically redirect to get authenticated
+
+```
+Route::group(['middleware' => ['web', 'MsGraphAuthenticated']], function(){ 
+    Route::get('msgraph', function(){
+        return MsGraph::get('me'); 
+    });
+});
+```
+
 Once authenticated you can call MsGraph:: with the following verbs:
 
 ```
