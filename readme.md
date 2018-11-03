@@ -159,6 +159,10 @@ Route::group(['middleware' => ['web', 'MsGraphAuthenticated']], function(){
         return MsGraph::get('me'); 
     });
 });
+
+Route::get('msgraph/oauth', function(){
+    return MsGraph::connect();
+});
 ```
 
 Once authenticated you can call MsGraph:: with the following verbs:
