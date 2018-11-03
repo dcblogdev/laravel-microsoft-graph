@@ -31,3 +31,7 @@ public function getTokenData($id = null)
     return MsGraphToken::where('user_id', $id)->first();
 }
 ```
+
+## Version 1.2.0
+
+Fixed connect method authenticating, now accepts an optional $id defaults to logged in user when not passed directly.
