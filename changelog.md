@@ -35,3 +35,9 @@ public function getTokenData($id = null)
 ## Version 1.2.0
 
 Fixed connect method authenticating, now accepts an optional $id defaults to logged in user when not passed directly.
+
+## Version 1.2.1
+
+Added traits:
+* Drive
+* ToDo
