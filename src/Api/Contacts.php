@@ -17,29 +17,34 @@ trait Contacts {
 
 		$contacts = self::get('me/contacts?'.http_build_query($messageQueryParams));
 
-        $total = $contacts['@odata.count'];
-		$previous = null;
-		$next = null;
-		if (isset($contacts['@odata.nextLink'])) {
-			$first = explode('$skip=', $contacts['@odata.nextLink']);
-			$skip = explode('&', $first[1]);
-			$previous = $skip[0]-$offset;
-			$next = $skip[0];
-
-			if ($previous < 0) {
-				$previous = 0;
-			}
-
-			if ($next == $total) {
-				$next = null;
-			}
-		}
+		$data = self::getPagination($contacts, $offset);
 
         return [
             'contacts' => $contacts,
-            'total' => $total,
-            'previous' => $previous,
-            'next' => $next,
+            'total' => $data['total'],
+            'previous' => $data['previous'],
+            'next' => $data['next'],
         ];
+
+    }
+
+    public function contactCreate($data)
+    {
+    	return self::post("me/contacts", $data);
+    }
+
+    public function contactGet($id)
+    {
+    	return self::get("me/contacts/$id");
+    }
+
+    public function contactUpdate($id, $data)
+    {
+    	return self::patch("me/contacts/$id", $data);
+    }
+
+    public function contactDelete($id)
+    {
+    	return self::delete("me/contacts/$id");
     }
 }

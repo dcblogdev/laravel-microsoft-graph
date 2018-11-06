@@ -8,7 +8,9 @@ namespace DaveismynameLaravel\MsGraph;
 
 use DaveismynameLaravel\MsGraph\Facades\MsGraph as Api;
 use DaveismynameLaravel\MsGraph\Api\Contacts;
+use DaveismynameLaravel\MsGraph\Api\Drive;
 use DaveismynameLaravel\MsGraph\Api\Emails;
+use DaveismynameLaravel\MsGraph\Api\ToDo;
 use DaveismynameLaravel\MsGraph\Models\MsGraphToken;
 
 use League\OAuth2\Client\Provider\GenericProvider;
@@ -19,7 +21,9 @@ use Exception;
 class MsGraph
 {
     use Contacts;
+    use Drive;
     use Emails;
+    use ToDo;
 
     /**
      * Set the base url that all API requests use
@@ -212,6 +216,38 @@ class MsGraph
         } catch (Exception $e) {
             return json_decode($e->getResponse()->getBody()->getContents(), true);
         }
+    }
+
+    protected function getPagination($data, $offset = 0)
+    {
+        $total    = null;
+        $previous = null;
+        $next     = null;
+
+        if (isset($data['@odata.count'])) {
+            $total = $data['@odata.count'];
+        }
+        
+        if (isset($data['@odata.nextLink'])) {
+            $first = explode('$skip=', $data['@odata.nextLink']);
+            $skip = explode('&', $first[1]);
+            $previous = $skip[0]-$offset;
+            $next = $skip[0];
+
+            if ($previous < 0) {
+                $previous = 0;
+            }
+
+            if ($next == $total) {
+                $next = null;
+            }
+        }
+
+        return [
+            'total' => $total,
+            'previous' => $previous,
+            'next' => $next
+        ];
     }
 
 }
