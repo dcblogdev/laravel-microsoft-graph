@@ -12,7 +12,6 @@ trait Emails {
             $skip = request('skip', $skip);
 
             $params = http_build_query([
-                "\$orderby" => "displayName",
                 "\$top" => $top,
                 "\$skip" => $skip,
                 "\$count" => "true",
