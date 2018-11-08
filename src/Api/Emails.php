@@ -4,18 +4,27 @@ namespace DaveismynameLaravel\MsGraph\Api;
 
 trait Emails {
 
-    public function emails($limit = 25, $skip = 0, $folderId = null)
+    public function emails($top = 25, $skip = 0, $folderId = null, $params = [])
     {
-        $messageQueryParams = array (
-            "\$skip" => $skip,
-            "\$top" => $limit,
-            "\$count" => "true",
-        );
+        if ($params == []) {
+
+            $top = request('top', $top);
+            $skip = request('skip', $skip);
+
+            $params = http_build_query([
+                "\$orderby" => "displayName",
+                "\$top" => $top,
+                "\$skip" => $skip,
+                "\$count" => "true",
+            ]);
+        } else {
+           $params = http_build_query($params);
+        }
 
         if ($folderId == null) {
-        	$folder = 'Inbox';
+            $folder = 'Inbox';
         } else {
-        	$folder = $folderId;
+            $folder = $folderId;
         }
 
         //get inbox from folders list
@@ -25,45 +34,38 @@ trait Emails {
         $inbox = $folder['value'][0]['id'];
 
         //get messages from inbox folder
-        $emails = self::get("me/mailFolders/$inbox/messages?".http_build_query($messageQueryParams));
+        $emails = self::get("me/mailFolders/$inbox/messages?".$params);
 
-        $total = $emails['@odata.count'];
-		$previous = null;
-		$next = null;
-		if (isset($emails['@odata.nextLink'])) {
-			$first = explode('$skip=', $emails['@odata.nextLink']);
+        $total = isset($emails['@odata.count']) ? $emails['@odata.count'] : 0;
 
-			$skip = explode('&', $first[1]);
-			$previous = $skip[0]-$limit;
-			$next = $skip[0];
+        if (isset($emails['@odata.nextLink'])) {
 
-			if ($previous < 0) {
-				$previous = 0;
-			}
+            $parts = parse_url($emails['@odata.nextLink']);
+            parse_str($parts['query'], $query);
 
-			if ($next == $total) {
-				$next = null;
-			}
-		}
+            $top = isset($query['$top']) ? $query['$top'] : 0;
+            $skip = isset($query['$skip']) ? $query['$skip'] : 0;
+        }
 
         return [
             'emails' => $emails,
             'total' => $total,
-            'previous' => $previous,
-            'next' => $next
+            'top' => $top,
+            'skip' => $skip
         ];
+
     }
 
     public function emailAttachments($email_id)
     {
-    	return self::get("me/messages/".$email_id."/attachments");
+        return self::get("me/messages/".$email_id."/attachments");
     }
 
     public function emailInlineAttachments($email)
     {
-    	$attachments = self::emailAttachments($email['id']);
+        $attachments = self::emailAttachments($email['id']);
 
-    	//replace every case of <img='cid:' with the base64 image
+        //replace every case of <img='cid:' with the base64 image
         $email['body']['content'] = preg_replace_callback(
             '~cid.*?"~',
             function($m) use($attachments) {

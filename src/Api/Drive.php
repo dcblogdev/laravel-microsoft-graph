@@ -4,39 +4,53 @@ namespace DaveismynameLaravel\MsGraph\Api;
 
 trait Drive {
 
-    public function drive($limit = 25, $skip = 0, $messageQueryParams = [])
+    public function drive($top = 25, $skip = 0, $params = [])
     {
-		$skip = request('next', $skip);
+        if ($params == []) {
 
-		if ($messageQueryParams != []) {
-			$messageQueryParams = [
-			    "\$skip" => $skip,
-			    "\$top" => $limit,
-			    "\$count" => "true",
-			];
-		}
+            $top = request('top', $top);
+            $skip = request('skip', $skip);
 
-		$files = self::get('me/drive/root/children'.http_build_query($messageQueryParams));
+            $params = http_build_query([
+                "\$top" => $top,
+                "\$skip" => $skip,
+                "\$count" => "true",
+            ]);
+        } else {
+           $params = http_build_query($params);
+        }
 
-		$data = self::getPagination($files, $skip);
+
+        $files = self::get('me/drive/root/children'.$params);
+
+        $total = isset($files['@odata.count']) ? $files['@odata.count'] : 0;
+
+        if (isset($files['@odata.nextLink'])) {
+
+            $parts = parse_url($files['@odata.nextLink']);
+            parse_str($parts['query'], $query);
+
+            $top = isset($query['$top']) ? $query['$top'] : 0;
+            $skip = isset($query['$skip']) ? $query['$skip'] : 0;
+        }
 
         return [
             'files' => $files,
-            'total' => $data['total'],
-            'previous' => $data['previous'],
-            'next' => $data['next'],
+            'total' => $total,
+            'top' => $top,
+            'skip' => $skip
         ];
     }
 
     public function driveDownload($id)
     {
-    	$id = self::get("me/drive/items/$id");
+        $id = self::get("me/drive/items/$id");
 
         return redirect()->away($id['@microsoft.graph.downloadUrl']);
     }
 
     public function driveDelete($id)
     {
-    	return self::delete("me/drive/items/$id");
+        return self::delete("me/drive/items/$id");
     }
 }

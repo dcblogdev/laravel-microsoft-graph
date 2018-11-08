@@ -41,3 +41,7 @@ Fixed connect method authenticating, now accepts an optional $id defaults to log
 Added traits:
 * Drive
 * ToDo
+
+## Version 1.2.2
+
+Updated traits to support correct paging, each trait should return an array containing the total records (where available), top, skip and count keys.
