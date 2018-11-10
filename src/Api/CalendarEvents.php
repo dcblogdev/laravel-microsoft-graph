@@ -6,31 +6,37 @@ trait CalendarEvents
 {
     /**
      * Get all calendar events
-     * @param  integer $limit
-     * @param  integer $offset
+     * @param  integer $top
      * @param  integer $skip
+     * @param  array $params
      * @return array
      */
-    public function calendarEvents ($limit = 25, $offset = 50, $skip = 0)
+    public function getCalendarEvents($top = 25, $skip = 0, $params = [])
     {
-        $skip = request('next', $skip);
+        if ($params == []) {
 
-        $messageQueryParams = array (
-            "\$orderby" => "subject",
-            "\$skip" => $skip,
-            "\$top" => $limit,
-            "\$count" => "true",
-        );
+            $top = request('top', $top);
+            $skip = request('skip', $skip);
 
-        $events = self::get('me/calendar/events?'.http_build_query($messageQueryParams));
+            $params = http_build_query([
+                "\$orderby" => "subject",
+                "\$top" => $top,
+                "\$skip" => $skip,
+                "\$count" => "true"
+            ]);
+        } else {
+           $params = http_build_query($params);
+        }
 
-        $data = self::getPagination($events, $offset);
+        $events = self::get('me/calendar/events?'.$params);
+
+        $data = self::getPagination($events, $top, $skip);
 
         return [
             'events' => $events,
             'total' => $data['total'],
-            'previous' => $data['previous'],
-            'next' => $data['next'],
+            'top' => $data['top'],
+            'skip' => $data['skip']
         ];
     }
 
@@ -40,7 +46,7 @@ trait CalendarEvents
      * @param  string $eventId
      * @return json
      */
-    public function getCalendarEvent ($calendarId, $eventId)
+    public function getCalendarEvent($calendarId, $eventId)
     {
         return self::get("me/calendars/$calendarId/events/$eventId");
     }
@@ -62,7 +68,7 @@ trait CalendarEvents
      * @param  array $data
      * @return json
      */
-    public function updateCalendarEvent ($calendarId, $eventId, $data)
+    public function updateCalendarEvent($calendarId, $eventId, $data)
     {
         return self::patch("me/calendars/$calendarId/events/$eventId");
     }
@@ -73,7 +79,7 @@ trait CalendarEvents
      * @param  string $eventId
      * @return void
      */
-    public function deleteCalendarEvent ($calendarId, $eventId)
+    public function deleteCalendarEvent($calendarId, $eventId)
     {
         return self::delete("me/calendars/$calendarId/events/$eventId");
     }

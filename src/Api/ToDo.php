@@ -4,7 +4,7 @@ namespace DaveismynameLaravel\MsGraph\Api;
 
 trait ToDo {
 
-    public function tasks($top = 25, $skip = 0, $params = [])
+    public function getTasks($top = 25, $skip = 0, $params = [])
     {
         if ($params == []) {
 
@@ -23,42 +23,38 @@ trait ToDo {
 
         $tasks = self::get('me/messages?'.$params);
 
-        $total = isset($tasks['@odata.count']) ? $tasks['@odata.count'] : 0;
-
-        if (isset($tasks['@odata.nextLink'])) {
-
-            $parts = parse_url($tasks['@odata.nextLink']);
-            parse_str($parts['query'], $query);
-
-            $top = isset($query['$top']) ? $query['$top'] : 0;
-            $skip = isset($query['$skip']) ? $query['$skip'] : 0;
-        }
+        $data = self::getPagination($tasks, $top, $skip);
 
         return [
             'tasks' => $tasks,
-            'total' => $total,
-            'top' => $top,
-            'skip' => $skip
+            'total' => $data['total'],
+            'top' => $data['top'],
+            'skip' => $data['skip']
         ];
     }
 
-    public function taskCreate($data)
+    public function getTaskFolders()
+    {
+        return self::get('me/outlook/taskFolders');
+    }
+
+    public function createTask($data)
     {
         return self::post("me/outlook/tasks", $data);
     }
 
-    public function taskGet($id)
+    public function getTask($taskId)
     {
-        return self::get("me/outlook/tasks/$id");
+        return self::get("me/outlook/tasks/$taskId");
     }
 
-    public function taskUpdate($id, $data)
+    public function updateTask($taskId, $data)
     {
-        return self::patch("me/outlook/tasks/$id", $data);
+        return self::patch("me/outlook/tasks/$taskId", $data);
     }
 
-    public function taskDelete($id)
+    public function deleteTask($taskId)
     {
-        return self::delete("me/outlook/tasks/$id");
+        return self::delete("me/outlook/tasks/$taskId");
     }
 }

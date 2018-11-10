@@ -4,7 +4,7 @@ namespace DaveismynameLaravel\MsGraph\Api;
 
 trait Contacts {
 
-    public function contacts($top = 25, $skip = 0, $params = [])
+    public function getContacts($top = 25, $skip = 0, $params = [])
     {
         if ($params == []) {
 
@@ -23,43 +23,34 @@ trait Contacts {
 
         $contacts = self::get('me/contacts?'.$params);
 
-        $total = isset($contacts['@odata.count']) ? $contacts['@odata.count'] : 0;
-
-        if (isset($contacts['@odata.nextLink'])) {
-
-            $parts = parse_url($contacts['@odata.nextLink']);
-            parse_str($parts['query'], $query);
-
-            $top = isset($query['$top']) ? $query['$top'] : 0;
-            $skip = isset($query['$skip']) ? $query['$skip'] : 0;
-        }
+        $data = self::getPagination($contacts, $top, $skip);
 
         return [
             'contacts' => $contacts,
-            'total' => $total,
-            'top' => $top,
-            'skip' => $skip
+            'total' => $data['total'],
+            'top' => $data['top'],
+            'skip' => $data['skip']
         ];
 
     }
 
-    public function contactCreate($data)
+    public function createContact($data)
     {
         return self::post("me/contacts", $data);
     }
 
-    public function contactGet($id)
+    public function getContact($contactId)
     {
-        return self::get("me/contacts/$id");
+        return self::get("me/contacts/$contactId");
     }
 
-    public function contactUpdate($id, $data)
+    public function updateContact($contactId, $data)
     {
-        return self::patch("me/contacts/$id", $data);
+        return self::patch("me/contacts/$contactId", $data);
     }
 
-    public function contactDelete($id)
+    public function deleteContact($contactId)
     {
-        return self::delete("me/contacts/$id");
+        return self::delete("me/contacts/$contactId");
     }
 }

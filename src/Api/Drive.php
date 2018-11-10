@@ -4,53 +4,20 @@ namespace DaveismynameLaravel\MsGraph\Api;
 
 trait Drive {
 
-    public function drive($top = 25, $skip = 0, $params = [])
+    public function getDrives()
     {
-        if ($params == []) {
-
-            $top = request('top', $top);
-            $skip = request('skip', $skip);
-
-            $params = http_build_query([
-                "\$top" => $top,
-                "\$skip" => $skip,
-                "\$count" => "true",
-            ]);
-        } else {
-           $params = http_build_query($params);
-        }
-
-
-        $files = self::get('me/drive/root/children'.$params);
-
-        $total = isset($files['@odata.count']) ? $files['@odata.count'] : 0;
-
-        if (isset($files['@odata.nextLink'])) {
-
-            $parts = parse_url($files['@odata.nextLink']);
-            parse_str($parts['query'], $query);
-
-            $top = isset($query['$top']) ? $query['$top'] : 0;
-            $skip = isset($query['$skip']) ? $query['$skip'] : 0;
-        }
-
-        return [
-            'files' => $files,
-            'total' => $total,
-            'top' => $top,
-            'skip' => $skip
-        ];
+        return self::get('me/drives');
     }
 
-    public function driveDownload($id)
+    public function downloadFile($fileId)
     {
-        $id = self::get("me/drive/items/$id");
+        $fileId = self::get("me/drive/items/$fileId");
 
-        return redirect()->away($id['@microsoft.graph.downloadUrl']);
+        return redirect()->away($fileId['@microsoft.graph.downloadUrl']);
     }
 
-    public function driveDelete($id)
+    public function deleteFile($fileId)
     {
-        return self::delete("me/drive/items/$id");
+        return self::delete("me/drive/items/$fileId");
     }
 }

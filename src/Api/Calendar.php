@@ -6,31 +6,37 @@ trait Calendar
 {
     /**
      * Get all calendars
-     * @param  integer $limit
-     * @param  integer $offset
+     * @param  integer $top
      * @param  integer $skip
+     * @param  array $params
      * @return array
      */
-    public function calendars ($limit = 25, $offset = 50, $skip = 0)
+    public function getCalendars($top = 25, $skip = 0, $params = [])
     {
-        $skip = request('next', $skip);
+        if ($params == []) {
 
-        $messageQueryParams = array (
-            "\$orderby" => "name",
-            "\$skip" => $skip,
-            "\$top" => $limit,
-            "\$count" => "true",
-        );
+            $top = request('top', $top);
+            $skip = request('skip', $skip);
 
-        $calendars = self::get('me/calendars?'.http_build_query($messageQueryParams));
+            $params = http_build_query([
+                "\$orderby" => "name",
+                "\$top" => $top,
+                "\$skip" => $skip,
+                "\$count" => "true"
+            ]);
+        } else {
+           $params = http_build_query($params);
+        }
 
-        $data = self::getPagination($calendars, $offset);
+        $calendars = self::get('me/calendars?'.$params);
+
+        $data = self::getPagination($calendars, $top, $skip);
 
         return [
             'calendars' => $calendars,
             'total' => $data['total'],
-            'previous' => $data['previous'],
-            'next' => $data['next'],
+            'top' => $data['top'],
+            'skip' => $data['skip']
         ];
     }
 

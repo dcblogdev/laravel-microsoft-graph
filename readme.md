@@ -193,51 +193,65 @@ To make things a little easier there is also trait classes provided:
 
 Each Trait class provides confinient methods that call the end points processes the data and returns json of the results.
 
-Contacts
-* contacts($limit = 25, $offset = 50, $skip = 0)
 
-Emails
-* emails($limit = 25, $skip = 0, $folderId = null)
-* emailAttachments($email_id)
-* emailInlineAttachments($email)
-* emailSend($subject, $message, $to, $cc, $bcc, $attachments = null)
-* emailSendReply($id, $message, $to, $cc, $bcc, $attachments = null)
-* emailSendForward($id, $message, $to, $cc, $bcc, $attachments = null)
 
-These can be called directly:
+These can be called directly for instance to list emails, optionally these params can be provided:
 
-List all emails (limited to 25):
+$top = 25 - sets number of records
+$skip = 0 - sets how many records to skip
+$param = [] - send array of options such as orderby, top, skip, count
 
 ```
-MsGraph::emails();
+MsGraph::getEmails();
 ```
 
-You can optionally override the details set the limit to be 50 emails:
-
-```
-MsGraph::emails(50);
-
-```
 Calendars
-* calendars($limit = 25, $offset= 50, $skip = 0)
+* getCalendars($top = 25, $skip = 0, $params = [])
 * createCalendar($data)
 * getCalendar($calendarId)
 * updateCalendar($calendarId, $data)
 * deleteCalendar($calendarId, $data)
 
 Calendar Events
-* calendarEvents($limit = 25, $offset= 50, $skip = 0)
+* getCalendarEvents($top = 25, $skip = 0, $params = [])
 * getEvent($eventId)
 * createEvent($data)
 * updateCalendarEvent($calendarId, $eventId, $data)
 * deleteCalendarEvent($calendarId, $eventId)
 
+Contacts
+* getContacts($top = 25, $skip = 0, $params = [])
+* createContact($data)
+* getContact($contactId)
+* updateContact($contactId, $data)
+* deleteContact($contactId, $data)
+
+Emails
+* getEmails($top = 25, $skip = 0, $folderId = null)
+* getEmailAttachments($email_id)
+* getEmailInlineAttachments($email)
+* sendEmail($subject, $message, $to, $cc, $bcc, $attachments = null)
+* sendEmailReply($id, $message, $to, $cc, $bcc, $attachments = null)
+* forwardEmail($id, $message, $to, $cc, $bcc, $attachments = null)
+
 Events
-* events($limit = 25, $offset= 50, $skip = 0)
+* getEvents($top = 25, $skip = 0, $params = [])
 * getCalendarEvent($calendarId, $eventId)
 * createCalendarEvent($data)
 * updateEvent($eventId, $data)
 * deleteEvent($calendarId, $eventId)
+
+OneDrive
+* getDrives()
+* downloadFile($fileId)
+* deleteFile($fileId)
+
+ToDo's
+* getTasks($top = 25, $skip = 0, $params = [])
+* createTask($data)
+* getTask($taskId)
+* updateTask($taskId, $data)
+* deleteTask($taskId, $data)
 
 
 More trais will be added over the coming months.

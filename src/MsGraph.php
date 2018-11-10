@@ -217,4 +217,31 @@ class MsGraph
             return json_decode($e->getResponse()->getBody()->getContents(), true);
         }
     }
+
+    /**
+     * return tarray containing total, top and skip params
+     * @param  $data array
+     * @param  $top  integer
+     * @param  $skip integer
+     * @return array
+     */
+    public function getPagination($data, $top, $skip)
+    {
+        $total = isset($data['@odata.count']) ? $data['@odata.count'] : 0;
+
+        if (isset($data['@odata.nextLink'])) {
+
+            $parts = parse_url($data['@odata.nextLink']);
+            parse_str($parts['query'], $query);
+
+            $top = isset($query['$top']) ? $query['$top'] : 0;
+            $skip = isset($query['$skip']) ? $query['$skip'] : 0;
+        }
+
+        return [
+            'total' => $total,
+            'top' => $top,
+            'skip' => $skip
+        ];
+    }
 }

@@ -4,7 +4,7 @@ namespace DaveismynameLaravel\MsGraph\Api;
 
 trait Emails {
 
-    public function emails($top = 25, $skip = 0, $folderId = null, $params = [])
+    public function getEmails($top = 25, $skip = 0, $folderId = null, $params = [])
     {
         if ($params == []) {
 
@@ -30,39 +30,30 @@ trait Emails {
         $folder = self::get("me/mailFolders?\$filter=startswith(displayName,'$folder')");
 
         //folder id
-        $inbox = $folder['value'][0]['id'];
+        $folderId = $folder['value'][0]['id'];
 
-        //get messages from inbox folder
-        $emails = self::get("me/mailFolders/$inbox/messages?".$params);
+        //get messages from folderId
+        $emails = self::get("me/mailFolders/$folderId/messages?".$params);
 
-        $total = isset($emails['@odata.count']) ? $emails['@odata.count'] : 0;
-
-        if (isset($emails['@odata.nextLink'])) {
-
-            $parts = parse_url($emails['@odata.nextLink']);
-            parse_str($parts['query'], $query);
-
-            $top = isset($query['$top']) ? $query['$top'] : 0;
-            $skip = isset($query['$skip']) ? $query['$skip'] : 0;
-        }
+        $data = self::getPagination($emails, $top, $skip);
 
         return [
             'emails' => $emails,
-            'total' => $total,
-            'top' => $top,
-            'skip' => $skip
+            'total' => $data['total'],
+            'top' => $data['top'],
+            'skip' => $data['skip']
         ];
 
     }
 
-    public function emailAttachments($email_id)
+    public function getEmailAttachments($email_id)
     {
         return self::get("me/messages/".$email_id."/attachments");
     }
 
-    public function emailInlineAttachments($email)
+    public function getEmailInlineAttachments($email)
     {
-        $attachments = self::emailAttachments($email['id']);
+        $attachments = self::getEmailAttachments($email['id']);
 
         //replace every case of <img='cid:' with the base64 image
         $email['body']['content'] = preg_replace_callback(
@@ -90,10 +81,10 @@ trait Emails {
         return $email;
     }
 
-    public function emailSend($subject, $message, $to, $cc, $bcc, $attachments = null)
+    public function sendEmail($subject, $message, $to, $cc, $bcc, $attachments = null)
     {
         //send an email to a draft
-        $draft = self::post('me/messages', self::emailPrepare($subject, $message, $to, $cc, $bcc));
+        $draft = self::post('me/messages', self::prepareEmail($subject, $message, $to, $cc, $bcc));
 
         if ($attachments != null) {
             foreach($attachments as $file) {
@@ -106,10 +97,10 @@ trait Emails {
         return self::post('me/messages/'.$draft['id'].'/send', []);
     }
 
-    public function emailSendReply($id, $message, $to, $cc, $bcc, $attachments = null)
+    public function sendEmailReply($id, $message, $to, $cc, $bcc, $attachments = null)
     {
         //send an email to a draft
-        $draft = self::post("me/messages/$id/createReplyAll", self::prepareReply($message, $to, $cc, $bcc));
+        $draft = self::post("me/messages/$id/createReplyAll", self::prepareEmailReply($message, $to, $cc, $bcc));
 
         if ($attachments != null) {
             foreach($attachments as $file) {
@@ -122,10 +113,10 @@ trait Emails {
         self::post('me/messages/'.$draft['id'].'/send', []);
     }
 
-    public function emailSendForward($id, $message, $to, $cc, $bcc, $attachments = null)
+    public function forwardEmail($id, $message, $to, $cc, $bcc, $attachments = null)
     {
         //send an email to a draft
-        $draft = self::post("me/messages/$id/createForward", self::emailPrepareReply($message, $to, $cc, $bcc));
+        $draft = self::post("me/messages/$id/createForward", self::prepareEmailReply($message, $to, $cc, $bcc));
 
         if ($attachments != null) {
             foreach($attachments as $file) {
@@ -138,7 +129,7 @@ trait Emails {
         self::post('me/messages/'.$draft['id'].'/send', []);
     }
 
-    protected static function emailPrepare($subject, $message, $to, $cc = null, $bcc = null)
+    protected static function prepareEmail($subject, $message, $to, $cc = null, $bcc = null)
     {
 
         $parts = explode(',', $to);
@@ -175,7 +166,7 @@ trait Emails {
         ];
     }
 
-    protected static function emailPrepareReply($message, $to, $cc = null, $bcc = null)
+    protected static function prepareEmailReply($message, $to, $cc = null, $bcc = null)
     {
 
         $parts = explode(',', $to);

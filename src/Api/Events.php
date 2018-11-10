@@ -6,31 +6,37 @@ trait Events
 {
     /**
      * Get Events
-     * @param  integer $limit
-     * @param  integer $offset
+     * @param  integer $top
      * @param  integer $skip
+     * @param  array $params
      * @return array
      */
-    public function events ($limit = 25, $offset = 50, $skip = 0)
+    public function getEvents($top = 25, $skip = 0, $params = [])
     {
-        $skip = request('next', $skip);
+        if ($params == []) {
 
-        $messageQueryParams = array (
-            "\$orderby" => "subject",
-            "\$skip" => $skip,
-            "\$top" => $limit,
-            "\$count" => "true",
-        );
+            $top = request('top', $top);
+            $skip = request('skip', $skip);
 
-        $events = self::get('me/events?'.http_build_query($messageQueryParams));
+            $params = http_build_query([
+                "\$orderby" => "subject",
+                "\$top" => $top,
+                "\$skip" => $skip,
+                "\$count" => "true",
+            ]);
+        } else {
+           $params = http_build_query($params);
+        } 
 
-        $data = self::getPagination($events, $offset);
+        $events = self::get('me/events?'.$params);
+
+        $data = self::getPagination($events, $top, $skip);
 
         return [
             'events' => $events,
             'total' => $data['total'],
-            'previous' => $data['previous'],
-            'next' => $data['next'],
+            'top' => $data['top'],
+            'skip' => $data['skip']
         ];
     }
 
