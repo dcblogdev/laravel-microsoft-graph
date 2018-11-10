@@ -248,6 +248,7 @@ OneDrive
 
 ToDo's
 * getTasks($top = 25, $skip = 0, $params = [])
+* getTaskFolders()
 * createTask($data)
 * getTask($taskId)
 * updateTask($taskId, $data)
