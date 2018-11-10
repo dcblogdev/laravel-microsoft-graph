@@ -32,16 +32,21 @@ public function getTokenData($id = null)
 }
 ```
 
-## Version 1.2.0
+## Version 1.1.3
 
 Fixed connect method authenticating, now accepts an optional $id defaults to logged in user when not passed directly.
-
-## Version 1.2.1
 
 Added traits:
 * Drive
 * ToDo
 
-## Version 1.2.2
+## Version 1.1.4
 
 Updated traits to support correct paging, each trait should return an array containing the total records (where available), top, skip and count keys.
+
+Added new traits:
+* Calendar
+* CalendarEvents
+* Events
+
+Renamed all methods to be action followed by name ie `getEmails`
