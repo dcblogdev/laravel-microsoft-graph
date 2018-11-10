@@ -1,3 +1,4 @@
+
 # Microsoft Graph API
 
 A Laravel package for working with Microsoft Graph API.
@@ -87,24 +88,24 @@ return [
 
     'msgraphLandingUri'  => env('MSGRAPH_LANDING_URL'),
 
-    /* 
+    /*
     set the authorize url
     */
 
     'urlAuthorize' => 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize',
 
-    /* 
+    /*
     set the token url
     */
     'urlAccessToken' => 'https://login.microsoftonline.com/common/oauth2/v2.0/token',
 
-    /* 
+    /*
     set the scopes to be used, Microsoft Graph API will accept up to 20 scopes
     */
 
     'scopes' => 'offline_access openid calendars.readwrite contacts.readwrite files.readwrite mail.readwrite mail.send tasks.readwrite mailboxsettings.readwrite user.readwrite',
 
-    /* 
+    /*
     The default timezone is set to Europe/London this option allows you to set your prefered timetime
     */
     'preferTimezone' => env('MSGRAPH_PREFER_TIMEZONE', 'outlook.timezone="Europe/London"'),
@@ -154,9 +155,9 @@ Route::group(['middleware' => ['web', 'auth']], function(){
 Or using a middleware route, if user does not have a graph token then automatically redirect to get authenticated
 
 ```
-Route::group(['middleware' => ['web', 'MsGraphAuthenticated']], function(){ 
+Route::group(['middleware' => ['web', 'MsGraphAuthenticated']], function(){
     Route::get('msgraph', function(){
-        return MsGraph::get('me'); 
+        return MsGraph::get('me');
     });
 });
 
@@ -196,7 +197,7 @@ Contacts
 * contacts($limit = 25, $offset = 50, $skip = 0)
 
 Emails
-* emails($limit = 25, $skip = 0, $folderId = null) 
+* emails($limit = 25, $skip = 0, $folderId = null)
 * emailAttachments($email_id)
 * emailInlineAttachments($email)
 * emailSend($subject, $message, $to, $cc, $bcc, $attachments = null)
@@ -215,7 +216,29 @@ You can optionally override the details set the limit to be 50 emails:
 
 ```
 MsGraph::emails(50);
+
 ```
+Calendars
+* calendars($limit = 25, $offset= 50, $skip = 0)
+* createCalendar($data)
+* getCalendar($calendarId)
+* updateCalendar($calendarId, $data)
+* deleteCalendar($calendarId, $data)
+
+Calendar Events
+* calendarEvents($limit = 25, $offset= 50, $skip = 0)
+* getEvent($eventId)
+* createEvent($data)
+* updateCalendarEvent($calendarId, $eventId, $data)
+* deleteCalendarEvent($calendarId, $eventId)
+
+Events
+* events($limit = 25, $offset= 50, $skip = 0)
+* getCalendarEvent($calendarId, $eventId)
+* createCalendarEvent($data)
+* updateEvent($eventId, $data)
+* deleteEvent($calendarId, $eventId)
+
 
 More trais will be added over the coming months.
 
