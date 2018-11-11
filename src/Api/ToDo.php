@@ -12,7 +12,7 @@ trait ToDo {
             $skip = request('skip', $skip);
 
             $params = http_build_query([
-                "\filter" => "status eq 'notStarted'",
+                "\$filter" => "status eq 'notStarted'",
                 "\$top" => $top,
                 "\$skip" => $skip,
                 "\$count" => "true",
