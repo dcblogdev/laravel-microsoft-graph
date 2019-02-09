@@ -50,3 +50,7 @@ Added new traits:
 * Events
 
 Renamed all methods to be action followed by name ie `getEmails`
+
+## Version 1.1.5
+
+Renamed repo to daveismyname/laravel-msgraph

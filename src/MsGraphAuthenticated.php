@@ -1,9 +1,9 @@
 <?php
 
-namespace DaveismynameLaravel\MsGraph;
+namespace Daveismyname\MsGraph;
 
 use Closure;
-use DaveismynameLaravel\MsGraph\Facades\MsGraph;
+use Daveismyname\MsGraph\Facades\MsGraph;
 
 class MsGraphAuthenticated
 {

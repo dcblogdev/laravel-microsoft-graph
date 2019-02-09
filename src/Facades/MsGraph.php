@@ -1,6 +1,6 @@
 <?php
 
-namespace DaveismynameLaravel\MsGraph\Facades;
+namespace Daveismyname\MsGraph\Facades;
 
 use Illuminate\Support\Facades\Facade;
 

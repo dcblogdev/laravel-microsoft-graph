@@ -1,17 +1,17 @@
 <?php
 
-namespace DaveismynameLaravel\MsGraph;
+namespace Daveismyname\MsGraph;
 
 /**
 * msgraph api documenation can be found at https://developer.msgraph.com/reference
 **/
 
-use DaveismynameLaravel\MsGraph\Facades\MsGraph as Api;
-use DaveismynameLaravel\MsGraph\Api\Contacts;
-use DaveismynameLaravel\MsGraph\Api\Drive;
-use DaveismynameLaravel\MsGraph\Api\Emails;
-use DaveismynameLaravel\MsGraph\Api\ToDo;
-use DaveismynameLaravel\MsGraph\Models\MsGraphToken;
+use Daveismyname\MsGraph\Facades\MsGraph as Api;
+use Daveismyname\MsGraph\Api\Contacts;
+use Daveismyname\MsGraph\Api\Drive;
+use Daveismyname\MsGraph\Api\Emails;
+use Daveismyname\MsGraph\Api\ToDo;
+use Daveismyname\MsGraph\Models\MsGraphToken;
 
 use League\OAuth2\Client\Provider\GenericProvider;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;

@@ -28,7 +28,7 @@ The other options are optional, click save at the bottom of the page to save you
 Via Composer
 
 ``` bash
-$ composer require daveismynamelaravel/msgraph
+$ composer require daveismyname/laravel-msgraph
 ```
 
 In Laravel 5.5 the service provider will automatically get registered. In older versions of the framework just add the service provider in config/app.php file:
@@ -36,14 +36,14 @@ In Laravel 5.5 the service provider will automatically get registered. In older 
 ```
 'providers' => [
     // ...
-    DaveismynameLaravel\MsGraph\MsGraphServiceProvider::class,
+    Daveismyname\MsGraph\MsGraphServiceProvider::class,
 ];
 ```
 
 You can publish the migration with:
 
 ```
-php artisan vendor:publish --provider="DaveismynameLaravel\MsGraph\MsGraphServiceProvider" --tag="migrations"
+php artisan vendor:publish --provider="Daveismyname\MsGraph\MsGraphServiceProvider" --tag="migrations"
 ```
 
 After the migration has been published you can create the tokens tables by running the migration:
@@ -55,7 +55,7 @@ php artisan migrate
 You can publish the config file with:
 
 ```
-php artisan vendor:publish --provider="DaveismynameLaravel\MsGraph\MsGraphServiceProvider" --tag="config"
+php artisan vendor:publish --provider="Daveismyname\MsGraph\MsGraphServiceProvider" --tag="config"
 ```
 
 When published, the config/msgraph.php config file contains:
@@ -280,7 +280,7 @@ Please see the [changelog](changelog.md) for more information on what has change
 
 Contributions are welcome and will be fully credited.
 
-Contributions are accepted via Pull Requests on [Github](https://github.com/daveismynamelaravel/msgrapth).
+Contributions are accepted via Pull Requests on [Github](https://github.com/daveismyname/laravel-msgrapth).
 
 ## Pull Requests
 

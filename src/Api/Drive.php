@@ -1,6 +1,6 @@
 <?php
 
-namespace DaveismynameLaravel\MsGraph\Api;
+namespace Daveismyname\MsGraph\Api;
 
 trait Drive {
 

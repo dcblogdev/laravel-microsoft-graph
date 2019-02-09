@@ -1,9 +1,9 @@
 <?php
 
-namespace DaveismynameLaravel\MsGraph;
+namespace Daveismyname\MsGraph;
 
 use Illuminate\Support\ServiceProvider;
-use DaveismynameLaravel\MsGraph\MsGraphAuthenticated;
+use Daveismyname\MsGraph\MsGraphAuthenticated;
 
 class MsGraphServiceProvider extends ServiceProvider
 {

@@ -1,5 +1,5 @@
 {
-    "name": "daveismynamelaravel/msgraph",
+    "name": "daveismyname/laravel-msgraph",
     "description": "A Laravel Microsoft Graph API package",
     "license": "MIT",
     "authors": [
@@ -9,29 +9,25 @@
             "homepage": "https://daveismyname.blog"
         }
     ],
-    "homepage": "https://github.com/daveismynamelaravel/box",
+    "homepage": "https://github.com/daveismyname/laravel-msgraph",
     "keywords": ["Laravel", "MsGraph", "Graph"],
     "require": {
         "illuminate/support": "~5",
         "league/oauth2-client": "^1.4",
         "guzzlehttp/guzzle": "^6"
     },
-    "require-dev": {
-        "phpunit/phpunit": "~6.0",
-        "orchestra/testbench": "~3.0"
-    },
     "autoload": {
         "psr-4": {
-            "DaveismynameLaravel\\MsGraph\\": "src/"
+            "Daveismyname/MsGraph\\": "src/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "DaveismynameLaravel\\MsGraph\\MsGraphServiceProvider"
+                "Daveismyname\\MsGraph\\MsGraphServiceProvider"
             ],
             "aliases": {
-                "MsGraph": "DaveismynameLaravel\\MsGraph\\Facades\\MsGraph"
+                "MsGraph": "Daveismyname\\MsGraph\\Facades\\MsGraph"
             }
         }
     }
