@@ -3,28 +3,35 @@
 
 A Laravel package for working with Microsoft Graph API.
 
-## Installation
+MsGraph comes in two flavours:
 
-To use Microsoft Grapth API an application needs creating at https://apps.dev.microsoft.com
+1) MsGraph: login in as a user.
+2) MsGraphAdmin: login as a tenant (administrator) useful for running background tasks.
+
+API documentation can be found at https://developer.microsoft.com/en-us/graph/docs/api-reference/beta/beta-overview
+
+## Application Register
+
+To use Microsoft Graph API an application needs creating at [https://apps.dev.microsoft.com](https://apps.dev.microsoft.com) 
 
 Create a new application, name the application. Click continue the Application Id will then be displayed.
 
 Next click Generate New Password under Application Secrets it won't be shown again so ensure you've copied it and added to .env more details further down.
 
-```
+```php
 MSGRAPH_CLIENT_ID=
 MSGRAPH_SECRET_ID=
 ```
 
 Now click Add Platform under Platforms and select web.
 
-Enter you desired redirect url. This is the url you're application will use to connect to Graph API.
+Enter you desired redirect url. This is the url your application will use to connect to Graph API.
 
-Now under Microsoft Grpaph Permissions click add and select which permissions to use, a maximum of 20 can be selected.
+Now under Microsoft Graph Permissions click add and select which permissions to use, a maximum of 20 can be selected.
 
 The other options are optional, click save at the bottom of the page to save your changes.
 
-
+## Installation 
 Via Composer
 
 ``` bash
@@ -33,7 +40,7 @@ $ composer require daveismyname/laravel-msgraph
 
 In Laravel 5.5 the service provider will automatically get registered. In older versions of the framework just add the service provider in config/app.php file:
 
-```
+```php
 'providers' => [
     // ...
     Daveismyname\MsGraph\MsGraphServiceProvider::class,
@@ -42,25 +49,25 @@ In Laravel 5.5 the service provider will automatically get registered. In older 
 
 You can publish the migration with:
 
-```
+```bash
 php artisan vendor:publish --provider="Daveismyname\MsGraph\MsGraphServiceProvider" --tag="migrations"
 ```
 
 After the migration has been published you can create the tokens tables by running the migration:
 
-```
+```bash
 php artisan migrate
 ```
 
 You can publish the config file with:
 
-```
+```bash
 php artisan vendor:publish --provider="Daveismyname\MsGraph\MsGraphServiceProvider" --tag="config"
 ```
 
 When published, the config/msgraph.php config file contains:
 
-```
+```php
 <?php
 
 return [
@@ -88,6 +95,17 @@ return [
 
     'msgraphLandingUri'  => env('MSGRAPH_LANDING_URL'),
 
+    /* 
+    set the tenant authorize url
+    */
+
+    'tenantUrlAuthorize' => env('MSGRAPH_TENANT_AUTHORIZE'),
+
+    /* 
+    set the tenant token url
+    */
+    'tenantUrlAccessToken' => env('MSGRAPH_TENANT_TOKEN'),
+
     /*
     set the authorize url
     */
@@ -114,36 +132,50 @@ return [
 
 Ensure you've set the following urls in your .env file:
 
-```
+```bash
 MSGRAPH_CLIENT_ID=
 MSGRAPH_SECRET_ID=
-MSGRAPH_OAUTH_URL=
-MSGRAPH_LANDING_URL=
+
+MSGRAPH_OAUTH_URL=https://domain.com/msgraph/oauth
+MSGRAPH_LANDING_URL=https://domain.com/msgraph
 ```
 
-Optionally add
+When logging in as a tenant add the tenant ID .env:
+
+```bash
+MSGRAPH_TENANT_AUTHORIZE=https://login.microsoftonline.com/{tenant_id}/adminconsent
+MSGRAPH_TENANT_TOKEN=https://login.microsoftonline.com/{tenant_id}/oauth2/v2.0/token
 ```
+
+To find your Office 365 tenant ID in the Azure AD admin center
+
+1) Sign in to the Azure Active Directory admin center [https://aad.portal.azure.com/#blade/Microsoft\_AAD\_IAM/ActiveDirectoryMenuBlade/Overview][2] as a global or user management admin.
+2) Under Manage, select Properties. The tenant ID is shown in the Directory ID box.
+
+Optionally add
+```bash
 MSGRAPH_PREFER_TIMEZONE=
 ```
 
 
-## Usage
+## Usage for MsGraph
 
->Note this package expects a user to be logged in.
+> Note this package expects a user to be logged in.
 
 A routes example:
 
-```
+```php
 
 Route::group(['middleware' => ['web', 'auth']], function(){
     Route::get('msgraph', function(){
 
-        if (!is_string(MsGraph::getAccessToken())) {
+        if (! is_string(MsGraph::getAccessToken())) {
             return redirect(env('MSGRAPH_OAUTH_URL'));
         } else {
             //display your details
             return MsGraph::get('me');
         }
+
     });
 
     Route::get('msgraph/oauth', function(){
@@ -154,7 +186,7 @@ Route::group(['middleware' => ['web', 'auth']], function(){
 
 Or using a middleware route, if user does not have a graph token then automatically redirect to get authenticated
 
-```
+```php
 Route::group(['middleware' => ['web', 'MsGraphAuthenticated']], function(){
     Route::get('msgraph', function(){
         return MsGraph::get('me');
@@ -168,7 +200,7 @@ Route::get('msgraph/oauth', function(){
 
 Once authenticated you can call MsGraph:: with the following verbs:
 
-```
+```php
 MsGraph::get($endpoint, $array = [], $id = null)
 MsGraph::post($endpoint, $array = [], $id = null)
 MsGraph::put($endpoint, $array = [], $id = null)
@@ -176,24 +208,21 @@ MsGraph::patch($endpoint, $array = [], $id = null)
 MsGraph::delete($endpoint, $array = [], $id = null)
 ```
 
-The second param of array is not always required, it's requirement is determined from the endpoint being called, see the API documentation for more details.
+The second param of array is not always required, its requirement is determined from the endpoint being called, see the API documentation for more details.
 
-The third param $id is optional when used the accesstoken will be attempted to be retrieved based on the id. When omited the logged in user will be used.
+The third param $id is optional when used the access token will be attempted to be retrieved based on the id. When omitted the logged in user will be used.
 
 These expect the API endpoints to be passed, the url https://graph.microsoft.com/beta/ is provided, only endpoints after this should be used ie:
 
-```
+```php
 MsGraph::get('me/messages')
 ```
 
-
-API documenation can be found at https://developer.microsoft.com/en-us/graph/docs/api-reference/beta/beta-overview
-
 To make things a little easier there is also trait classes provided:
 
-Each Trait class provides confinient methods that call the end points processes the data and returns json of the results.
+Each Trait class provides convenient methods that call the end points processes the data and returns json of the results.
 
-
+### Traits
 
 These can be called directly for instance to list emails, optionally these params can be provided:
 
@@ -201,7 +230,7 @@ $top = 25 - sets number of records
 $skip = 0 - sets how many records to skip
 $param = [] - send array of options such as orderby, top, skip, count
 
-```
+```php
 MsGraph::getEmails();
 ```
 
@@ -228,7 +257,7 @@ Contacts
 
 Emails
 * getEmails($top = 25, $skip = 0, $folderId = null)
-* getEmailAttachments($email_id)
+* getEmailAttachments($email\_id)
 * getEmailInlineAttachments($email)
 * sendEmail($subject, $message, $to, $cc, $bcc, $attachments = null)
 * sendEmailReply($id, $message, $to, $cc, $bcc, $attachments = null)
@@ -254,39 +283,112 @@ ToDo's
 * updateTask($taskId, $data)
 * deleteTask($taskId, $data)
 
+### Middleware
 
-More trais will be added over the coming months.
+To restrict access to routes only to authenticated users there is a middleware route called `MsGraphAuthenticated`
 
-To restrict access to routes only to authenticated users there is a middleware route called 'MsGraphAuthenticated'
+Add `MsGraphAuthenticated` to routes to ensure the user is authenticated:
 
-Add MsGraphAuthenticated to routes to ensure the user is authenticated:
-
-```
+```php
 Route::group(['middleware' => ['web', 'MsGraphAuthenticated'], function()
 ```
 
-Access token model, to access the model reference this ORM model
+To access token model reference this ORM model:
 
+```php
+use Daveismyname\MsGraph\Models\MsGraphToken;
 ```
-use DaveismynameLaravel\MsGraph\Models\MsGraphToken;
+
+
+## Usage for MsGraphAdmin
+
+> Only administrators can login as tenants.
+
+A routes example:
+
+```php
+
+Route::group(['middleware' => ['web', 'auth']], function(){
+    Route::get('msgraph', function(){
+
+        if (! is_string(MsGraphAdmin::getAccessToken())) {
+            return redirect(env('MSGRAPH_OAUTH_URL'));
+        } else {
+            //display your details
+            return MsGraphAdmin::get('users');
+        }
+
+    });
+
+    Route::get('msgraph/oauth', function(){
+        return MsGraphAdmin::connect();
+    });
+});
+```
+
+Or using a middleware route, if user does not have a graph token then automatically redirect to get authenticated
+
+```php
+Route::group(['middleware' => ['web', 'MsGraphAdminAuthenticated']], function(){
+    Route::get('msgraph', function(){
+        return MsGraphAdmin::get('users');
+    });
+});
+
+Route::get('msgraph/oauth', function(){
+    return MsGraphAdmin::connect();
+});
+```
+
+Once authenticated you can call MsGraph:: with the following verbs:
+
+```php
+MsGraphAdmin::get($endpoint, $array = [])
+MsGraphAdmin::post($endpoint, $array = [])
+MsGraphAdmin::put($endpoint, $array = [])
+MsGraphAdmin::patch($endpoint, $array = [])
+MsGraphAdmin::delete($endpoint, $array = [])
+```
+
+The second param is array is not always required, its requirement is determined from the endpoint being called, see the API documentation for more details.
+
+These expect the API endpoints to be passed, the url https://graph.microsoft.com/beta/ is provided, only endpoints after this should be used ie:
+
+```php
+MsGraphAdmin::get('users')
+```
+
+### Middleware
+
+To restrict access to routes only to authenticated users there is a middleware route called 'MsGraphAuthenticated'
+
+Add `MsGraphAdminAuthenticated` to routes to ensure the user is authenticated:
+
+```php
+Route::group(['middleware' => ['web', 'MsGraphAdminAuthenticated'], function()
+```
+
+To access token model reference this ORM model:
+
+```php
+use Daveismyname\MsGraph\Models\MsGraphToken;
 ```
 
 ## Change log
 
-Please see the [changelog](changelog.md) for more information on what has changed recently.
-
+Please see the [changelog][3] for more information on what has changed recently.
 
 ## Contributing
 
 Contributions are welcome and will be fully credited.
 
-Contributions are accepted via Pull Requests on [Github](https://github.com/daveismyname/laravel-msgrapth).
+Contributions are accepted via Pull Requests on [Github][4].
 
 ## Pull Requests
 
 - **Document any change in behaviour** - Make sure the `readme.md` and any other relevant documentation are kept up-to-date.
 
-- **Consider our release cycle** - We try to follow [SemVer v2.0.0](http://semver.org/). Randomly breaking public APIs is not an option.
+- **Consider our release cycle** - We try to follow [SemVer v2.0.0][5]. Randomly breaking public APIs is not an option.
 
 - **One pull request per feature** - If you want to do more than one thing, send multiple pull requests.
 
@@ -296,4 +398,10 @@ If you discover any security related issues, please email dave@daveismyname.com 
 
 ## License
 
-license. Please see the [license file](license.md) for more information.
+license. Please see the [license file][6] for more information.
+
+[2]:    https://aad.portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/Overview
+[3]:    changelog.md
+[4]:    https://github.com/daveismyname/laravel-msgrapth
+[5]:    http://semver.org/
+[6]:    license.md

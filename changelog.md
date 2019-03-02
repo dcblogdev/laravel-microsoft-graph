@@ -54,3 +54,7 @@ Renamed all methods to be action followed by name ie `getEmails`
 ## Version 1.1.5
 
 Renamed repo to daveismyname/laravel-msgraph
+
+## Version 1.2.0
+
+Added ability to login as a tennant by using MsGraphAdmin

@@ -27,7 +27,8 @@
                 "Daveismyname\\MsGraph\\MsGraphServiceProvider"
             ],
             "aliases": {
-                "MsGraph": "Daveismyname\\MsGraph\\Facades\\MsGraph"
+                "MsGraph": "Daveismyname\\MsGraph\\Facades\\MsGraph",
+                "MsGraphAdmin": "Daveismyname\\MsGraph\\Facades\\MsGraphAdmin"
             }
         }
     }

@@ -33,6 +33,7 @@ class MsGraphServiceProvider extends ServiceProvider
 
         //add middleware
         $router->aliasMiddleware('MsGraphAuthenticated', MsGraphAuthenticated::class);
+        $router->aliasMiddleware('MsGraphAdminAuthenticated', MsGraphAdminAuthenticated::class);
     }
 
     /**
@@ -47,6 +48,10 @@ class MsGraphServiceProvider extends ServiceProvider
         // Register the service the package provides.
         $this->app->singleton('msgraph', function ($app) {
             return new MsGraph;
+        });
+
+        $this->app->singleton('msgraphadmin', function ($app) {
+            return new MsGraphAdmin;
         });
     }
 
