@@ -57,4 +57,10 @@ Renamed repo to daveismyname/laravel-msgraph
 
 ## Version 1.2.0
 
-Added ability to login as a tennant by using MsGraphAdmin
+Fixed install error
+
+Corrected path in composer.json stopping installation.
+
+## Version 1.3.0
+
+Added ability to login as a tenant by using MsGraphAdmin
