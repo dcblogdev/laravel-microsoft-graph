@@ -7,11 +7,12 @@ namespace Daveismyname\MsGraph;
 **/
 
 use Daveismyname\MsGraph\Facades\MsGraph as Api;
-use Daveismyname\MsGraph\Api\Contacts;
-use Daveismyname\MsGraph\Api\Drive;
-use Daveismyname\MsGraph\Api\Emails;
-use Daveismyname\MsGraph\Api\ToDo;
 use Daveismyname\MsGraph\Models\MsGraphToken;
+
+use Daveismyname\MsGraph\Resources\Contacts;
+use Daveismyname\MsGraph\Resources\Emails;
+use Daveismyname\MsGraph\Resources\Files;
+use Daveismyname\MsGraph\Resources\Tasks;
 
 use League\OAuth2\Client\Provider\GenericProvider;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
@@ -20,10 +21,25 @@ use Exception;
 
 class MsGraph
 {
-    use Contacts;
-    use Drive;
-    use Emails;
-    use ToDo;
+    public function contacts()
+    {
+        return new Contacts();
+    }
+
+    public function emails()
+    {
+        return new Emails();
+    }
+
+    public function files()
+    {
+        return new Files();
+    }  
+
+    public function tasks()
+    {
+        return new Tasks();
+    }
 
     /**
      * Set the base url that all API requests use

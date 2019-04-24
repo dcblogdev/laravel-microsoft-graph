@@ -1,5 +1,5 @@
 {
-    "name": "daveismyname/laravel-msgraph",
+    "name": "daveismyname/laravel-microsoft-graph",
     "description": "A Laravel Microsoft Graph API package",
     "license": "MIT",
     "authors": [
@@ -9,8 +9,8 @@
             "homepage": "https://daveismyname.blog"
         }
     ],
-    "homepage": "https://github.com/daveismyname/laravel-msgraph",
-    "keywords": ["Laravel", "MsGraph", "Graph"],
+    "homepage": "https://github.com/daveismyname/laravel-microsoft-graph",
+    "keywords": ["Laravel", "MsGraph", "Graph", "Microsoft Graph"],
     "require": {
         "illuminate/support": "~5",
         "league/oauth2-client": "^1.4",

@@ -1,5 +1,5 @@
 
-# Microsoft Graph API
+# Microsoft Graph
 
 A Laravel package for working with Microsoft Graph API.
 
@@ -220,68 +220,7 @@ MsGraph::get('me/messages')
 
 To make things a little easier there is also trait classes provided:
 
-Each Trait class provides convenient methods that call the end points processes the data and returns json of the results.
 
-### Traits
-
-These can be called directly for instance to list emails, optionally these params can be provided:
-
-$top = 25 - sets number of records
-$skip = 0 - sets how many records to skip
-$param = [] - send array of options such as orderby, top, skip, count
-
-```php
-MsGraph::getEmails();
-```
-
-Calendars
-* getCalendars($top = 25, $skip = 0, $params = [])
-* createCalendar($data)
-* getCalendar($calendarId)
-* updateCalendar($calendarId, $data)
-* deleteCalendar($calendarId, $data)
-
-Calendar Events
-* getCalendarEvents($top = 25, $skip = 0, $params = [])
-* getEvent($eventId)
-* createEvent($data)
-* updateCalendarEvent($calendarId, $eventId, $data)
-* deleteCalendarEvent($calendarId, $eventId)
-
-Contacts
-* getContacts($top = 25, $skip = 0, $params = [])
-* createContact($data)
-* getContact($contactId)
-* updateContact($contactId, $data)
-* deleteContact($contactId, $data)
-
-Emails
-* getEmails($top = 25, $skip = 0, $folderId = null)
-* getEmailAttachments($email\_id)
-* getEmailInlineAttachments($email)
-* sendEmail($subject, $message, $to, $cc, $bcc, $attachments = null)
-* sendEmailReply($id, $message, $to, $cc, $bcc, $attachments = null)
-* forwardEmail($id, $message, $to, $cc, $bcc, $attachments = null)
-
-Events
-* getEvents($top = 25, $skip = 0, $params = [])
-* getCalendarEvent($calendarId, $eventId)
-* createCalendarEvent($data)
-* updateEvent($eventId, $data)
-* deleteEvent($calendarId, $eventId)
-
-OneDrive
-* getDrives()
-* downloadFile($fileId)
-* deleteFile($fileId)
-
-ToDo's
-* getTasks($top = 25, $skip = 0, $params = [])
-* getTaskFolders()
-* createTask($data)
-* getTask($taskId)
-* updateTask($taskId, $data)
-* deleteTask($taskId, $data)
 
 ### Middleware
 
@@ -402,6 +341,6 @@ license. Please see the [license file][6] for more information.
 
 [2]:    https://aad.portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/Overview
 [3]:    changelog.md
-[4]:    https://github.com/daveismyname/laravel-msgrapth
+[4]:    https://github.com/daveismyname/laravel-microsoft-graph
 [5]:    http://semver.org/
 [6]:    license.md

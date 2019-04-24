@@ -64,3 +64,9 @@ Corrected path in composer.json stopping installation.
 ## Version 1.3.0
 
 Added ability to login as a tenant by using MsGraphAdmin
+
+## Version 2.0.0
+
+Renamed repo to daveismyname/laravel-microsoft-graph
+Added tenency support
+Removed traits and added classes in resources instead
