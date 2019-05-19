@@ -47,18 +47,6 @@ In Laravel 5.5 the service provider will automatically get registered. In older 
 ];
 ```
 
-You can publish the migration with:
-
-```bash
-php artisan vendor:publish --provider="Daveismyname\MsGraph\MsGraphServiceProvider" --tag="migrations"
-```
-
-After the migration has been published you can create the tokens tables by running the migration:
-
-```bash
-php artisan migrate
-```
-
 You can publish the config file with:
 
 ```bash
@@ -130,7 +118,19 @@ return [
 ];
 ```
 
-Ensure you've set the following urls in your .env file:
+You can publish the migration with:
+
+```bash
+php artisan vendor:publish --provider="Daveismyname\MsGraph\MsGraphServiceProvider" --tag="migrations"
+```
+
+After the migration has been published you can create the tokens tables by running the migration:
+
+```bash
+php artisan migrate
+```
+
+Ensure you've set the following in your .env file:
 
 ```bash
 MSGRAPH_CLIENT_ID=
@@ -154,7 +154,7 @@ To find your Office 365 tenant ID in the Azure AD admin center
 
 Optionally add
 ```bash
-MSGRAPH_PREFER_TIMEZONE=
+MSGRAPH_PREFER_TIMEZONE='outlook.timezone="Europe/London"'
 ```
 
 
