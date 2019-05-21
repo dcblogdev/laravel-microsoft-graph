@@ -8,11 +8,24 @@ namespace Daveismyname\MsGraph;
 
 use Daveismyname\MsGraph\Models\MsGraphToken;
 
+use Daveismyname\MsGraph\AdminResources\Contacts;
+use Daveismyname\MsGraph\AdminResources\Emails;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use Exception;
 
 class MsGraphAdmin
 {
+    public function contacts()
+    {
+        return new Contacts();
+    }
+
+    public function emails()
+    {
+        return new Emails();
+    }
+
     /**
      * Set the base url that all API requests use
      * @var string
@@ -61,7 +74,6 @@ class MsGraphAdmin
             try {
                 
                 $params = [
-                    'grant_type' => 'authorization_code',
                     'scope' => 'https://graph.microsoft.com/.default',
                     'client_id' => config('msgraph.clientId'),
                     'client_secret' => config('msgraph.clientSecret'),
@@ -69,13 +81,13 @@ class MsGraphAdmin
                 ];
 
                 $token = $this->dopost(config('msgraph.tenantUrlAccessToken'), $params);
-                
+
                 $this->storeToken($token->access_token, '', $token->expires_in);
 
                 return redirect(config('msgraph.msgraphLandingUri'));
 
             } catch (Exception $e) {
-                die('error:'.$e->getMessage());
+                die('error 90: '.$e->getMessage());
             }
 
         }
@@ -180,6 +192,8 @@ class MsGraphAdmin
 
             return json_decode($response->getBody()->getContents(), true);
 
+        } catch (ClientException $e) {
+            return json_decode(($e->getResponse()->getBody()->getContents()));
         } catch (Exception $e) {
             return json_decode($e->getResponse()->getBody()->getContents(), true);
         }
@@ -193,8 +207,41 @@ class MsGraphAdmin
 
             return json_decode($response->getBody()->getContents());
 
+        } catch (ClientException $e) {
+            return json_decode(($e->getResponse()->getBody()->getContents()));
         } catch (Exception $e) {
            return json_decode($e->getResponse(), true);
         }
+    }
+
+    /**
+     * return tarray containing total, top and skip params
+     * @param  $data array
+     * @param  $top  integer
+     * @param  $skip integer
+     * @return array
+     */
+    public function getPagination($data, $top, $skip)
+    {
+        $total = isset($data['@odata.count']) ? $data['@odata.count'] : 0;
+
+        if (isset($data['@odata.nextLink'])) {
+
+            $parts = parse_url($data['@odata.nextLink']);
+            parse_str($parts['query'], $query);
+
+            $top = isset($query['$top']) ? $query['$top'] : 0;
+            $skip = isset($query['$skip']) ? $query['$skip'] : 0;
+
+        } else {
+            $top = 0;
+            $skip = 0;
+        }
+
+        return [
+            'total' => $total,
+            'top' => $top,
+            'skip' => $skip
+        ];
     }
 }
