@@ -10,153 +10,8 @@ MsGraph comes in two flavours:
 
 API documentation can be found at https://developer.microsoft.com/en-us/graph/docs/api-reference/beta/beta-overview
 
-## Application Register
-
-To use Microsoft Graph API an application needs creating at [https://apps.dev.microsoft.com](https://apps.dev.microsoft.com) 
-
-Create a new application, name the application. Click continue the Application Id will then be displayed.
-
-Next click Generate New Password under Application Secrets it won't be shown again so ensure you've copied it and added to .env more details further down.
-
-```php
-MSGRAPH_CLIENT_ID=
-MSGRAPH_SECRET_ID=
-```
-
-Now click Add Platform under Platforms and select web.
-
-Enter you desired redirect url. This is the url your application will use to connect to Graph API.
-
-Now under Microsoft Graph Permissions click add and select which permissions to use, a maximum of 20 can be selected.
-
-The other options are optional, click save at the bottom of the page to save your changes.
-
-## Installation 
-Via Composer
-
-``` bash
-$ composer require daveismyname/laravel-msgraph
-```
-
-In Laravel 5.5 the service provider will automatically get registered. In older versions of the framework just add the service provider in config/app.php file:
-
-```php
-'providers' => [
-    // ...
-    Daveismyname\MsGraph\MsGraphServiceProvider::class,
-];
-```
-
-You can publish the config file with:
-
-```bash
-php artisan vendor:publish --provider="Daveismyname\MsGraph\MsGraphServiceProvider" --tag="config"
-```
-
-When published, the config/msgraph.php config file contains:
-
-```php
-<?php
-
-return [
-
-    /*
-    * the clientId is set from the Microsoft portal to identify the application
-    * https://apps.dev.microsoft.com
-    */
-    'clientId' => env('MSGRAPH_CLIENT_ID'),
-
-    /*
-    * set the application secret
-    */
-
-    'clientSecret' => env('MSGRAPH_SECRET_ID'),
-
-    /*
-    * Set the url to trigger the oauth process this url should call return MsGraph::connect();
-    */
-    'redirectUri' => env('MSGRAPH_OAUTH_URL'),
-
-    /*
-    * set the url to be redirected to once the token has been saved
-    */
-
-    'msgraphLandingUri'  => env('MSGRAPH_LANDING_URL'),
-
-    /* 
-    set the tenant authorize url
-    */
-
-    'tenantUrlAuthorize' => env('MSGRAPH_TENANT_AUTHORIZE'),
-
-    /* 
-    set the tenant token url
-    */
-    'tenantUrlAccessToken' => env('MSGRAPH_TENANT_TOKEN'),
-
-    /*
-    set the authorize url
-    */
-
-    'urlAuthorize' => 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize',
-
-    /*
-    set the token url
-    */
-    'urlAccessToken' => 'https://login.microsoftonline.com/common/oauth2/v2.0/token',
-
-    /*
-    set the scopes to be used, Microsoft Graph API will accept up to 20 scopes
-    */
-
-    'scopes' => 'offline_access openid calendars.readwrite contacts.readwrite files.readwrite mail.readwrite mail.send tasks.readwrite mailboxsettings.readwrite user.readwrite',
-
-    /*
-    The default timezone is set to Europe/London this option allows you to set your prefered timetime
-    */
-    'preferTimezone' => env('MSGRAPH_PREFER_TIMEZONE', 'outlook.timezone="Europe/London"'),
-];
-```
-
-You can publish the migration with:
-
-```bash
-php artisan vendor:publish --provider="Daveismyname\MsGraph\MsGraphServiceProvider" --tag="migrations"
-```
-
-After the migration has been published you can create the tokens tables by running the migration:
-
-```bash
-php artisan migrate
-```
-
-Ensure you've set the following in your .env file:
-
-```bash
-MSGRAPH_CLIENT_ID=
-MSGRAPH_SECRET_ID=
-
-MSGRAPH_OAUTH_URL=https://domain.com/msgraph/oauth
-MSGRAPH_LANDING_URL=https://domain.com/msgraph
-```
-
-When logging in as a tenant add the tenant ID .env:
-
-```bash
-MSGRAPH_TENANT_AUTHORIZE=https://login.microsoftonline.com/{tenant_id}/adminconsent
-MSGRAPH_TENANT_TOKEN=https://login.microsoftonline.com/{tenant_id}/oauth2/v2.0/token
-```
-
-To find your Office 365 tenant ID in the Azure AD admin center
-
-1) Sign in to the Azure Active Directory admin center [https://aad.portal.azure.com/#blade/Microsoft\_AAD\_IAM/ActiveDirectoryMenuBlade/Overview][2] as a global or user management admin.
-2) Under Manage, select Properties. The tenant ID is shown in the Directory ID box.
-
-Optionally add
-```bash
-MSGRAPH_PREFER_TIMEZONE='outlook.timezone="Europe/London"'
-```
-
+# Full documentation and install instructions 
+[https://docs.daveismyname.blog/laravel-microsoft-graph](https://docs.daveismyname.blog/laravel-microsoft-graph)
 
 ## Usage for MsGraph
 
@@ -218,27 +73,6 @@ These expect the API endpoints to be passed, the url https://graph.microsoft.com
 MsGraph::get('me/messages')
 ```
 
-To make things a little easier there is also trait classes provided:
-
-
-
-### Middleware
-
-To restrict access to routes only to authenticated users there is a middleware route called `MsGraphAuthenticated`
-
-Add `MsGraphAuthenticated` to routes to ensure the user is authenticated:
-
-```php
-Route::group(['middleware' => ['web', 'MsGraphAuthenticated'], function()
-```
-
-To access token model reference this ORM model:
-
-```php
-use Daveismyname\MsGraph\Models\MsGraphToken;
-```
-
-
 ## Usage for MsGraphAdmin
 
 > Only administrators can login as tenants.
@@ -295,22 +129,6 @@ These expect the API endpoints to be passed, the url https://graph.microsoft.com
 
 ```php
 MsGraphAdmin::get('users')
-```
-
-### Middleware
-
-To restrict access to routes only to authenticated users there is a middleware route called 'MsGraphAuthenticated'
-
-Add `MsGraphAdminAuthenticated` to routes to ensure the user is authenticated:
-
-```php
-Route::group(['middleware' => ['web', 'MsGraphAdminAuthenticated'], function()
-```
-
-To access token model reference this ORM model:
-
-```php
-use Daveismyname\MsGraph\Models\MsGraphToken;
 ```
 
 ## Change log
