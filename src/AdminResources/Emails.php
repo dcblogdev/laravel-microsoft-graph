@@ -88,7 +88,7 @@ class Emails extends MsGraphAdmin
 	public function get($params = [])
 	{
         if ($this->userId == null) {
-            throw new Exception("userid is required.");
+            throw new Exception("userId is required.");
         }
 
 		if ($params == []) {
@@ -166,7 +166,7 @@ class Emails extends MsGraphAdmin
     public function send()
     {
         if ($this->userId == null) {
-            throw new Exception("useris is required.");
+            throw new Exception("userId is required.");
         }
 
         if ($this->to == null) {
@@ -187,7 +187,7 @@ class Emails extends MsGraphAdmin
     public function reply()
     {
         if ($this->userId == null) {
-            throw new Exception("useris is required.");
+            throw new Exception("userId is required.");
         }
 
         if ($this->id == null) {
@@ -204,7 +204,7 @@ class Emails extends MsGraphAdmin
     public function forward()
     {
         if ($this->userId == null) {
-            throw new Exception("useris is required.");
+            throw new Exception("userId is required.");
         }
 
         if ($this->id == null) {
@@ -221,7 +221,7 @@ class Emails extends MsGraphAdmin
     public function delete($id)
     {
         if ($this->userId == null) {
-            throw new Exception("useris is required.");
+            throw new Exception("userId is required.");
         }
 
         return MsGraphAdmin::delete('users/'.$this->userId.'/messages/'.$id);

@@ -3,12 +3,13 @@
 namespace Daveismyname\MsGraph\AdminResources;
 
 use Daveismyname\MsGraph\Facades\MsGraphAdmin;
+use Exception;
 
 class Files extends MsGraphAdmin
 {
     private $userId;
 
-    public function userid(string $userId)
+    public function userid($userId)
     {
         $this->userId = $userId;
         return $this;
@@ -16,18 +17,30 @@ class Files extends MsGraphAdmin
 
     public function getDrives()
     {
-        return MsGraph::get('me/drives');
+        if ($this->userId == null) {
+            throw new Exception("userId is required.");
+        }
+
+        return MsGraph::get('users/'.$this->userId.'/drives');
     }
 
     public function downloadFile($id)
     {
-        $id = MsGraph::get("me/drive/items/$id");
+        if ($this->userId == null) {
+            throw new Exception("userId is required.");
+        }
+
+        $id = MsGraph::get('users/'.$this->userId.'/drive/items/'.$id);
 
         return redirect()->away($id['@microsoft.graph.downloadUrl']);
     }
 
     public function deleteFile($id)
     {
-        return MsGraph::delete("me/drive/items/$id");
+        if ($this->userId == null) {
+            throw new Exception("userId is required.");
+        }
+
+        return MsGraph::delete('users/'.$this->userId.'/drive/items/'.$id);
     }
 }
