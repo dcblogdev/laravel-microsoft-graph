@@ -223,6 +223,11 @@ class MsGraphAdmin
      */
     public function getPagination($data, $top, $skip)
     {
+        if (! is_array($data))
+        {
+            dd($data);
+        }
+        
         $total = isset($data['@odata.count']) ? $data['@odata.count'] : 0;
 
         if (isset($data['@odata.nextLink'])) {
