@@ -10,13 +10,13 @@ class Contacts extends MsGraph
     private $top;
     private $skip;
 
-    public function top(string $top)
+    public function top($top)
     {
         $this->top = $top;
         return $this;
     }
 
-    public function skip(string $skip)
+    public function skip($skip)
     {
         $this->skip = $skip;
         return $this;
@@ -24,10 +24,10 @@ class Contacts extends MsGraph
 
 	public function get($params = [])
 	{
-        if ($params == []) {
+        $top = request('top', $this->top);
+        $skip = request('skip', $this->skip);
 
-            $top = request('top', $this->top);
-            $skip = request('skip', $this->skip);
+        if ($params == []) {
 
             $params = http_build_query([
                 "\$orderby" => "displayName",
@@ -35,6 +35,7 @@ class Contacts extends MsGraph
                 "\$skip" => $skip,
                 "\$count" => "true",
             ]);
+
         } else {
            $params = http_build_query($params);
         }   
@@ -61,7 +62,7 @@ class Contacts extends MsGraph
         return MsGraph::post("me/contacts", $data);
     }
 
-    public function update(string $id, array $data)
+    public function update($id, array $data)
     {
         return MsGraph::patch("me/contacts/$id", $data);
     }

@@ -91,10 +91,10 @@ class Emails extends MsGraphAdmin
             throw new Exception("userId is required.");
         }
 
-		if ($params == []) {
+        $top = request('top', $this->top);
+        $skip = request('skip', $this->skip);
 
-            $top = request('top', $this->top);
-            $skip = request('skip', $this->skip);
+		if ($params == []) {
 
             $params = http_build_query([
                 "\$top" => $top,
@@ -102,6 +102,7 @@ class Emails extends MsGraphAdmin
                 "\$count" => "true",
                 "\$orderby" => "sentDateTime desc"
             ]);
+
         } else {
            $params = http_build_query($params);
         }

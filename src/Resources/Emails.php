@@ -18,7 +18,7 @@ class Emails extends MsGraph
     private $bcc;
     private $attachments;
 
-    public function id(string $id)
+    public function id($id)
     {
         $this->id = $id;
         return $this;
@@ -42,19 +42,19 @@ class Emails extends MsGraph
         return $this;
     }
 
-    public function subject(string $subject)
+    public function subject($subject)
     {
         $this->subject = $subject;
         return $this;
     }
 
-    public function body(string $body)
+    public function body($body)
     {
         $this->body = $body;
         return $this;
     }
 
-    public function comment(string $comment)
+    public function comment($comment)
     {
         $this->comment = $comment;
         return $this;
@@ -66,13 +66,13 @@ class Emails extends MsGraph
         return $this;
     }
 
-    public function top(string $top)
+    public function top($top)
     {
         $this->top = $top;
         return $this;
     }
 
-    public function skip(string $skip)
+    public function skip($skip)
     {
         $this->skip = $skip;
         return $this;
@@ -80,16 +80,17 @@ class Emails extends MsGraph
 
 	public function get($folderId = null, $params = [])
 	{
-		if ($params == []) {
+        $top = request('top', $this->top);
+        $skip = request('skip', $this->skip);
 
-            $top = request('top', $this->top);
-            $skip = request('skip', $this->skip);
+		if ($params == []) {
 
             $params = http_build_query([
                 "\$top" => $top,
                 "\$skip" => $skip,
                 "\$count" => "true",
             ]);
+
         } else {
            $params = http_build_query($params);
         }
@@ -198,7 +199,7 @@ class Emails extends MsGraph
         return MsGraph::post('me/messages/'.$this->id.'/forward', self::prepareEmail());
     }
 
-    public function delete(string $id)
+    public function delete($id)
     {
         return MsGraph::delete('me/messages/'.$id);
     }

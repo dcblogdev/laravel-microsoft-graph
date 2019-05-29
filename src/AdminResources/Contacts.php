@@ -35,10 +35,10 @@ class Contacts extends MsGraphAdmin
             throw new Exception("userId is required.");
         }
 
-        if ($params == []) {
+        $top = request('top', $this->top);
+        $skip = request('skip', $this->skip);
 
-            $top = request('top', $this->top);
-            $skip = request('skip', $this->skip);
+        if ($params == []) {
 
             $params = http_build_query([
                 "\$orderby" => "displayName",
@@ -46,8 +46,9 @@ class Contacts extends MsGraphAdmin
                 "\$skip" => $skip,
                 "\$count" => "true",
             ]);
+
         } else {
-           $params = http_build_query($params);
+            $params = http_build_query($params);
         }   
 
         $contacts = MsGraphAdmin::get('users/'.$this->userId.'/contacts?'.$params);
