@@ -189,6 +189,10 @@ class MsGraphAdmin
                 ],
                 'body' => json_encode($data),
             ]);
+            
+            if ($resonse == null) {
+                return null;
+            }
 
             return json_decode($response->getBody()->getContents(), true);
 
@@ -204,6 +208,10 @@ class MsGraphAdmin
         try {
             $client = new Client;
             $response = $client->post($url, ['form_params' => $params]);
+            
+            if ($resonse == null) {
+                return null;
+            }
 
             return json_decode($response->getBody()->getContents());
 
