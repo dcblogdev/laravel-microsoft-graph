@@ -226,6 +226,10 @@ class MsGraph
                 ],
                 'body' => json_encode($data),
             ]);
+            
+            if ($resonse == null) {
+                return null;
+            }
 
             return json_decode($response->getBody()->getContents(), true);
 
