@@ -36,7 +36,7 @@ class MsGraphAdmin
      * __call catches all requests when no founf method is requested
      * @param  $function - the verb to execute
      * @param  $args - array of arguments
-     * @return gizzle request
+     * @return guzzle request
      */
     public function __call($function, $args)
     {
@@ -190,7 +190,7 @@ class MsGraphAdmin
                 'body' => json_encode($data),
             ]);
             
-            if ($resonse == null) {
+            if ($response == null) {
                 return null;
             }
 
@@ -209,7 +209,7 @@ class MsGraphAdmin
             $client = new Client;
             $response = $client->post($url, ['form_params' => $params]);
             
-            if ($resonse == null) {
+            if ($response == null) {
                 return null;
             }
 
