@@ -70,3 +70,7 @@ Added ability to login as a tenant by using MsGraphAdmin
 Renamed repo to daveismyname/laravel-microsoft-graph
 Added tenency support
 Removed traits and added classes in resources instead
+
+## Version 3.0.0
+
+Renamed repo to dcblogdev/laravel-microsoft-graph

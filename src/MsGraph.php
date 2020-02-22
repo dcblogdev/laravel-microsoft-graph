@@ -1,18 +1,18 @@
 <?php
 
-namespace Daveismyname\MsGraph;
+namespace Dcblogdev\MsGraph;
 
 /**
 * msgraph api documenation can be found at https://developer.msgraph.com/reference
 **/
 
-use Daveismyname\MsGraph\Facades\MsGraph as Api;
-use Daveismyname\MsGraph\Models\MsGraphToken;
+use Dcblogdev\MsGraph\Facades\MsGraph as Api;
+use Dcblogdev\MsGraph\Models\MsGraphToken;
 
-use Daveismyname\MsGraph\Resources\Contacts;
-use Daveismyname\MsGraph\Resources\Emails;
-use Daveismyname\MsGraph\Resources\Files;
-use Daveismyname\MsGraph\Resources\Tasks;
+use Dcblogdev\MsGraph\Resources\Contacts;
+use Dcblogdev\MsGraph\Resources\Emails;
+use Dcblogdev\MsGraph\Resources\Files;
+use Dcblogdev\MsGraph\Resources\Tasks;
 
 use League\OAuth2\Client\Provider\GenericProvider;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;

@@ -1,8 +1,8 @@
 <?php
 
-namespace Daveismyname\MsGraph\AdminResources;
+namespace Dcblogdev\MsGraph\AdminResources;
 
-use Daveismyname\MsGraph\Facades\MsGraphAdmin;
+use Dcblogdev\MsGraph\Facades\MsGraphAdmin;
 use Exception;
 
 class Files extends MsGraphAdmin

@@ -1,15 +1,15 @@
 {
-    "name": "daveismyname/laravel-microsoft-graph",
+    "name": "dcblogdev/laravel-microsoft-graph",
     "description": "A Laravel Microsoft Graph API (Office365) package",
     "license": "MIT",
     "authors": [
         {
             "name": "David Carr",
-            "email": "dave@daveismyname.com",
-            "homepage": "https://daveismyname.blog"
+            "email": "dave@dcblog.dev",
+            "homepage": "https://dcblog.dev"
         }
     ],
-    "homepage": "https://github.com/daveismyname/laravel-microsoft-graph",
+    "homepage": "https://github.com/dcblogdev/laravel-microsoft-graph",
     "keywords": [
         "Laravel",
         "MsGraph",
@@ -24,17 +24,17 @@
     },
     "autoload": {
         "psr-4": {
-            "Daveismyname\\MsGraph\\": "src/"
+            "Dcblogdev\\MsGraph\\": "src/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Daveismyname\\MsGraph\\MsGraphServiceProvider"
+                "Dcblogdev\\MsGraph\\MsGraphServiceProvider"
             ],
             "aliases": {
-                "MsGraph": "Daveismyname\\MsGraph\\Facades\\MsGraph",
-                "MsGraphAdmin": "Daveismyname\\MsGraph\\Facades\\MsGraphAdmin"
+                "MsGraph": "Dcblogdev\\MsGraph\\Facades\\MsGraph",
+                "MsGraphAdmin": "Dcblogdev\\MsGraph\\Facades\\MsGraphAdmin"
             }
         }
     }

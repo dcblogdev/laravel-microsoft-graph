@@ -1,8 +1,8 @@
 <?php
 
-namespace Daveismyname\MsGraph\Resources;
+namespace Dcblogdev\MsGraph\Resources;
 
-use Daveismyname\MsGraph\Facades\MsGraph;
+use Dcblogdev\MsGraph\Facades\MsGraph;
 use Exception;
 
 class Emails extends MsGraph

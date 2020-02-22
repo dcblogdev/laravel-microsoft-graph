@@ -1,6 +1,6 @@
 <?php
 
-namespace Daveismyname\MsGraph\Models;
+namespace Dcblogdev\MsGraph\Models;
 
 use Illuminate\Database\Eloquent\Model;
 

@@ -1,9 +1,9 @@
 <?php
 
-namespace Daveismyname\MsGraph;
+namespace Dcblogdev\MsGraph;
 
 use Illuminate\Support\ServiceProvider;
-use Daveismyname\MsGraph\MsGraphAuthenticated;
+use Dcblogdev\MsGraph\MsGraphAuthenticated;
 
 class MsGraphServiceProvider extends ServiceProvider
 {

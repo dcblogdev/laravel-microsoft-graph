@@ -1,15 +1,15 @@
 <?php
 
-namespace Daveismyname\MsGraph;
+namespace Dcblogdev\MsGraph;
 
 /**
 * msgraph api documenation can be found at https://developer.msgraph.com/reference
 **/
 
-use Daveismyname\MsGraph\Models\MsGraphToken;
+use Dcblogdev\MsGraph\Models\MsGraphToken;
 
-use Daveismyname\MsGraph\AdminResources\Contacts;
-use Daveismyname\MsGraph\AdminResources\Emails;
+use Dcblogdev\MsGraph\AdminResources\Contacts;
+use Dcblogdev\MsGraph\AdminResources\Emails;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Exception;

@@ -1,9 +1,9 @@
 <?php
 
-namespace Daveismyname\MsGraph;
+namespace Dcblogdev\MsGraph;
 
 use Closure;
-use Daveismyname\MsGraph\Facades\MsGraph;
+use Dcblogdev\MsGraph\Facades\MsGraph;
 
 class MsGraphAuthenticated
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Daveismyname\MsGraph\Facades;
+namespace Dcblogdev\MsGraph\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
