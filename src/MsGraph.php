@@ -45,7 +45,7 @@ class MsGraph
      * Set the base url that all API requests use
      * @var string
      */
-    protected static $baseUrl = 'https://graph.microsoft.com/beta/';
+    protected static $baseUrl = 'https://graph.microsoft.com/v1.0/';
 
     /**
      * __call catches all requests when no found method is requested
