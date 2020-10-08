@@ -34,7 +34,7 @@ class MsGraph
     public function files()
     {
         return new Files();
-    }  
+    }
 
     public function tasks()
     {
@@ -48,10 +48,10 @@ class MsGraph
     protected static $baseUrl = 'https://graph.microsoft.com/beta/';
 
     /**
-     * __call catches all requests when no founf method is requested
+     * __call catches all requests when no found method is requested
      * @param  $function - the verb to execute
      * @param  $args - array of arguments
-     * @return gizzle request
+     * @return guzzle request
      */
     public function __call($function, $args)
     {
@@ -107,7 +107,7 @@ class MsGraph
                 $result = $this->storeToken($accessToken->getToken(), $accessToken->getRefreshToken(), $accessToken->getExpires(), $id);
 
                 //get user details
-                $me = Api::get('me');
+                $me = Api::get('me', null, $id);
 
                 //find record and add email - not required but useful none the less
                 $t = MsGraphToken::findOrFail($result->id);
@@ -226,7 +226,7 @@ class MsGraph
                 ],
                 'body' => json_encode($data),
             ]);
-            
+
             if ($response == null) {
                 return null;
             }
@@ -251,7 +251,7 @@ class MsGraph
         {
             dd($data);
         }
-        
+
         $total = isset($data['@odata.count']) ? $data['@odata.count'] : 0;
 
         if (isset($data['@odata.nextLink'])) {
