@@ -1,5 +1,10 @@
+# Laravel Microsoft Graph
 
-# Microsoft Graph
+
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/dcblogdev/laravel-microsoft-graph.svg?style=flat-square)](https://packagist.org/packages/dcblogdev/laravel-microsoft-graph)
+[![Total Downloads](https://img.shields.io/packagist/dt/dcblogdev/laravel-microsoft-graph.svg?style=flat-square)](https://packagist.org/packages/dcblogdev/laravel-microsoft-graph)
+
+![Logo](https://repository-images.githubusercontent.com/145239529/9d8d5e00-1d0d-11eb-840a-2e75d658e4a2)
 
 A Laravel package for working with Microsoft Graph API.
 
