@@ -33,24 +33,13 @@ class MsGraphAdmin
     protected static $baseUrl = 'https://graph.microsoft.com/beta/';
 
     /**
-     * __call catches all requests when no founf method is requested
-     * @param  $function - the verb to execute
-     * @param  $args - array of arguments
-     * @return guzzle request
+     * @return object
      */
-    public function __call($function, $args)
+    public function isConnected()
     {
-        $options = ['get', 'post', 'patch', 'put', 'delete'];
-        $path = (isset($args[0])) ? $args[0] : null;
-        $data = (isset($args[1])) ? $args[1] : null;
-
-        if (in_array($function, $options)) {
-            return self::guzzle($function, $path, $data);
-        } else {
-            //request verb is not in the $options array
-            throw new Exception($function.' is not a valid HTTP Verb');
-        }
+        return $this->getTokenData() == null ? false : true;
     }
+
 
     /**
      * Make a connection or return a token where it's valid
@@ -166,6 +155,26 @@ class MsGraphAdmin
             'expires'       => $expires,
             'refresh_token' => $refresh_token
         ]);
+    }
+
+    /**
+     * __call catches all requests when no founf method is requested
+     * @param  $function - the verb to execute
+     * @param  $args - array of arguments
+     * @return guzzle request
+     */
+    public function __call($function, $args)
+    {
+        $options = ['get', 'post', 'patch', 'put', 'delete'];
+        $path = (isset($args[0])) ? $args[0] : null;
+        $data = (isset($args[1])) ? $args[1] : null;
+
+        if (in_array($function, $options)) {
+            return self::guzzle($function, $path, $data);
+        } else {
+            //request verb is not in the $options array
+            throw new Exception($function.' is not a valid HTTP Verb');
+        }
     }
 
     /**

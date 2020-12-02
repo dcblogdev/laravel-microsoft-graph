@@ -48,25 +48,15 @@ class MsGraph
     protected static $baseUrl = 'https://graph.microsoft.com/v1.0/';
 
     /**
-     * __call catches all requests when no found method is requested
-     * @param  $function - the verb to execute
-     * @param  $args - array of arguments
-     * @return guzzle request
+     * @param  $id - integar id of user
+     * @return object
      */
-    public function __call($function, $args)
+    public function isConnected($id = null)
     {
-        $options = ['get', 'post', 'patch', 'put', 'delete'];
-        $path = (isset($args[0])) ? $args[0] : null;
-        $data = (isset($args[1])) ? $args[1] : null;
-        $id = (isset($args[2])) ? $args[2] : auth()->id();
-
-        if (in_array($function, $options)) {
-            return self::guzzle($function, $path, $data, $id);
-        } else {
-            //request verb is not in the $options array
-            throw new Exception($function.' is not a valid HTTP Verb');
-        }
+        return $this->getTokenData($id) == null ? false : true;
     }
+
+    
 
     /**
      * Make a connection or return a token where it's valid
@@ -203,6 +193,27 @@ class MsGraph
             'expires'       => $expires,
             'refresh_token' => $refresh_token
         ]);
+    }
+
+    /**
+     * __call catches all requests when no found method is requested
+     * @param  $function - the verb to execute
+     * @param  $args - array of arguments
+     * @return guzzle request
+     */
+    public function __call($function, $args)
+    {
+        $options = ['get', 'post', 'patch', 'put', 'delete'];
+        $path = (isset($args[0])) ? $args[0] : null;
+        $data = (isset($args[1])) ? $args[1] : null;
+        $id = (isset($args[2])) ? $args[2] : auth()->id();
+
+        if (in_array($function, $options)) {
+            return self::guzzle($function, $path, $data, $id);
+        } else {
+            //request verb is not in the $options array
+            throw new Exception($function.' is not a valid HTTP Verb');
+        }
     }
 
     /**

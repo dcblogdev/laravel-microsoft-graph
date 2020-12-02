@@ -15,7 +15,8 @@
         "MsGraph",
         "Graph",
         "Microsoft Graph",
-        "Office365"
+        "Office365",
+        "Microsoft365"
     ],
     "require": {
         "illuminate/support": "5.5.x|5.6.x|5.7.x|5.8.x|6.x|7.x|8.x",
