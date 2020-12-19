@@ -48,15 +48,75 @@ class MsGraph
     protected static $baseUrl = 'https://graph.microsoft.com/v1.0/';
 
     /**
-     * @param  $id - integar id of user
-     * @return object
+     * Make a connection or return a token where it's valid
+     * @return mixed
      */
-    public function isConnected($id = null)
+    public function connect($id = null)
     {
-        return $this->getTokenData($id) == null ? false : true;
+        //if no id passed get logged in user
+        if ($id == null) {
+            $id = auth()->id();
+        }
+
+        //set up the provides loaded values from the config
+        $provider = new GenericProvider([
+            'clientId'                => config('msgraph.clientId'),
+            'clientSecret'            => config('msgraph.clientSecret'),
+            'redirectUri'             => config('msgraph.redirectUri'),
+            'urlAuthorize'            => config('msgraph.urlAuthorize'),
+            'urlAccessToken'          => config('msgraph.urlAccessToken'),
+            'urlResourceOwnerDetails' => config('msgraph.urlResourceOwnerDetails'),
+            'scopes'                  => config('msgraph.scopes')
+        ]);
+
+        //when no code param redirect to Microsoft
+        if (!request()->has('code')) {
+
+            return redirect($provider->getAuthorizationUrl());
+
+        } elseif (request()->has('code')) {
+
+            // With the authorization code, we can retrieve access tokens and other data.
+            try {
+                // Get an access token using the authorization code grant
+                $accessToken = $provider->getAccessToken('authorization_code', [
+                    'code' => request('code')
+                ]);
+
+                $result = $this->storeToken($accessToken->getToken(), $accessToken->getRefreshToken(), $accessToken->getExpires(), $id);
+
+                //get user details
+                $me = Api::get('me', null, $id);
+
+                //find record and add email - not required but useful none the less
+                $t = MsGraphToken::findOrFail($result->id);
+                $t->email = $me['mail'];
+                $t->save();
+
+                return redirect(config('msgraph.msgraphLandingUri'));
+
+            } catch (IdentityProviderException $e) {
+                die('error:'.$e->getMessage());
+            }
+
+        }
     }
 
-    
+    /**
+     * logout of application and Microsoft 365, redirects back to the provided path
+     * @param string $redirectPath
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function disconnect($redirectPath = '/')
+    {
+        //get token for logged in user based on email address
+        $token  = MsGraphToken::where('email', MsGraph::get('me')['mail'])->first();
+        if ($token != null) {
+            $token->delete();
+        }
+
+        return redirect()->away('https://login.microsoftonline.com/common/oauth2/v2.0/logout?post_logout_redirect_uri='.url($redirectPath));
+    }
 
     /**
      * Make a connection or return a token where it's valid
