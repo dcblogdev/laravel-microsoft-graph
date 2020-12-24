@@ -2,6 +2,9 @@
 
 namespace Dcblogdev\MsGraph;
 
+use Dcblogdev\MsGraph\Events\NewMicrosoft365SignInEvent;
+use Dcblogdev\MsGraph\Providers\EventServiceProvider;
+use Event;
 use Illuminate\Support\ServiceProvider;
 use Dcblogdev\MsGraph\MsGraphAuthenticated;
 
