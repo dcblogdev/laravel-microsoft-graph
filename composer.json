@@ -21,7 +21,8 @@
     "require": {
         "illuminate/support": "5.5.x|5.6.x|5.7.x|5.8.x|6.x|7.x|8.x",
         "league/oauth2-client": "^1.4|^2",
-        "guzzlehttp/guzzle": "6.x|7.x"
+        "guzzlehttp/guzzle": "6.x|7.x",
+        "ext-json": "*"
     },
     "autoload": {
         "psr-4": {
