@@ -27,6 +27,10 @@ class MsGraphServiceProvider extends ServiceProvider
                 __DIR__.'/../config/msgraph.php' => config_path('msgraph.php'),
             ], 'config');
 
+            $this->publishes([
+                __DIR__.'/Listeners/NewMicrosoft365SignInListener.php' => app_path('Listeners/NewMicrosoft365SignInListener.php'),
+            ], 'Listeners');
+
             $timestamp = date('Y_m_d_His', time());
 
             $this->publishes([
