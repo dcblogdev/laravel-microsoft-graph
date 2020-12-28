@@ -1,6 +1,5 @@
 # Laravel Microsoft Graph
 
-
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/dcblogdev/laravel-microsoft-graph.svg?style=flat-square)](https://packagist.org/packages/dcblogdev/laravel-microsoft-graph)
 [![Total Downloads](https://img.shields.io/packagist/dt/dcblogdev/laravel-microsoft-graph.svg?style=flat-square)](https://packagist.org/packages/dcblogdev/laravel-microsoft-graph)
 
@@ -16,7 +15,7 @@ MsGraph comes in two flavours:
 API documentation can be found at https://developer.microsoft.com/en-us/graph/docs/api-reference/beta/beta-overview
 
 # Documentation and install instructions 
-[https://docs.dcblog.dev/laravel-microsoft-graph](https://docs.dcblog.dev/laravel-microsoft-graph)
+[https://dcblog.dev/docs/laravel-microsoft-graph](https://dcblog.dev/docs/laravel-microsoft-graph)
 
 ## Change log
 
