@@ -88,7 +88,7 @@ class MsGraph
                 $result = $this->storeToken($accessToken->getToken(), $accessToken->getRefreshToken(), $accessToken->getExpires(), $id);
 
                 //get user details
-                $me = Api::get('me', null, $id);
+                $me = Api::get('me', null, [], $id);
 
                 $event = [
                     'token_id' => $result->id,
