@@ -7,9 +7,9 @@ use GuzzleHttp\Client;
 
 class Files extends MsGraph
 {
-    public function getFiles($path = null)
+    public function getFiles($path = null, $order = 'asc')
     {
-        $path = $path === null ? 'me/drive/root/children?$orderby=name%20asc' : 'me/drive/root:'.$this->forceStartingSlash($path).':/children';
+        $path = $path === null ? "me/drive/root/children?\$orderby=name%20$order" : "me/drive/root:".$this->forceStartingSlash($path).':/children?\$orderby=name%20$order';
         return MsGraph::get($path);
     }
 
@@ -40,7 +40,7 @@ class Files extends MsGraph
         return MsGraph::delete("me/drive/items/$id");
     }
 
-    public function createFolder($name, $path)
+    public function createFolder($name, $path = null)
     {
         $path = $path === null ? 'me/drive/root/children' : 'me/drive/root:'.$this->forceStartingSlash($path).':/children';
         return MsGraph::post($path, [
@@ -97,7 +97,7 @@ class Files extends MsGraph
             ];
 
             $client = new Client;
-            $response = $client->put($uploadUrl, [
+            $client->put($uploadUrl, [
                 'headers' => $headers,
                 'body' => $data,
             ]);
@@ -105,7 +105,6 @@ class Files extends MsGraph
             $bytesRemaining = $bytesRemaining - $chunkSize;
             $i++;
         }
-
     }
 
     protected function createUploadSession($name, $path = null)
