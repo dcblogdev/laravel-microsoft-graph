@@ -74,3 +74,17 @@ Removed traits and added classes in resources instead
 ## Version 3.0.0
 
 Renamed repo to dcblogdev/laravel-microsoft-graph
+
+## Version 3.0.1
+
+Changed files to support passing the prefix to the paths such as me or groups/$groupId or sites.
+
+Example
+
+```php
+//set a custom prefix to a set group
+MsGraph::files()->getFiles($this->path, "groups/$groupId");
+
+//use the default (me)
+MsGraph::files()->getFiles($this->path);
+```
