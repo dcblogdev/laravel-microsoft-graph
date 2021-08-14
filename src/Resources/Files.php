@@ -7,42 +7,42 @@ use GuzzleHttp\Client;
 
 class Files extends MsGraph
 {
-    public function getFiles($path = null, $order = 'asc')
+    public function getFiles($path = null, $type = 'me')
     {
-        $path = $path === null ? "me/drive/root/children?\$orderby=name%20$order" : "me/drive/root:".$this->forceStartingSlash($path).':/children?\$orderby=name%20$order';
+        $path = $path === null ? $type.'/drive/root/children?$orderby=name%20asc' : $type.'/drive/root:'.$this->forceStartingSlash($path).':/children';
         return MsGraph::get($path);
     }
 
-    public function getDrive()
+    public function getDrive($type = 'me')
     {
-        return MsGraph::get('me/drive');
+        return MsGraph::get($type.'/drive');
     }
 
-    public function getDrives()
+    public function getDrives($type = 'me')
     {
-        return MsGraph::get('me/drives');
+        return MsGraph::get($type.'/drives');
     }
 
-    public function search($term)
+    public function search($term, $type = 'me')
     {
-        return MsGraph::get("me/drive/root/search(q='$term')");
+        return MsGraph::get($type."/drive/root/search(q='$term')");
     }
 
-    public function downloadFile($id)
+    public function downloadFile($id, $type = 'me')
     {
-        $id = MsGraph::get("me/drive/items/$id");
+        $id = MsGraph::get($type."/drive/items/$id");
 
         return redirect()->away($id['@microsoft.graph.downloadUrl']);
     }
 
-    public function deleteFile($id)
+    public function deleteFile($id, $type = 'me')
     {
-        return MsGraph::delete("me/drive/items/$id");
+        return MsGraph::delete($type."/drive/items/$id");
     }
 
-    public function createFolder($name, $path = null)
+    public function createFolder($name, $path, $type = 'me')
     {
-        $path = $path === null ? 'me/drive/root/children' : 'me/drive/root:'.$this->forceStartingSlash($path).':/children';
+        $path = $path === null ? $type.'/drive/root/children' : $type.'/drive/root:'.$this->forceStartingSlash($path).':/children';
         return MsGraph::post($path, [
             'name' => $name,
             'folder' => new \stdClass(),
@@ -50,22 +50,22 @@ class Files extends MsGraph
         ]);
     }
 
-    public function getItem($id)
+    public function getItem($id, $type = 'me')
     {
-        return MsGraph::get("me/drive/items/$id");
+        return MsGraph::get($type."/drive/items/$id");
     }
 
-    public function rename($name, $id)
+    public function rename($name, $id, $type = 'me')
     {
-        $path = "me/drive/items/$id";
+        $path = $type."/drive/items/$id";
         return MsGraph::patch($path, [
             'name' => $name
         ]);
     }
 
-    public function upload($name, $uploadPath, $path = null)
+    public function upload($name, $uploadPath, $path = null, $type = 'me')
     {
-        $uploadSession = $this->createUploadSession($name, $path);
+        $uploadSession = $this->createUploadSession($name, $path, $type);
         $uploadUrl = $uploadSession['uploadUrl'];
 
         $fragSize = 320 * 1024;
@@ -97,7 +97,7 @@ class Files extends MsGraph
             ];
 
             $client = new Client;
-            $client->put($uploadUrl, [
+            $response = $client->put($uploadUrl, [
                 'headers' => $headers,
                 'body' => $data,
             ]);
@@ -105,11 +105,12 @@ class Files extends MsGraph
             $bytesRemaining = $bytesRemaining - $chunkSize;
             $i++;
         }
+
     }
 
-    protected function createUploadSession($name, $path = null)
+    protected function createUploadSession($name, $path = null, $type = 'me')
     {
-        $path = $path === null ? "me/drive/root:/$name:/createUploadSession" : "me/drive/root:".$this->forceStartingSlash($path)."/$name:/createUploadSession";
+        $path = $path === null ? $type."/drive/root:/$name:/createUploadSession" : $type."/drive/root:".$this->forceStartingSlash($path)."/$name:/createUploadSession";
 
         return MsGraph::post($path, [
             'item' => [
