@@ -209,7 +209,7 @@ MsGraph::files()->getFiles($this->path);
 
 ## Version 3.0.11
 
-Added traits for MsGraphAdmin for working with Calendars and Events
+Added classes for MsGraphAdmin for working with Calendars and Events
 
 Calendar Events
 ```php 
