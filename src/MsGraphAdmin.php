@@ -16,6 +16,16 @@ use Exception;
 
 class MsGraphAdmin
 {
+    public function calendarEvents()
+    {
+        return new CalendarEvents();
+    }
+
+    public function calendars()
+    {
+        return new Calendars();
+    }
+
     public function contacts()
     {
         return new Contacts();
@@ -24,6 +34,16 @@ class MsGraphAdmin
     public function emails()
     {
         return new Emails();
+    }
+
+    public function events()
+    {
+        return new Events();
+    }
+
+    public function files()
+    {
+        return new Files();
     }
 
     /**
