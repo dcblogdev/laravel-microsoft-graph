@@ -206,3 +206,31 @@ MsGraph::files()->getFiles($this->path, "groups/$groupId");
 //use the default (me)
 MsGraph::files()->getFiles($this->path);
 ```
+
+## Version 3.0.11
+
+Added traits for MsGraphAdmin for working with Calendars and Events
+
+Calendar Events
+```php 
+MsGraphAdmin::calendarEvents()->userid($userId)->get();
+MsGraphAdmin::calendarEvents()->userid($userId)->find($calendarId, $eventId);
+MsGraphAdmin::calendarEvents()->userid($userId)->store($calendarId, $data);
+```
+
+Calendars
+```php 
+MsGraphAdmin::calendars()->userid($userId)->get();
+MsGraphAdmin::calendars()->userid($userId)->find($eventId);
+MsGraphAdmin::calendars()->userid($userId)->store($data);
+MsGraphAdmin::calendars()->userid($userId)->update($data);
+```
+
+Events
+```php 
+MsGraphAdmin::events()->userid($userId)->get();
+MsGraphAdmin::events()->userid($userId)->find($eventId);
+MsGraphAdmin::events()->userid($userId)->store($data);
+MsGraphAdmin::events()->userid($userId)->update($data);
+MsGraphAdmin::events()->userid($userId)->delete($data);
+```

@@ -10,6 +10,9 @@ use Dcblogdev\MsGraph\Models\MsGraphToken;
 
 use Dcblogdev\MsGraph\AdminResources\Contacts;
 use Dcblogdev\MsGraph\AdminResources\Emails;
+use Dcblogdev\MsGraph\AdminResources\Events;
+use Dcblogdev\MsGraph\AdminResources\Calendars;
+use Dcblogdev\MsGraph\AdminResources\CalendarEvents;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Exception;
