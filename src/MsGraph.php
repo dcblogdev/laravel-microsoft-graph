@@ -291,34 +291,46 @@ class MsGraph
     }
 
     /**
-     * return array containing total, top and skip params
+     * return array containing previous and next page counts
      * @param  $data array
-     * @param  $top  integer
+     * @param  $total array
+     * @param  $limit  integer
      * @param  $skip integer
      * @return array
      */
-    public function getPagination($data, $top, $skip)
+    public function getPagination(array $data, int $total, int $limit, int $skip)
     {
-        if (! is_array($data))
-        {
-            dd($data);
-        }
-
-        $total = isset($data['@odata.count']) ? $data['@odata.count'] : 0;
+        $previous = 0;
+        $next     = 0;
 
         if (isset($data['@odata.nextLink'])) {
+            $parts = explode('skip=', $data['@odata.nextLink']);
 
-            $parts = parse_url($data['@odata.nextLink']);
-            parse_str($parts['query'], $query);
+            if (isset($parts[1])) {
+                $previous = $parts[1] - $limit;
+                $next     = $parts[1];
+            }
 
-            $top = isset($query['$top']) ? $query['$top'] : 0;
-            $skip = isset($query['$skip']) ? $query['$skip'] : 0;
+            if ($previous < 0) {
+                $previous = 0;
+            }
+
+            if ($next == $total) {
+                $next = 0;
+            }
+        }
+
+        if ($total > $limit) {
+            $previous = $skip - $limit;
+        }
+
+        if ($previous < 0) {
+            $previous = 0;
         }
 
         return [
-            'total' => $total,
-            'top' => $top,
-            'skip' => $skip
+            'previous' => $previous,
+            'next' => $next
         ];
     }
 }

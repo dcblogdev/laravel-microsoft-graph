@@ -234,3 +234,40 @@ MsGraphAdmin::events()->userid($userId)->store($data);
 MsGraphAdmin::events()->userid($userId)->update($data);
 MsGraphAdmin::events()->userid($userId)->delete($data);
 ```
+
+### 3.1.0
+
+Changed getPagination() to return array containing only previous and next page numbers.
+
+This method needs the data but also the total number of records, the limit ($top) and the offset ($skip)
+
+```php 
+$limit = 5;
+$skip  = request('next', 0);
+
+$messageQueryParams = [
+	"\$orderby" => "displayName",
+	"\$count"   => "true",
+	"\$skip"    => $skip,
+	"\$top"     => $limit,
+];
+
+$contacts = MsGraph::get('me/contacts?'.http_build_query($messageQueryParams));
+$total    = $contacts['@odata.count'] ?? 0;
+
+$response = MsGraph::getPagination($contacts, $total, $limit, $skip);
+$previous = $response['previous'];
+$next     = $response['next'];
+```
+
+The in a view the previous and next links can be displayed:
+
+```php 
+@if (request('next') > 0)
+	<a href='{{ url()->current().'?next='.$previous }}'>Previous Page</a>
+@endif
+
+@if ($next != 0)
+	<a href='{{ url()->current().'?next='.$next }}'>Next Page</a>
+@endif
+```
