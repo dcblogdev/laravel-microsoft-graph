@@ -21,6 +21,8 @@ API documentation can be found at https://developer.microsoft.com/en-us/graph/do
 
 Please see the [changelog][3] for more information on what has changed recently.
 
+# This fork adds a behavior option to allow replace or rename on creating files and directories.  Usage on createFolder adds an optional behavior after the optional type.  Same on upload.  It will default to "rename"
+
 ## Contributing
 
 Contributions are welcome and will be fully credited.
