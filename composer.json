@@ -1,6 +1,6 @@
 {
-    "name": "dcblogdev/laravel-microsoft-graph",
-    "description": "A Laravel Microsoft Graph API (Office365) package",
+    "name": "rsf123/laravel-microsoft-graph",
+    "description": "A Laravel Microsoft Graph API (Office365) package forked from dcblogdev/laravel-microsoft-graph",
     "license": "MIT",
     "authors": [
         {
@@ -9,7 +9,7 @@
             "homepage": "https://dcblog.dev"
         }
     ],
-    "homepage": "https://github.com/dcblogdev/laravel-microsoft-graph",
+    "homepage": "https://github.com/rsf123/laravel-microsoft-graph",
     "keywords": [
         "Laravel",
         "MsGraph",
