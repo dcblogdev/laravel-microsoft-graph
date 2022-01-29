@@ -272,6 +272,6 @@ The in a view the previous and next links can be displayed:
 @endif
 ```
 
-### 3.1.1
+### 3.1.2
 
 added support for Laravel 9
