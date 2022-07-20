@@ -277,4 +277,6 @@ The in a view the previous and next links can be displayed:
 added support for Laravel 9
 
 ### 3.1.3
-added support for file replace/rename behavior
+
+Added support in Files.php to support replace/rename behavior on createFolder and file upload functions. Default behavior is to rename.
+Also modified the MsGraph token call to check if the 'mail' attribute is null.  If it is, it will use the userPrincipalName to set the email on the token.

@@ -95,9 +95,9 @@ class MsGraph
                     'info' => $me
                 ];
                 
-                //Check if mail is null.  If so, use userPrincialName for email
+                //Check if mail is null.  If so, use the userPrincipalName for email
                 if ($me['mail']===null) {
-                    $email=$me['userPrincipalName'];
+                    $email = $me['userPrincipalName'];
                 } else {
                     $email=$me['mail'];
                 }
@@ -107,7 +107,7 @@ class MsGraph
 
                 //find record and add email - not required but useful none the less
                 $t = MsGraphToken::findOrFail($result->id);
-                $t->email = $email;
+                $t->email = $email
                 $t->save();
 
                 return redirect(config('msgraph.msgraphLandingUri'));
