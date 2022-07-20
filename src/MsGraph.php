@@ -96,10 +96,10 @@ class MsGraph
                 ];
                 
                 //Check if mail is null.  If so, use the userPrincipalName for email
-                if ($me['mail']===null) {
+                if ($me['mail'] === null) {
                     $email = $me['userPrincipalName'];
                 } else {
-                    $email=$me['mail'];
+                    $email = $me['mail'];
                 }
 
                 //fire event
