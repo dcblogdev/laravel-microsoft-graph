@@ -56,4 +56,10 @@ return [
     The default timezone is set to Europe/London this option allows you to set your prefered timetime
     */
     'preferTimezone' => env('MSGRAPH_PREFER_TIMEZONE', 'outlook.timezone="Europe/London"'),
+
+
+    /*
+    set the database connection
+    */
+    'dbConnection' => env('MSGRAPH_DB_CONNECTION', 'default'),
 ];

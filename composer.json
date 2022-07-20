@@ -19,7 +19,7 @@
         "Microsoft365"
     ],
     "require": {
-        "illuminate/support": "5.5.x|5.6.x|5.7.x|5.8.x|6.x|7.x|8.x",
+        "illuminate/support": "5.5.x|5.6.x|5.7.x|5.8.x|6.x|7.x|8.x|9.x",
         "league/oauth2-client": "^1.4|^2",
         "guzzlehttp/guzzle": "6.x|7.x",
         "ext-json": "*"
