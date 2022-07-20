@@ -95,19 +95,13 @@ class MsGraph
                     'info' => $me
                 ];
                 
-                //Check if mail is null.  If so, use the userPrincipalName for email
-                if ($me['mail'] === null) {
-                    $email = $me['userPrincipalName'];
-                } else {
-                    $email = $me['mail'];
-                }
-
+           
                 //fire event
                 event(new NewMicrosoft365SignInEvent($event));
 
                 //find record and add email - not required but useful none the less
                 $t = MsGraphToken::findOrFail($result->id);
-                $t->email = $email;
+                $t->email = $me['mail'];
                 $t->save();
 
                 return redirect(config('msgraph.msgraphLandingUri'));
