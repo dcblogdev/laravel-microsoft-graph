@@ -275,3 +275,6 @@ The in a view the previous and next links can be displayed:
 ### 3.1.2
 
 added support for Laravel 9
+
+### 3.1.3
+added support for file replace/rename behavior
