@@ -107,7 +107,7 @@ class MsGraph
 
                 //find record and add email - not required but useful none the less
                 $t = MsGraphToken::findOrFail($result->id);
-                $t->email = $email
+                $t->email = $email;
                 $t->save();
 
                 return redirect(config('msgraph.msgraphLandingUri'));
