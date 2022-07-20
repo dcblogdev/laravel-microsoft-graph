@@ -271,5 +271,7 @@ The in a view the previous and next links can be displayed:
 	<a href='{{ url()->current().'?next='.$next }}'>Next Page</a>
 @endif
 ```
-### 3.1.1
-Added behavior option to upload and createFolder.  
+
+### 3.1.2
+
+added support for Laravel 9
