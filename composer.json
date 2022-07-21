@@ -1,5 +1,5 @@
 {
-    "name": "rsf123/laravel-microsoft-graph",
+    "name": "dcblogdev/laravel-microsoft-graph",
     "description": "A Laravel Microsoft Graph API (Office365) package forked from dcblogdev/laravel-microsoft-graph",
     "license": "MIT",
     "authors": [
