@@ -279,4 +279,13 @@ added support for Laravel 9
 ### 3.1.3
 
 Added support in Files.php to support replace/rename behavior on createFolder and file upload functions. Default behavior is to rename.
+
+Usage for createFolder:
+MsGraph::files()->createFolder($name, $path, $type = 'me', $behavior='rename')
+Where $behavior is either rename or replace
+
+Usage for upload:
+MsGraph::files()->upload($name, $uploadPath, $path=null, $type='me',$behavior='rename')
+Where $behavior is either rename or replace
+
 Also modified the MsGraph token call to check if the 'mail' attribute is null.  If it is, it will use the userPrincipalName to set the email on the token.
