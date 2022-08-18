@@ -276,6 +276,6 @@ The in a view the previous and next links can be displayed:
 
 added support for Laravel 9
 
-### 3.1.2
+### 3.1.3
 
 Added files import for MsGraphAdmin 
