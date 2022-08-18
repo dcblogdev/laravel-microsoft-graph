@@ -13,6 +13,7 @@ use Dcblogdev\MsGraph\AdminResources\Emails;
 use Dcblogdev\MsGraph\AdminResources\Events;
 use Dcblogdev\MsGraph\AdminResources\Calendars;
 use Dcblogdev\MsGraph\AdminResources\CalendarEvents;
+use Dcblogdev\MsGraph\AdminResources\Files;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Exception;
