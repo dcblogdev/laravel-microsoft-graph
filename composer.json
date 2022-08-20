@@ -24,10 +24,22 @@
         "guzzlehttp/guzzle": "6.x|7.x",
         "ext-json": "*"
     },
+    "require-dev": {
+        "orchestra/testbench": "^7.0",
+        "pestphp/pest": "^1.21",
+        "pestphp/pest-plugin-laravel": "^1.1",
+        "friendsofphp/php-cs-fixer": "^3.9"
+    },
     "autoload": {
         "psr-4": {
-            "Dcblogdev\\MsGraph\\": "src/"
+            "Dcblogdev\\MsGraph\\": "src/",
+            "Dcblogdev\\MsGraph\\Tests\\": "tests"
         }
+    },
+    "autoload-dev": {
+        "classmap": [
+            "tests/TestCase.php"
+        ]
     },
     "extra": {
         "laravel": {
@@ -38,6 +50,11 @@
                 "MsGraph": "Dcblogdev\\MsGraph\\Facades\\MsGraph",
                 "MsGraphAdmin": "Dcblogdev\\MsGraph\\Facades\\MsGraphAdmin"
             }
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
         }
     }
 }
