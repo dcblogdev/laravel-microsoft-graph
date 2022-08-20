@@ -57,7 +57,6 @@ return [
     */
     'preferTimezone' => env('MSGRAPH_PREFER_TIMEZONE', 'outlook.timezone="Europe/London"'),
 
-
     /*
     set the database connection
     */

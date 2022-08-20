@@ -12,13 +12,14 @@ class Files extends MsGraphAdmin
     public function userid($userId)
     {
         $this->userId = $userId;
+
         return $this;
     }
 
     public function getDrives()
     {
         if ($this->userId == null) {
-            throw new Exception("userId is required.");
+            throw new Exception('userId is required.');
         }
 
         return MsGraph::get('users/'.$this->userId.'/drives');
@@ -27,7 +28,7 @@ class Files extends MsGraphAdmin
     public function downloadFile($id)
     {
         if ($this->userId == null) {
-            throw new Exception("userId is required.");
+            throw new Exception('userId is required.');
         }
 
         $id = MsGraph::get('users/'.$this->userId.'/drive/items/'.$id);
@@ -38,7 +39,7 @@ class Files extends MsGraphAdmin
     public function deleteFile($id)
     {
         if ($this->userId == null) {
-            throw new Exception("userId is required.");
+            throw new Exception('userId is required.');
         }
 
         return MsGraph::delete('users/'.$this->userId.'/drive/items/'.$id);

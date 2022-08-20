@@ -3,7 +3,6 @@
 namespace Dcblogdev\MsGraph\Resources;
 
 use Dcblogdev\MsGraph\Facades\MsGraph;
-use Exception;
 
 class Contacts extends MsGraph
 {
@@ -13,32 +12,32 @@ class Contacts extends MsGraph
     public function top($top)
     {
         $this->top = $top;
+
         return $this;
     }
 
     public function skip($skip)
     {
         $this->skip = $skip;
+
         return $this;
     }
 
-	public function get($params = [])
-	{
-        $top = request('top', $this->top);
+    public function get($params = [])
+    {
+        $top  = request('top', $this->top);
         $skip = request('skip', $this->skip);
 
         if ($params == []) {
-
             $params = http_build_query([
-                "\$orderby" => "displayName",
-                "\$top" => $top,
-                "\$skip" => $skip,
-                "\$count" => "true",
+                '$orderby' => 'displayName',
+                '$top'     => $top,
+                '$skip'    => $skip,
+                '$count'   => 'true',
             ]);
-
         } else {
-           $params = http_build_query($params);
-        }   
+            $params = http_build_query($params);
+        }
 
         $contacts = MsGraph::get('me/contacts?'.$params);
 
@@ -46,11 +45,11 @@ class Contacts extends MsGraph
 
         return [
             'contacts' => $contacts,
-            'total' => $data['total'],
-            'top' => $data['top'],
-            'skip' => $data['skip']
+            'total'    => $data['total'],
+            'top'      => $data['top'],
+            'skip'     => $data['skip'],
         ];
-	}
+    }
 
     public function find($id)
     {
@@ -59,7 +58,7 @@ class Contacts extends MsGraph
 
     public function store(array $data)
     {
-        return MsGraph::post("me/contacts", $data);
+        return MsGraph::post('me/contacts', $data);
     }
 
     public function update($id, array $data)

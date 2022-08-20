@@ -2,11 +2,7 @@
 
 namespace Dcblogdev\MsGraph;
 
-use Dcblogdev\MsGraph\Events\NewMicrosoft365SignInEvent;
-use Dcblogdev\MsGraph\Providers\EventServiceProvider;
-use Event;
 use Illuminate\Support\ServiceProvider;
-use Dcblogdev\MsGraph\MsGraphAuthenticated;
 
 class MsGraphServiceProvider extends ServiceProvider
 {
@@ -21,7 +17,6 @@ class MsGraphServiceProvider extends ServiceProvider
 
         // Publishing is only necessary when using the CLI.
         if ($this->app->runningInConsole()) {
-
             // Publishing the configuration file.
             $this->publishes([
                 __DIR__.'/../config/msgraph.php' => config_path('msgraph.php'),
@@ -35,7 +30,7 @@ class MsGraphServiceProvider extends ServiceProvider
 
             $this->publishes([
                 __DIR__.'/database/migrations/create_ms_graph_tokens_table.php' => $this->app->databasePath()."/migrations/{$timestamp}_create_ms_graph_tokens_table.php",
-            ], 'migrations');            
+            ], 'migrations');
         }
 
         //add middleware

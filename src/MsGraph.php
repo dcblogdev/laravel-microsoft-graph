@@ -2,24 +2,22 @@
 
 namespace Dcblogdev\MsGraph;
 
-/**
+/*
 * msgraph api documentation can be found at https://developer.msgraph.com/reference
 **/
 
 use Dcblogdev\MsGraph\Events\NewMicrosoft365SignInEvent;
 use Dcblogdev\MsGraph\Facades\MsGraph as Api;
 use Dcblogdev\MsGraph\Models\MsGraphToken;
-
 use Dcblogdev\MsGraph\Resources\Contacts;
 use Dcblogdev\MsGraph\Resources\Emails;
 use Dcblogdev\MsGraph\Resources\Files;
 use Dcblogdev\MsGraph\Resources\Tasks;
-
-use League\OAuth2\Client\Provider\GenericProvider;
-use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
-use Exception;
+use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+use League\OAuth2\Client\Provider\GenericProvider;
 
 class MsGraph
 {
@@ -44,13 +42,13 @@ class MsGraph
     }
 
     /**
-     * Set the base url that all API requests use
+     * Set the base url that all API requests use.
      * @var string
      */
     protected static $baseUrl = 'https://graph.microsoft.com/v1.0/';
 
     /**
-     * Make a connection or return a token where it's valid
+     * Make a connection or return a token where it's valid.
      * @return mixed
      */
     public function connect($id = null)
@@ -68,21 +66,18 @@ class MsGraph
             'urlAuthorize'            => config('msgraph.urlAuthorize'),
             'urlAccessToken'          => config('msgraph.urlAccessToken'),
             'urlResourceOwnerDetails' => config('msgraph.urlResourceOwnerDetails'),
-            'scopes'                  => config('msgraph.scopes')
+            'scopes'                  => config('msgraph.scopes'),
         ]);
 
         //when no code param redirect to Microsoft
-        if (!request()->has('code')) {
-
+        if (! request()->has('code')) {
             return redirect($provider->getAuthorizationUrl());
-
         } elseif (request()->has('code')) {
-
             // With the authorization code, we can retrieve access tokens and other data.
             try {
                 // Get an access token using the authorization code grant
                 $accessToken = $provider->getAccessToken('authorization_code', [
-                    'code' => request('code')
+                    'code' => request('code'),
                 ]);
 
                 $result = $this->storeToken($accessToken->getToken(), $accessToken->getRefreshToken(), $accessToken->getExpires(), $id);
@@ -92,23 +87,21 @@ class MsGraph
 
                 $event = [
                     'token_id' => $result->id,
-                    'info' => $me
+                    'info'     => $me,
                 ];
 
                 //fire event
                 event(new NewMicrosoft365SignInEvent($event));
 
                 //find record and add email - not required but useful none the less
-                $t = MsGraphToken::findOrFail($result->id);
+                $t        = MsGraphToken::findOrFail($result->id);
                 $t->email = $me['mail'];
                 $t->save();
 
                 return redirect(config('msgraph.msgraphLandingUri'));
-
             } catch (IdentityProviderException $e) {
                 die('error:'.$e->getMessage());
             }
-
         }
     }
 
@@ -121,13 +114,13 @@ class MsGraph
     }
 
     /**
-     * logout of application and Microsoft 365, redirects back to the provided path
+     * logout of application and Microsoft 365, redirects back to the provided path.
      * @param string $redirectPath
      * @return \Illuminate\Http\RedirectResponse
      */
     public function disconnect($redirectPath = '/', $logout = true, $id = null)
     {
-        $id = ($id) ? $id : auth()->id();
+        $id    = ($id) ? $id : auth()->id();
         $token = MsGraphToken::where('user_id', $id)->first();
         if ($token != null) {
             $token->delete();
@@ -142,7 +135,7 @@ class MsGraph
     }
 
     /**
-     * Return authenticated access token or request new token when expired
+     * Return authenticated access token or request new token when expired.
      * @param  $id integer - id of the user
      * @param  $returnNullNoAccessToken null when set to true return null
      * @return return string access token
@@ -155,7 +148,6 @@ class MsGraph
 
         // Check if tokens exist otherwise run the oauth request
         if (! isset($token->access_token)) {
-
             //don't redirect simply return null when no token found with this option
             if ($returnNullNoAccessToken == true) {
                 return null;
@@ -178,7 +170,7 @@ class MsGraph
                 'urlAuthorize'            => config('msgraph.urlAuthorize'),
                 'urlAccessToken'          => config('msgraph.urlAccessToken'),
                 'urlResourceOwnerDetails' => config('msgraph.urlResourceOwnerDetails'),
-                'scopes'                  => config('msgraph.scopes')
+                'scopes'                  => config('msgraph.scopes'),
             ]);
 
             $newToken = $oauthClient->getAccessToken('refresh_token', ['refresh_token' => $token->refresh_token]);
@@ -187,7 +179,6 @@ class MsGraph
             $this->storeToken($newToken->getToken(), $newToken->getRefreshToken(), $newToken->getExpires(), $id);
 
             return $newToken->getToken();
-
         } else {
             // Token is still valid, just return it
             return $token->access_token;
@@ -201,11 +192,12 @@ class MsGraph
     public function getTokenData($id = null)
     {
         $id = ($id) ? $id : auth()->id();
+
         return MsGraphToken::where('user_id', $id)->first();
     }
 
     /**
-     * Store token
+     * Store token.
      * @param  $access_token string
      * @param  $refresh_token string
      * @param  $expires string
@@ -219,12 +211,12 @@ class MsGraph
             'user_id'       => $id,
             'access_token'  => $access_token,
             'expires'       => $expires,
-            'refresh_token' => $refresh_token
+            'refresh_token' => $refresh_token,
         ]);
     }
 
     /**
-     * __call catches all requests when no found method is requested
+     * __call catches all requests when no found method is requested.
      * @param  $function - the verb to execute
      * @param  $args - array of arguments
      * @return json request
@@ -247,7 +239,7 @@ class MsGraph
     }
 
     /**
-     * run guzzle to process requested url
+     * run guzzle to process requested url.
      * @param  $type string
      * @param  $request string
      * @param  $data array
@@ -262,8 +254,8 @@ class MsGraph
 
             $mainHeaders = [
                 'Authorization' => 'Bearer '.$this->getAccessToken($id),
-                'content-type' => 'application/json',
-                'Prefer' => config('msgraph.preferTimezone')
+                'content-type'  => 'application/json',
+                'Prefer'        => config('msgraph.preferTimezone'),
             ];
 
             if (is_array($headers)) {
@@ -274,7 +266,7 @@ class MsGraph
 
             $response = $client->$type(self::$baseUrl.$request, [
                 'headers' => $headers,
-                'body' => json_encode($data),
+                'body'    => json_encode($data),
             ]);
 
             if ($response == null) {
@@ -282,7 +274,6 @@ class MsGraph
             }
 
             return json_decode($response->getBody()->getContents(), true);
-
         } catch (ClientException $e) {
             throw new Exception($e->getResponse()->getBody()->getContents());
         } catch (Exception $e) {
@@ -291,7 +282,7 @@ class MsGraph
     }
 
     /**
-     * return array containing previous and next page counts
+     * return array containing previous and next page counts.
      * @param  $data array
      * @param  $total array
      * @param  $limit  integer
@@ -330,7 +321,7 @@ class MsGraph
 
         return [
             'previous' => $previous,
-            'next' => $next
+            'next'     => $next,
         ];
     }
 }
