@@ -279,3 +279,8 @@ added support for Laravel 9
 ### 3.1.3
 
 Added files import for MsGraphAdmin 
+
+### 3.1.4
+
+Added test foundation
+Added php code sniffer fixer and style config
