@@ -105,12 +105,9 @@ class MsGraph
         }
     }
 
-    /**
-     * @return object
-     */
-    public function isConnected()
+    public function isConnected($id = null): bool
     {
-        return $this->getTokenData() == null ? false : true;
+        return ! ($this->getTokenData($id) === null);
     }
 
     /**
@@ -127,7 +124,7 @@ class MsGraph
         }
 
         //if logged in and $logout is set to true then logout
-        if ($logout == true && auth()->check()) {
+        if ($logout === true && auth()->check()) {
             auth()->logout();
         }
 
