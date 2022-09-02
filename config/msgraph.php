@@ -60,5 +60,5 @@ return [
     /*
     set the database connection
     */
-    'dbConnection' => env('MSGRAPH_DB_CONNECTION', 'default'),
+    'dbConnection' => env('MSGRAPH_DB_CONNECTION', 'mysql'),
 ];
