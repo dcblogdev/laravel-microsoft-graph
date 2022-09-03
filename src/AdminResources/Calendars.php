@@ -3,6 +3,7 @@
 namespace Dcblogdev\MsGraph\AdminResources;
 
 use Dcblogdev\MsGraph\Facades\MsGraphAdmin;
+use Exception;
 
 class Calendars extends MsGraphAdmin
 {
