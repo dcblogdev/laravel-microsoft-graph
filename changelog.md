@@ -282,7 +282,16 @@ Added files import for MsGraphAdmin
 
 ### 3.1.4
 
-Added test foundation
-Added php code sniffer fixer and style config
-Changed `MSGRAPH_DB_CONNECTION` to be mysql to use a connection called mysql
-Fix used MsGraphAdmin instead of MsGraph in admin files resource
+## Added
+
+- test foundation using PestPHP
+- PHP code sniffer fixer and style config
+
+## Changed
+
+- `MSGRAPH_DB_CONNECTION` to be mysql to use a connection called mysql
+- store name is email cannot be found when connecting
+
+## Fixed
+
+- used MsGraphAdmin instead of MsGraph in admin files resource
