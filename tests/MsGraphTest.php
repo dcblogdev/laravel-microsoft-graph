@@ -5,7 +5,6 @@ use Dcblogdev\MsGraph\Models\MsGraphToken;
 use Dcblogdev\MsGraph\MsGraph;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Redirector;
-use League\OAuth2\Client\Provider\GenericProvider;
 
 beforeEach(function () {
     $this->msGraphMock = Mockery::mock(MsGraph::class);
@@ -28,27 +27,29 @@ test('is connected returns false when no data in db', function () {
 });
 
 test('is connected returns true when data exists in db', function () {
+    $userId = 1;
     MsGraphToken::create([
-        'user_id'      => 1,
+        'user_id'      => $userId,
         'access_token' => 'ghgh4h22',
         'expires'      => strtotime('+1 day'),
     ]);
 
-    $connect = MsGraphFacade::isConnected(1);
+    $connect = MsGraphFacade::isConnected($userId);
 
     expect($connect)->toBeTrue();
 });
 
 test('is redirected to logout', function () {
+    $userId = 1;
     MsGraphToken::create([
-        'user_id'      => 1,
+        'user_id'      => $userId,
         'access_token' => 'ghgh4h22',
         'expires'      => strtotime('+1 day'),
     ]);
 
     $this->assertDatabaseCount('ms_graph_tokens', 1);
 
-    $connect = MsGraphFacade::disconnect($redirectPath = '/', $logout = true, $id = 1);
+    $connect = MsGraphFacade::disconnect($redirectPath = '/', $logout = true, $userId);
 
     $this->assertDatabaseCount('ms_graph_tokens', 0);
 
@@ -56,13 +57,14 @@ test('is redirected to logout', function () {
 });
 
 test('get access token when exists', function () {
+    $userId = 1;
     MsGraphToken::create([
-        'user_id'      => 1,
+        'user_id'      => $userId,
         'access_token' => 'ghgh4h22',
         'expires'      => strtotime('+1 day'),
     ]);
 
-    $response = MsGraphFacade::getAccessToken(1);
+    $response = MsGraphFacade::getAccessToken($userId);
 
     $this->assertSame('ghgh4h22', $response);
 });
@@ -80,7 +82,8 @@ test('redirected token when token has expired and returnNullNoAccessToken is nul
 });
 
 test('redirected when token has expired and returnNullNoAccessToken is null', function () {
-    $response = MsGraphFacade::getAccessToken(1, true);
+    $userId   = 1;
+    $response = MsGraphFacade::getAccessToken($userId, true);
 
     $this->assertSame(null, $response);
 });
