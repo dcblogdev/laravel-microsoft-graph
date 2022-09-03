@@ -284,3 +284,5 @@ Added files import for MsGraphAdmin
 
 Added test foundation
 Added php code sniffer fixer and style config
+Changed `MSGRAPH_DB_CONNECTION` to be mysql to use a connection called mysql
+Fix used MsGraphAdmin instead of MsGraph in admin files resource
