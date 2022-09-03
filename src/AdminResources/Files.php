@@ -22,7 +22,7 @@ class Files extends MsGraphAdmin
             throw new Exception('userId is required.');
         }
 
-        return MsGraph::get('users/'.$this->userId.'/drives');
+        return MsGraphAdmin::get('users/'.$this->userId.'/drives');
     }
 
     public function downloadFile($id)
@@ -31,7 +31,7 @@ class Files extends MsGraphAdmin
             throw new Exception('userId is required.');
         }
 
-        $id = MsGraph::get('users/'.$this->userId.'/drive/items/'.$id);
+        $id = MsGraphAdmin::get('users/'.$this->userId.'/drive/items/'.$id);
 
         return redirect()->away($id['@microsoft.graph.downloadUrl']);
     }
@@ -42,6 +42,6 @@ class Files extends MsGraphAdmin
             throw new Exception('userId is required.');
         }
 
-        return MsGraph::delete('users/'.$this->userId.'/drive/items/'.$id);
+        return MsGraphAdmin::delete('users/'.$this->userId.'/drive/items/'.$id);
     }
 }
