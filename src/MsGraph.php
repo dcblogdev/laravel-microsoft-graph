@@ -70,7 +70,7 @@ class MsGraph
         ]);
 
         //when no code param redirect to Microsoft
-        if (! request()->has('code')) {
+        if (!request()->has('code')) {
             return redirect($provider->getAuthorizationUrl());
         } elseif (request()->has('code')) {
             // With the authorization code, we can retrieve access tokens and other data.
@@ -80,7 +80,8 @@ class MsGraph
                     'code' => request('code'),
                 ]);
 
-                $result = $this->storeToken($accessToken->getToken(), $accessToken->getRefreshToken(), $accessToken->getExpires(), $id);
+                $result = $this->storeToken($accessToken->getToken(), $accessToken->getRefreshToken(),
+                    $accessToken->getExpires(), $id);
 
                 //get user details
                 $me = Api::get('me', null, [], $id);
@@ -90,12 +91,18 @@ class MsGraph
                     'info'     => $me,
                 ];
 
+                if ($event['info']['mail'] === null) {
+                    $email = $event['info']['userPrincipalName'];
+                } else {
+                    $email = $event['info']['mail'];
+                }
+
                 //fire event
                 event(new NewMicrosoft365SignInEvent($event));
 
-                //find record and add email - not required but useful none the less
+                //find record and add email
                 $t        = MsGraphToken::findOrFail($result->id);
-                $t->email = $me['mail'];
+                $t->email = $email;
                 $t->save();
 
                 return redirect(config('msgraph.msgraphLandingUri'));
@@ -107,12 +114,12 @@ class MsGraph
 
     public function isConnected($id = null): bool
     {
-        return ! ($this->getTokenData($id) === null);
+        return !($this->getTokenData($id) === null);
     }
 
     /**
      * logout of application and Microsoft 365, redirects back to the provided path.
-     * @param string $redirectPath
+     * @param  string  $redirectPath
      * @return \Illuminate\Http\RedirectResponse
      */
     public function disconnect($redirectPath = '/', $logout = true, $id = null)
@@ -144,7 +151,7 @@ class MsGraph
         $token = MsGraphToken::where('user_id', $id)->first();
 
         // Check if tokens exist otherwise run the oauth request
-        if (! isset($token->access_token)) {
+        if (!isset($token->access_token)) {
             //don't redirect simply return null when no token found with this option
             if ($returnNullNoAccessToken == true) {
                 return null;
@@ -183,7 +190,7 @@ class MsGraph
     }
 
     /**
-     * @param  $id - integar id of user
+     * @param  $id  - integar id of user
      * @return object
      */
     public function getTokenData($id = null)
@@ -214,8 +221,8 @@ class MsGraph
 
     /**
      * __call catches all requests when no found method is requested.
-     * @param  $function - the verb to execute
-     * @param  $args - array of arguments
+     * @param  $function  - the verb to execute
+     * @param  $args  - array of arguments
      * @return json request
      * @throws Exception
      */
@@ -240,7 +247,7 @@ class MsGraph
      * @param  $type string
      * @param  $request string
      * @param  $data array
-     * @param array $headers
+     * @param  array  $headers
      * @param  $id integer
      * @return json object
      */
