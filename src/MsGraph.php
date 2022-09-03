@@ -3,8 +3,8 @@
 namespace Dcblogdev\MsGraph;
 
 /*
-* msgraph api documentation can be found at https://developer.msgraph.com/reference
-**/
+ * msgraph api documentation can be found at https://developer.msgraph.com/reference
+ **/
 
 use Dcblogdev\MsGraph\Events\NewMicrosoft365SignInEvent;
 use Dcblogdev\MsGraph\Facades\MsGraph as Api;
@@ -80,8 +80,12 @@ class MsGraph
                     'code' => request('code'),
                 ]);
 
-                $result = $this->storeToken($accessToken->getToken(), $accessToken->getRefreshToken(),
-                    $accessToken->getExpires(), $id);
+                $result = $this->storeToken(
+                    $accessToken->getToken(),
+                    $accessToken->getRefreshToken(),
+                    $accessToken->getExpires(),
+                    $id
+                );
 
                 //get user details
                 $me = Api::get('me', null, [], $id);
@@ -100,7 +104,7 @@ class MsGraph
                 //fire event
                 event(new NewMicrosoft365SignInEvent($event));
 
-                //find record and add email
+                //find record and add email - not required but useful none the less
                 $t        = MsGraphToken::findOrFail($result->id);
                 $t->email = $email;
                 $t->save();
@@ -112,9 +116,12 @@ class MsGraph
         }
     }
 
-    public function isConnected($id = null): bool
+    /**
+     * @return object
+     */
+    public function isConnected()
     {
-        return !($this->getTokenData($id) === null);
+        return $this->getTokenData() == null ? false : true;
     }
 
     /**
@@ -131,7 +138,7 @@ class MsGraph
         }
 
         //if logged in and $logout is set to true then logout
-        if ($logout === true && auth()->check()) {
+        if ($logout == true && auth()->check()) {
             auth()->logout();
         }
 
@@ -242,6 +249,11 @@ class MsGraph
         }
     }
 
+    protected function isJson($string)
+    {
+        return is_string($string) && is_array(json_decode($string, true)) && (json_last_error() == JSON_ERROR_NONE);
+    }
+
     /**
      * run guzzle to process requested url.
      * @param  $type string
@@ -273,11 +285,15 @@ class MsGraph
                 'body'    => json_encode($data),
             ]);
 
-            if ($response == null) {
-                return null;
+            $responseObject = $response->getBody()->getContents();
+
+            $isJson = $this->isJson($responseObject);
+
+            if ($isJson) {
+                return json_decode($responseObject, true);
             }
 
-            return json_decode($response->getBody()->getContents(), true);
+            return $responseObject;
         } catch (ClientException $e) {
             throw new Exception($e->getResponse()->getBody()->getContents());
         } catch (Exception $e) {

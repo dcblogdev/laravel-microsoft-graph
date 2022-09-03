@@ -191,6 +191,11 @@ class MsGraphAdmin
         }
     }
 
+    protected function isJson($string)
+    {
+        return is_string($string) && is_array(json_decode($string, true)) && (json_last_error() == JSON_ERROR_NONE);
+    }
+
     /**
      * run guzzle to process requested url.
      * @param  $type string
@@ -213,11 +218,15 @@ class MsGraphAdmin
                 'body' => json_encode($data),
             ]);
 
-            if ($response == null) {
-                return null;
+            $responseObject = $response->getBody()->getContents();
+
+            $isJson = $this->isJson($responseObject);
+
+            if ($isJson) {
+                return json_decode($responseObject, true);
             }
 
-            return json_decode($response->getBody()->getContents(), true);
+            return $responseObject;
         } catch (ClientException $e) {
             return json_decode(($e->getResponse()->getBody()->getContents()));
         } catch (Exception $e) {

@@ -291,6 +291,7 @@ Added files import for MsGraphAdmin
 
 - `MSGRAPH_DB_CONNECTION` to be mysql to use a connection called mysql
 - store name is email cannot be found when connecting
+- Changed responses so if the data is json it gets decoded otherwise the raw body is returned
 
 ## Fixed
 
