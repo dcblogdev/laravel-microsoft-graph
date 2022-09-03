@@ -93,6 +93,14 @@ class Emails extends MsGraph
         $top  = request('top', $this->top);
         $skip = request('skip', $this->skip);
 
+        if ($top === null) {
+            $top = 100;
+        }
+
+        if ($skip === null) {
+            $skip = 0;
+        }
+
         if ($params == []) {
             $params = http_build_query([
                 '$top'   => $top,
@@ -108,20 +116,15 @@ class Emails extends MsGraph
         //get inbox from folders list
         $folder = MsGraph::get("me/mailFolders?\$filter=startswith(displayName,'$folder')");
 
-        //folder id
-        $folderId = $folder['value'][0]['id'];
+        if (isset($folder['value'][0])) {
+            //folder id
+            $folderId = $folder['value'][0]['id'];
 
-        //get messages from folderId
-        $emails = MsGraph::get("me/mailFolders/$folderId/messages?".$params);
-
-        $data = MsGraph::getPagination($emails, $top, $skip);
-
-        return [
-            'emails' => $emails,
-            'total'  => $data['total'],
-            'top'    => $data['top'],
-            'skip'   => $data['skip'],
-        ];
+            //get messages from folderId
+            return MsGraph::get("me/mailFolders/$folderId/messages?".$params);
+        } else {
+            return throw new Exception('email folder not found');
+        }
     }
 
     public function find($id)
