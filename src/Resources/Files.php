@@ -41,14 +41,14 @@ class Files extends MsGraph
         return MsGraph::delete($type."/drive/items/$id");
     }
 
-    public function createFolder($name, $path, $type = 'me')
+    public function createFolder($name, $path, $type = 'me', $behavior = 'rename')
     {
         $path = $path === null ? $type.'/drive/root/children' : $type.'/drive/root:'.$this->forceStartingSlash($path).':/children';
 
         return MsGraph::post($path, [
             'name'                              => $name,
             'folder'                            => new \stdClass(),
-            '@microsoft.graph.conflictBehavior' => 'rename',
+            '@microsoft.graph.conflictBehavior' => $behavior,
         ]);
     }
 
@@ -66,9 +66,9 @@ class Files extends MsGraph
         ]);
     }
 
-    public function upload($name, $uploadPath, $path = null, $type = 'me')
+    public function upload($name, $uploadPath, $path = null, $type = 'me', $behavior = 'rename')
     {
-        $uploadSession = $this->createUploadSession($name, $path, $type);
+        $uploadSession = $this->createUploadSession($name, $path, $type, $behavior);
         $uploadUrl     = $uploadSession['uploadUrl'];
 
         $fragSize       = 320 * 1024;
@@ -110,13 +110,13 @@ class Files extends MsGraph
         }
     }
 
-    protected function createUploadSession($name, $path = null, $type = 'me')
+    protected function createUploadSession($name, $path = null, $type = 'me', $behavior = 'rename')
     {
         $path = $path === null ? $type."/drive/root:/$name:/createUploadSession" : $type.'/drive/root:'.$this->forceStartingSlash($path)."/$name:/createUploadSession";
 
         return MsGraph::post($path, [
             'item' => [
-                '@microsoft.graph.conflictBehavior' => 'rename',
+                '@microsoft.graph.conflictBehavior' => $behavior,
                 'name'                              => $name,
             ],
         ]);
