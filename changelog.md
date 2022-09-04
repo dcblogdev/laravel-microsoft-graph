@@ -297,3 +297,9 @@ Added files import for MsGraphAdmin
 ## Fixed
 
 - used MsGraphAdmin instead of MsGraph in admin files resource
+
+### Next
+
+## Added
+
+- added commands `msgraphadmin:keep-alive` and `msgraph:keep-alive` to allow refresh tokens to be automated by running these commands on a schedule 

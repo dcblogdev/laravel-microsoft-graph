@@ -106,7 +106,7 @@ class MsGraphAdmin
      */
     public function getAccessToken($returnNullNoAccessToken = null)
     {
-        //use id if passed otherwise use logged in user
+        //use id if passed otherwise use logged-in user
         $token = MsGraphToken::where('user_id', null)->first();
 
         // Check if tokens exist otherwise run the oauth request
@@ -175,7 +175,7 @@ class MsGraphAdmin
      * __call catches all requests when no founf method is requested.
      * @param  $function - the verb to execute
      * @param  $args - array of arguments
-     * @return guzzle request
+     * @return json request
      */
     public function __call($function, $args)
     {

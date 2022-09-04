@@ -119,9 +119,9 @@ class MsGraph
     /**
      * @return object
      */
-    public function isConnected()
+    public function isConnected($id = null)
     {
-        return $this->getTokenData() == null ? false : true;
+        return $this->getTokenData($id) == null ? false : true;
     }
 
     /**
@@ -202,7 +202,7 @@ class MsGraph
      */
     public function getTokenData($id = null)
     {
-        $id = ($id) ? $id : auth()->id();
+        $id = $id ?: auth()->id();
 
         return MsGraphToken::where('user_id', $id)->first();
     }

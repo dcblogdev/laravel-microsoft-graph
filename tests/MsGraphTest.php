@@ -87,3 +87,4 @@ test('redirected when token has expired and returnNullNoAccessToken is null', fu
 
     $this->assertSame(null, $response);
 });
+
