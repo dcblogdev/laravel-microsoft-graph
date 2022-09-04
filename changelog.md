@@ -303,3 +303,19 @@ Added files import for MsGraphAdmin
 ## Added
 
 - added commands `msgraphadmin:keep-alive` and `msgraph:keep-alive` to allow refresh tokens to be automated by running these commands on a schedule 
+
+### 3.1.5
+
+Added support in Files.php to support replace/rename behavior on createFolder and file upload functions. Default behavior is to rename.
+
+Usage for createFolder:
+```php
+MsGraph::files()->createFolder($name, $path, $type = 'me', $behavior='rename')
+```
+Where $behavior is either rename or replace
+
+Usage for upload:
+```php
+MsGraph::files()->upload($name, $uploadPath, $path=null, $type='me',$behavior='rename')
+```
+Where $behavior is either rename or replace
