@@ -15,7 +15,7 @@ MsGraph comes in two flavours:
 API documentation can be found at https://developer.microsoft.com/en-us/graph/docs/api-reference/beta/beta-overview
 
 # Documentation and install instructions 
-[https://docs.dcblog.dev/laravel-microsoft-graph](https://docs.dcblog.dev/laravel-microsoft-graph)
+[https://dcblog.dev/docs/laravel-microsoft-graph](https://dcblog.dev/docs/laravel-microsoft-graph)
 
 ## Change log
 

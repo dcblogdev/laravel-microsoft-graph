@@ -3,7 +3,6 @@
 namespace Dcblogdev\MsGraph\Resources;
 
 use Dcblogdev\MsGraph\Facades\MsGraph;
-use Exception;
 
 class Tasks extends MsGraph
 {
@@ -13,32 +12,32 @@ class Tasks extends MsGraph
     public function top($top)
     {
         $this->top = $top;
+
         return $this;
     }
 
     public function skip($skip)
     {
         $this->skip = $skip;
+
         return $this;
     }
 
-	public function get($params = [])
-	{
-        $top = request('top', $this->top);
+    public function get($params = [])
+    {
+        $top  = request('top', $this->top);
         $skip = request('skip', $this->skip);
 
         if ($params == []) {
-
             $params = http_build_query([
-                "\$filter" => "status eq 'notStarted'",
-                "\$top" => $top,
-                "\$skip" => $skip,
-                "\$count" => "true",
+                '$filter' => "status eq 'notStarted'",
+                '$top'    => $top,
+                '$skip'   => $skip,
+                '$count'  => 'true',
             ]);
-
         } else {
-           $params = http_build_query($params);
-        }   
+            $params = http_build_query($params);
+        }
 
         $tasks = MsGraph::get('me/messages?'.$params);
 
@@ -47,14 +46,14 @@ class Tasks extends MsGraph
         return [
             'tasks' => $tasks,
             'total' => $data['total'],
-            'top' => $data['top'],
-            'skip' => $data['skip']
+            'top'   => $data['top'],
+            'skip'  => $data['skip'],
         ];
-	}
+    }
 
     public function folders()
     {
-        return MsGraph::get("me/outlook/taskFolders");
+        return MsGraph::get('me/outlook/taskFolders');
     }
 
     public function find($id)
@@ -64,7 +63,7 @@ class Tasks extends MsGraph
 
     public function store(array $data)
     {
-        return MsGraph::post("me/outlook/tasks", $data);
+        return MsGraph::post('me/outlook/tasks', $data);
     }
 
     public function update($id, array $data)

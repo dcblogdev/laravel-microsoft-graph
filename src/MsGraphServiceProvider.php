@@ -2,11 +2,10 @@
 
 namespace Dcblogdev\MsGraph;
 
-use Dcblogdev\MsGraph\Events\NewMicrosoft365SignInEvent;
-use Dcblogdev\MsGraph\Providers\EventServiceProvider;
-use Event;
+use Dcblogdev\MsGraph\Console\Commands\MsGraphAdminKeepAliveCommand;
+use Dcblogdev\MsGraph\Console\Commands\MsGraphKeepAliveCommand;
+use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
-use Dcblogdev\MsGraph\MsGraphAuthenticated;
 
 class MsGraphServiceProvider extends ServiceProvider
 {
@@ -15,32 +14,46 @@ class MsGraphServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot(\Illuminate\Routing\Router $router)
+    public function boot(Router $router)
     {
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        $this->registerMiddleware($router);
 
-        // Publishing is only necessary when using the CLI.
         if ($this->app->runningInConsole()) {
-
-            // Publishing the configuration file.
-            $this->publishes([
-                __DIR__.'/../config/msgraph.php' => config_path('msgraph.php'),
-            ], 'config');
-
-            $this->publishes([
-                __DIR__.'/Listeners/NewMicrosoft365SignInListener.php' => app_path('Listeners/NewMicrosoft365SignInListener.php'),
-            ], 'Listeners');
-
-            $timestamp = date('Y_m_d_His', time());
-
-            $this->publishes([
-                __DIR__.'/database/migrations/create_ms_graph_tokens_table.php' => $this->app->databasePath()."/migrations/{$timestamp}_create_ms_graph_tokens_table.php",
-            ], 'migrations');            
+            $this->registerCommands();
+            $this->configurePublishing();
         }
+    }
 
-        //add middleware
+    public function registerMiddleware($router)
+    {
         $router->aliasMiddleware('MsGraphAuthenticated', MsGraphAuthenticated::class);
         $router->aliasMiddleware('MsGraphAdminAuthenticated', MsGraphAdminAuthenticated::class);
+    }
+
+    public function registerCommands()
+    {
+        $this->commands([
+            MsGraphAdminKeepAliveCommand::class,
+            MsGraphKeepAliveCommand::class,
+        ]);
+    }
+
+    public function configurePublishing()
+    {
+        $this->publishes([
+            __DIR__.'/../config/msgraph.php' => config_path('msgraph.php'),
+        ], 'config');
+
+        $this->publishes([
+            __DIR__.'/Listeners/NewMicrosoft365SignInListener.php' => app_path('Listeners/NewMicrosoft365SignInListener.php'),
+        ], 'Listeners');
+
+        $timestamp = date('Y_m_d_His', time());
+
+        $this->publishes([
+            __DIR__.'/database/migrations/create_ms_graph_tokens_table.php' => $this->app->databasePath()."/migrations/{$timestamp}_create_ms_graph_tokens_table.php",
+        ], 'migrations');
     }
 
     /**

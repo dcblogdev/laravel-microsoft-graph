@@ -1,2 +1,7 @@
 .DS_Store
 .idea
+.vscode
+vendor
+composer.lock
+.phpunit.result.cache
+.php-cs-fixer.cache

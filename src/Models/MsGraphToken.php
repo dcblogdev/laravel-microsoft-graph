@@ -12,5 +12,4 @@ class MsGraphToken extends Model
     {
         $this->setConnection(config('msgraph.dbConnection'));
     }
-
 }
