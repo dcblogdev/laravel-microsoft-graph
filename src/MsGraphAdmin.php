@@ -85,6 +85,7 @@ class MsGraphAdmin
                     'client_id'     => config('msgraph.clientId'),
                     'client_secret' => config('msgraph.clientSecret'),
                     'grant_type'    => 'client_credentials',
+                    'resource' => 'https://graph.microsoft.com',
                 ];
 
                 $token = $this->dopost(config('msgraph.tenantUrlAccessToken'), $params);
@@ -131,6 +132,7 @@ class MsGraphAdmin
                 'client_id'     => config('msgraph.clientId'),
                 'client_secret' => config('msgraph.clientSecret'),
                 'grant_type'    => 'client_credentials',
+                'resource' => 'https://graph.microsoft.com',
             ];
 
             $token = $this->dopost(config('msgraph.tenantUrlAccessToken'), $params);
