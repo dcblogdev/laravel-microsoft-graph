@@ -53,7 +53,7 @@ class MsGraphAdmin
      * Set the base url that all API requests use.
      * @var string
      */
-    protected static $baseUrl = 'https://graph.microsoft.com/beta/';
+    protected static $baseUrl = 'https://graph.microsoft.com/V1.0/';
 
     /**
      * @return object
