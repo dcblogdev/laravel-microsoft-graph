@@ -69,32 +69,21 @@ class MsGraphAdmin
      */
     public function connect()
     {
-        //when no code param redirect to Microsoft
-        if (! request()->has('tenant')) {
-            $url = config('msgraph.tenantUrlAuthorize').'?'.http_build_query([
-                'client_id'    => config('msgraph.clientId'),
-                'redirect_uri' => config('msgraph.redirectUri'),
-            ]);
+        try {
+            $params = [
+                'scope'         => 'https://graph.microsoft.com/.default',
+                'client_id'     => config('msgraph.clientId'),
+                'client_secret' => config('msgraph.clientSecret'),
+                'grant_type'    => 'client_credentials',
+            ];
 
-            return redirect()->away($url);
-        } elseif (request()->has('tenant')) {
-            // With the authorization code, we can retrieve access tokens and other data.
-            try {
-                $params = [
-                    'scope'         => 'https://graph.microsoft.com/.default',
-                    'client_id'     => config('msgraph.clientId'),
-                    'client_secret' => config('msgraph.clientSecret'),
-                    'grant_type'    => 'client_credentials',
-                ];
+            $token = $this->dopost(config('msgraph.tenantUrlAccessToken'), $params);
 
-                $token = $this->dopost(config('msgraph.tenantUrlAccessToken'), $params);
+            // Store token
+            return $this->storeToken($token->access_token, '', $token->expires_in);
 
-                $this->storeToken($token->access_token, '', $token->expires_in);
-
-                return redirect(config('msgraph.msgraphLandingUri'));
-            } catch (Exception $e) {
-                die('error 90: '.$e->getMessage());
-            }
+        } catch (Exception $e) {
+            die('error 90: '.$e->getMessage());
         }
     }
 
