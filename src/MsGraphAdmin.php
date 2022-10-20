@@ -230,7 +230,7 @@ class MsGraphAdmin
         } catch (ClientException $e) {
             return json_decode(($e->getResponse()->getBody()->getContents()));
         } catch (Exception $e) {
-            return json_decode($e->getResponse()->getBody()->getContents(), true);
+            throw new Exception($e->getMessage());
         }
     }
 
@@ -248,7 +248,7 @@ class MsGraphAdmin
         } catch (ClientException $e) {
             return json_decode(($e->getResponse()->getBody()->getContents()));
         } catch (Exception $e) {
-            return json_decode($e->getResponse(), true);
+            throw new Exception($e->getMessage());
         }
     }
 
