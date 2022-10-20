@@ -152,10 +152,11 @@ class MsGraphAdmin
      */
     protected function storeToken($access_token, $refresh_token, $expires)
     {
-        //cretate a new record or if the user id exists update record
+        //Create or update a new record for admin token
         return MsGraphToken::updateOrCreate(['user_id' => null], [
+            'email'         => 'application_token', // Placeholder name
             'access_token'  => $access_token,
-            'expires'       => $expires,
+            'expires'       => (time() + $expires),
             'refresh_token' => $refresh_token,
         ]);
     }
