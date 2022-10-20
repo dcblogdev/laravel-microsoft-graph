@@ -95,17 +95,17 @@ class MsGraphAdmin
      */
     public function getAccessToken($returnNullNoAccessToken = null)
     {
-        //use id if passed otherwise use logged-in user
+        // Admin token will be stored without user_id
         $token = MsGraphToken::where('user_id', null)->first();
 
         // Check if tokens exist otherwise run the oauth request
         if (! isset($token->access_token)) {
-            //don't redirect simply return null when no token found with this option
+            // Don't request new token, simply return null when no token found with this option
             if ($returnNullNoAccessToken == true) {
                 return null;
             }
-
-            return redirect(config('msgraph.redirectUri'));
+            // Run the oath request and return new token
+            return $this->connect()->access_token;
         }
 
         // Check if token is expired
@@ -113,20 +113,7 @@ class MsGraphAdmin
         $now = time() + 300;
         if ($token->expires <= $now) {
             // Token is expired (or very close to it) so let's refresh
-
-            $params = [
-                'grant_type'    => 'authorization_code',
-                'scope'         => 'https://graph.microsoft.com/.default',
-                'client_id'     => config('msgraph.clientId'),
-                'client_secret' => config('msgraph.clientSecret'),
-                'grant_type'    => 'client_credentials',
-            ];
-
-            $token = $this->dopost(config('msgraph.tenantUrlAccessToken'), $params);
-
-            $newToken = $this->storeToken($token->access_token, '', $token->expires_in);
-
-            return $newToken->access_token;
+            return $this->connect()->access_token;
         } else {
             // Token is still valid, just return it
             return $token->access_token;
