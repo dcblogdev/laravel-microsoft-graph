@@ -156,7 +156,7 @@ class MsGraph
     {
         //use id if passed otherwise use logged in user
         $id    = ($id) ? $id : auth()->id();
-        $token = MsGraphToken::where('user_id', $id)->latest()->first();
+        $token = MsGraphToken::where('user_id', $id)->where('refresh_token', '<>', '')->latest()->first();
 
         // Check if tokens exist otherwise run the oauth request
         if (!isset($token->access_token)) {
@@ -204,7 +204,7 @@ class MsGraph
     public function getTokenData($id = null)
     {
         $id = ($id) ? $id : auth()->id();
-        return MsGraphToken::where('user_id', $id)->latest()->first();
+        return MsGraphToken::where('user_id', $id)->where('refresh_token', '<>', '')->latest()->first();
     }
 
     /**
