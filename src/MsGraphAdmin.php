@@ -53,7 +53,7 @@ class MsGraphAdmin
      * Set the base url that all API requests use.
      * @var string
      */
-    protected static $baseUrl = 'https://graph.microsoft.com/beta/';
+    protected static $baseUrl = 'https://graph.microsoft.com/v1.0/';
 
     /**
      * @return object
@@ -85,6 +85,7 @@ class MsGraphAdmin
                     'client_id'     => config('msgraph.clientId'),
                     'client_secret' => config('msgraph.clientSecret'),
                     'grant_type'    => 'client_credentials',
+                    'resource' => 'https://graph.microsoft.com',
                 ];
 
                 $token = $this->dopost(config('msgraph.tenantUrlAccessToken'), $params);
@@ -131,6 +132,7 @@ class MsGraphAdmin
                 'client_id'     => config('msgraph.clientId'),
                 'client_secret' => config('msgraph.clientSecret'),
                 'grant_type'    => 'client_credentials',
+                'resource' => 'https://graph.microsoft.com',
             ];
 
             $token = $this->dopost(config('msgraph.tenantUrlAccessToken'), $params);
