@@ -316,3 +316,21 @@ Usage for upload:
 MsGraph::files()->upload($name, $uploadPath, $path=null, $type='me',$behavior='rename')
 ```
 Where $behavior is either rename or replace
+
+### 3.1.6
+
+## Added
+
+- added support for Laravel 10
+
+### 3.1.7
+
+## Changed
+
+- changed migration to anonymous migration
+
+### 3.1.8
+
+## Changed
+
+- [@ChrisToxz](https://github.com/ChrisToxz) Rewrote MsGraphAdmin token methods [44](https://github.com/dcblogdev/laravel-microsoft-graph/pull/44)
