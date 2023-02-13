@@ -56,11 +56,11 @@ class MsGraphAdmin
     protected static $baseUrl = 'https://graph.microsoft.com/v1.0/';
 
     /**
-     * @return object
+     * @return bool
      */
     public function isConnected()
     {
-        return $this->getTokenData() == null ? false : true;
+        return !($this->getTokenData() == null);
     }
 
     /**
@@ -84,8 +84,7 @@ class MsGraphAdmin
                     'scope'         => 'https://graph.microsoft.com/.default',
                     'client_id'     => config('msgraph.clientId'),
                     'client_secret' => config('msgraph.clientSecret'),
-                    'grant_type'    => 'client_credentials',
-                    'resource' => 'https://graph.microsoft.com',
+                    'grant_type'    => 'client_credentials'
                 ];
 
                 $token = $this->dopost(config('msgraph.tenantUrlAccessToken'), $params);
@@ -94,7 +93,7 @@ class MsGraphAdmin
 
                 return redirect(config('msgraph.msgraphLandingUri'));
             } catch (Exception $e) {
-                die('error 90: '.$e->getMessage());
+                throw new Exception($e->getMessage());
             }
         }
     }
@@ -127,12 +126,10 @@ class MsGraphAdmin
             // Token is expired (or very close to it) so let's refresh
 
             $params = [
-                'grant_type'    => 'authorization_code',
                 'scope'         => 'https://graph.microsoft.com/.default',
                 'client_id'     => config('msgraph.clientId'),
                 'client_secret' => config('msgraph.clientSecret'),
-                'grant_type'    => 'client_credentials',
-                'resource' => 'https://graph.microsoft.com',
+                'grant_type'    => 'client_credentials'
             ];
 
             $token = $this->dopost(config('msgraph.tenantUrlAccessToken'), $params);
@@ -232,7 +229,7 @@ class MsGraphAdmin
         } catch (ClientException $e) {
             return json_decode(($e->getResponse()->getBody()->getContents()));
         } catch (Exception $e) {
-            return json_decode($e->getResponse()->getBody()->getContents(), true);
+            throw new Exception($e->getMessage());
         }
     }
 
