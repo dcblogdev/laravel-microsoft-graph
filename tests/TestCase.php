@@ -2,12 +2,15 @@
 
 namespace Dcblogdev\MsGraph\Tests;
 
-use create_ms_graph_tokens_table;
+use AllowDynamicProperties;
 use Dcblogdev\MsGraph\MsGraphServiceProvider;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Orchestra\Testbench\TestCase as Orchestra;
 
 class TestCase extends Orchestra
 {
+    use RefreshDatabase;
+
     protected function getPackageProviders($app)
     {
         return [
@@ -15,25 +18,14 @@ class TestCase extends Orchestra
         ];
     }
 
-    /**
-     * Define environment setup.
-     *
-     * @param  \Illuminate\Foundation\Application  $app
-     * @return void
-     */
     protected function getEnvironmentSetUp($app)
     {
         // Setup default database to use sqlite :memory:
-        $app['config']->set('database.default', 'mysql');
-        $app['config']->set('database.connections.mysql', [
+        $app['config']->set('database.default', 'testbench');
+        $app['config']->set('database.connections.testbench', [
             'driver'   => 'sqlite',
             'database' => ':memory:',
             'prefix'   => '',
         ]);
-
-        require_once 'src/database/migrations/create_ms_graph_tokens_table.php';
-
-        // run the up() method of that migration class
-        (new create_ms_graph_tokens_table)->up();
     }
 }
