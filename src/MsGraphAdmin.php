@@ -56,11 +56,11 @@ class MsGraphAdmin
     protected static $baseUrl = 'https://graph.microsoft.com/v1.0/';
 
     /**
-     * @return object
+     * @return bool
      */
     public function isConnected()
     {
-        return $this->getTokenData() == null ? false : true;
+        return !($this->getTokenData() == null);
     }
 
     /**
@@ -82,9 +82,10 @@ class MsGraphAdmin
             // Store token
             return $this->storeToken($token->access_token, '', $token->expires_in);
 
-        } catch (Exception $e) {
-            die('error 90: '.$e->getMessage());
-        }
+
+          } catch (Exception $e) {
+              throw new Exception($e->getMessage());
+          }
     }
 
     /**
