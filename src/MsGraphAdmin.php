@@ -67,7 +67,7 @@ class MsGraphAdmin
      * Make a connection or return a token where it's valid.
      * @return mixed
      */
-    public function connect()
+    public function connect($redirect = true)
     {
         try {
             $params = [
@@ -80,8 +80,13 @@ class MsGraphAdmin
             $token = $this->dopost(config('msgraph.tenantUrlAccessToken'), $params);
 
             // Store token
-            return $this->storeToken($token->access_token, '', $token->expires_in);
+            $this->storeToken($token->access_token, '', $token->expires_in);
 
+            if ($redirect) {
+                return redirect(config('msgraph.msgraphLandingUri'));
+            }
+
+            return $token->access_token;
 
           } catch (Exception $e) {
               throw new Exception($e->getMessage());
@@ -94,7 +99,7 @@ class MsGraphAdmin
      * @param  $returnNullNoAccessToken null when set to true return null
      * @return return string access token
      */
-    public function getAccessToken($returnNullNoAccessToken = null)
+    public function getAccessToken($returnNullNoAccessToken = false, $redirect = false)
     {
         // Admin token will be stored without user_id
         $token = MsGraphToken::where('user_id', null)->first();
@@ -102,20 +107,28 @@ class MsGraphAdmin
         // Check if tokens exist otherwise run the oauth request
         if (! isset($token->access_token)) {
             // Don't request new token, simply return null when no token found with this option
-            if ($returnNullNoAccessToken == true) {
+            if ($returnNullNoAccessToken) {
                 return null;
             }
-            // Run the oath request and return new token
-            return $this->connect()->access_token;
+
+            if ($redirect) {
+                return $this->connect($redirect);
+            }
+
+            return $this->connect($redirect)->access_token;
         }
 
-        // Check if token is expired
-        // Get current time + 5 minutes (to allow for time differences)
-        $now = time() + 300;
-        if ($token->expires <= $now) {
-            // Token is expired (or very close to it) so let's refresh
-            return $this->connect()->access_token;
+        $now = now()->addMinutes(5);
+
+        if ($token->expires < $now) {
+            if ($redirect) {
+                return $this->connect($redirect);
+            }
+
+            return $this->connect($redirect);
+
         } else {
+
             // Token is still valid, just return it
             return $token->access_token;
         }
