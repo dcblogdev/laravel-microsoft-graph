@@ -111,22 +111,13 @@ class MsGraphAdmin
                 return null;
             }
 
-            if ($redirect) {
-                return $this->connect($redirect);
-            }
-
-            return $this->connect($redirect)->access_token;
+            return $this->connect($redirect);
         }
 
         $now = now()->addMinutes(5);
 
         if ($token->expires < $now) {
-            if ($redirect) {
-                return $this->connect($redirect);
-            }
-
             return $this->connect($redirect);
-
         } else {
 
             // Token is still valid, just return it
