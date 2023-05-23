@@ -16,6 +16,7 @@ use Dcblogdev\MsGraph\Resources\Tasks;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Psr7\Header;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Provider\GenericProvider;
 
@@ -73,6 +74,7 @@ class MsGraph
         if (!request()->has('code')) {
             return redirect($provider->getAuthorizationUrl());
         } elseif (request()->has('code')) {
+
             // With the authorization code, we can retrieve access tokens and other data.
             try {
                 // Get an access token using the authorization code grant
@@ -134,10 +136,6 @@ class MsGraph
         $id = ($id) ? $id : auth()->id();
         $token = MsGraphToken::where('user_id', $id)->latest()->first();
 
-        if ($token != null) {
-            $token->delete();
-        }
-
         //if logged in and $logout is set to true then logout
         if ($logout == true && auth()->check()) {
             auth()->logout();
@@ -165,7 +163,8 @@ class MsGraph
                 return null;
             }
 
-            return redirect(config('msgraph.redirectUri'));
+            header('Location: '.config('msgraph.redirectUri'));
+            exit();
         }
 
         // Check if token is expired
@@ -265,40 +264,34 @@ class MsGraph
      */
     protected function guzzle($type, $request, $data = [], $headers = [], $id = null)
     {
-        try {
-            $client = new Client;
+        $client = new Client;
 
-            $mainHeaders = [
-                'Authorization' => 'Bearer '.$this->getAccessToken($id),
-                'content-type'  => 'application/json',
-                'Prefer'        => config('msgraph.preferTimezone'),
-            ];
+        $mainHeaders = [
+            'Authorization' => 'Bearer '.$this->getAccessToken($id),
+            'content-type'  => 'application/json',
+            'Prefer'        => config('msgraph.preferTimezone'),
+        ];
 
-            if (is_array($headers)) {
-                $headers = array_merge($mainHeaders, $headers);
-            } else {
-                $headers = $mainHeaders;
-            }
-
-            $response = $client->$type(self::$baseUrl.$request, [
-                'headers' => $headers,
-                'body'    => json_encode($data),
-            ]);
-
-            $responseObject = $response->getBody()->getContents();
-
-            $isJson = $this->isJson($responseObject);
-
-            if ($isJson) {
-                return json_decode($responseObject, true);
-            }
-
-            return $responseObject;
-        } catch (ClientException $e) {
-            throw new Exception($e->getResponse()->getBody()->getContents());
-        } catch (Exception $e) {
-            throw new Exception($e->getMessage());
+        if (is_array($headers)) {
+            $headers = array_merge($mainHeaders, $headers);
+        } else {
+            $headers = $mainHeaders;
         }
+
+        $response = $client->$type(self::$baseUrl.$request, [
+            'headers' => $headers,
+            'body'    => json_encode($data),
+        ]);
+
+        $responseObject = $response->getBody()->getContents();
+
+        $isJson = $this->isJson($responseObject);
+
+        if ($isJson) {
+            return json_decode($responseObject, true);
+        }
+
+        return $responseObject;
     }
 
     /**
