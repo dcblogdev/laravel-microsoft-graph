@@ -10,25 +10,18 @@ class NewMicrosoft365SignInListener
 {
     public function handle($event)
     {
-        $tokenId = $event->token['token_id'];
-        $token   = MsGraphToken::find($tokenId)->first();
+        $token = MsGraphToken::find($event->token['token_id']);
+        $user  = User::firstOrCreate([
+            'email' => $event->token['info']['mail'],
+        ], [
+            'name'     => $event->token['info']['displayName'],
+            'email'    => $event->token['info']['mail'],
+            'password' => '',
+        ]);
 
-        if ($token->user_id == null) {
-            $user = User::create([
-                'name'     => $event->token['info']['displayName'],
-                'email'    => $event->token['info']['mail'],
-                'password' => '',
-            ]);
+        $token->user_id = $user->id;
+        $token->save();
 
-            $token->user_id = $user->id;
-            $token->save();
-
-            Auth::login($user);
-        } else {
-            $user = User::findOrFail($token->user_id);
-            $user->save();
-
-            Auth::login($user);
-        }
+        Auth::login($user);
     }
 }
