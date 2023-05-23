@@ -16,7 +16,7 @@ class MsGraphAdminAuthenticated
      */
     public function handle($request, Closure $next)
     {
-        if (MsGraphAdmin::getTokenData() === null) {
+        if (! MsGraphAdmin::isConnected()) {
             return MsGraphAdmin::connect();
         }
 

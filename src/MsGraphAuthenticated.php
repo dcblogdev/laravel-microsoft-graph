@@ -16,7 +16,7 @@ class MsGraphAuthenticated
      */
     public function handle($request, Closure $next)
     {
-        if (MsGraph::getTokenData() === null) {
+        if (! MsGraph::isConnected()) {
             return MsGraph::connect();
         }
 
