@@ -12,10 +12,10 @@ class NewMicrosoft365SignInListener
     {
         $token = MsGraphToken::find($event->token['token_id']);
         $user  = User::firstOrCreate([
-            'email' => $event->token['info']['mail'],
+            'email' => $event->token['info']->mail,
         ], [
-            'name'     => $event->token['info']['displayName'],
-            'email'    => $event->token['info']['mail'],
+            'name'     => $event->token['info']->displayName,
+            'email'    => $event->token['info']->mail,
             'password' => '',
         ]);
 
