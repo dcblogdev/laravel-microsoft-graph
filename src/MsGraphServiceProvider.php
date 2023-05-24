@@ -16,14 +16,10 @@ class MsGraphServiceProvider extends ServiceProvider
      */
     public function boot(Router $router)
     {
-        $this->mergeConfigFrom(__DIR__.'/../config/msgraph.php', 'msgraph');
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        $this->registerCommands();
         $this->registerMiddleware($router);
-
-        if ($this->app->runningInConsole()) {
-            $this->registerCommands();
-            $this->configurePublishing();
-        }
+        $this->configurePublishing();
     }
 
     public function registerMiddleware($router)
@@ -34,6 +30,10 @@ class MsGraphServiceProvider extends ServiceProvider
 
     public function registerCommands()
     {
+        if (! $this->app->runningInConsole()) {
+            return;
+        }
+
         $this->commands([
             MsGraphAdminKeepAliveCommand::class,
             MsGraphKeepAliveCommand::class,
@@ -42,6 +42,10 @@ class MsGraphServiceProvider extends ServiceProvider
 
     public function configurePublishing()
     {
+        if (! $this->app->runningInConsole()) {
+            return;
+        }
+
         $this->publishes([
             __DIR__.'/../config/msgraph.php' => config_path('msgraph.php'),
         ], 'config');
@@ -64,6 +68,8 @@ class MsGraphServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->mergeConfigFrom(__DIR__.'/../config/msgraph.php', 'msgraph');
+
         // Register the service the package provides.
         $this->app->singleton('msgraph', function ($app) {
             return new MsGraph;

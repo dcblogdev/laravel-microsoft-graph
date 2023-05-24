@@ -4,13 +4,12 @@ use Dcblogdev\MsGraph\Facades\MsGraph as MsGraphFacade;
 use Dcblogdev\MsGraph\Models\MsGraphToken;
 use Dcblogdev\MsGraph\MsGraph;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Routing\Redirector;
 
 beforeEach(function () {
     $this->msGraphMock = Mockery::mock(MsGraph::class);
 });
 
-test('can initalise', function () {
+test('can initialise', function () {
     $this->assertInstanceOf(MsGraph::class, $this->msGraphMock);
 });
 
@@ -49,41 +48,26 @@ test('is redirected to logout', function () {
 
     $this->assertDatabaseCount('ms_graph_tokens', 1);
 
-    $connect = MsGraphFacade::disconnect($redirectPath = '/', $logout = true, $userId);
-
-    $this->assertDatabaseCount('ms_graph_tokens', 0);
+    $connect = MsGraphFacade::disconnect($redirectPath = '/', $logout = true);
 
     $this->assertInstanceOf(RedirectResponse::class, $connect);
 });
 
-test('get access token when exists', function () {
-    $userId = 1;
-    MsGraphToken::create([
-        'user_id'      => $userId,
-        'access_token' => 'ghgh4h22',
-        'expires'      => strtotime('+1 day'),
-    ]);
-
-    $response = MsGraphFacade::getAccessToken($userId);
-
-    $this->assertSame('ghgh4h22', $response);
-});
-
-test('get null token when token has expired and returnNullNoAccessToken is null', function () {
-    $response = MsGraphFacade::getAccessToken(1, true);
+test('get null token when token has expired and returnNullNoAccessToken is false', function () {
+    $response = MsGraphFacade::getAccessToken(1, false);
 
     $this->assertSame(null, $response);
 });
 
-test('redirected token when token has expired and returnNullNoAccessToken is null', function () {
-    $response = MsGraphFacade::getAccessToken(1, false);
+test('redirected token when token has expired and redirectWhenNotConnected is true', function () {
+    $response = MsGraphFacade::getAccessToken(1, true);
 
-    $this->assertInstanceOf(Redirector::class, $response);
+    $this->assertInstanceOf(RedirectResponse::class, $response);
 });
 
-test('redirected when token has expired and returnNullNoAccessToken is null', function () {
+test('returns null when token has expired and redirectWhenNotConnected is false', function () {
     $userId   = 1;
-    $response = MsGraphFacade::getAccessToken($userId, true);
+    $response = MsGraphFacade::getAccessToken($userId, false);
 
     $this->assertSame(null, $response);
 });

@@ -2,14 +2,15 @@
 
 namespace Dcblogdev\MsGraph\Tests;
 
-use AllowDynamicProperties;
 use Dcblogdev\MsGraph\MsGraphServiceProvider;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Orchestra\Testbench\TestCase as Orchestra;
+use function Orchestra\Testbench\artisan;
 
 class TestCase extends Orchestra
 {
-    use RefreshDatabase;
+    //use DatabaseMigrations;
 
     protected function getPackageProviders($app)
     {
@@ -20,12 +21,26 @@ class TestCase extends Orchestra
 
     protected function getEnvironmentSetUp($app)
     {
-        // Setup default database to use sqlite :memory:
-        $app['config']->set('database.default', 'testbench');
-        $app['config']->set('database.connections.testbench', [
+        $app['config']->set('database.default', 'mysql');
+        $app['config']->set('database.connections.mysql', [
             'driver'   => 'sqlite',
+            'host'   => '127.0.0.1',
             'database' => ':memory:',
             'prefix'   => '',
         ]);
     }
+
+    protected function defineDatabaseMigrations()
+    {
+        $this->loadLaravelMigrations();
+
+        $this->loadMigrationsFrom(dirname(__DIR__).'/database/migrations');
+
+//        artisan($this, 'migrate');
+//
+//        $this->beforeApplicationDestroyed(
+//            fn () => artisan($this, 'migrate:rollback')
+//        );
+    }
 }
+
