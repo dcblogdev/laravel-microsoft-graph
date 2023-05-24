@@ -72,27 +72,27 @@ class MsGraph
 
         if (!request()->has('code') && !$this->isConnected($id)) {
             return redirect($provider->getAuthorizationUrl());
-        }
+        } elseif (request()->has('code')) {
+            $accessToken = $provider->getAccessToken('authorization_code', ['code' => request('code')]);
 
-        $accessToken = $provider->getAccessToken('authorization_code', ['code' => request('code')]);
+            $response = Http::withToken($accessToken->getToken())->get(self::$baseUrl.'me');
 
-        $response = Http::withToken($accessToken->getToken())->get(self::$baseUrl.'me');
-
-        if (auth()->check()) {
-            $this->storeToken(
-                $accessToken->getToken(),
-                $accessToken->getRefreshToken(),
-                $accessToken->getExpires(),
-                $id,
-                auth()->user()->email
-            );
-        } else {
-            event(new NewMicrosoft365SignInEvent([
-                'info'         => $response->json(),
-                'accessToken'  => $accessToken->getToken(),
-                'refreshToken' => $accessToken->getRefreshToken(),
-                'expires'      => $accessToken->getExpires(),
-            ]));
+            if (auth()->check()) {
+                $this->storeToken(
+                    $accessToken->getToken(),
+                    $accessToken->getRefreshToken(),
+                    $accessToken->getExpires(),
+                    $id,
+                    auth()->user()->email
+                );
+            } else {
+                event(new NewMicrosoft365SignInEvent([
+                    'info'         => $response->json(),
+                    'accessToken'  => $accessToken->getToken(),
+                    'refreshToken' => $accessToken->getRefreshToken(),
+                    'expires'      => $accessToken->getExpires(),
+                ]));
+            }
         }
 
         return redirect(config('msgraph.msgraphLandingUri'));
