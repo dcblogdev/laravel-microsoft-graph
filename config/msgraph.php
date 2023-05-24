@@ -34,7 +34,7 @@ return [
     /*
     set the tenant token url
     */
-    'tenantUrlAccessToken' => env('MSGRAPH_TENANT_TOKEN'),
+    'tenantUrlAccessToken' => env('MSGRAPH_TENANT_TOKEN', 'https://login.microsoftonline.com/{tenant_id}/oauth2/v2.0/token'),
 
     /*
     set the authorize url

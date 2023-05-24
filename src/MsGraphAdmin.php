@@ -60,7 +60,17 @@ class MsGraphAdmin
      */
     public function isConnected()
     {
-        return !($this->getTokenData() == null);
+       $token = $this->getTokenData();
+
+        if ($token === null) {
+            return false;
+        }
+
+        if ($token->expires < time()) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -69,28 +79,24 @@ class MsGraphAdmin
      */
     public function connect($redirect = true)
     {
-        try {
-            $params = [
-                'scope'         => 'https://graph.microsoft.com/.default',
-                'client_id'     => config('msgraph.clientId'),
-                'client_secret' => config('msgraph.clientSecret'),
-                'grant_type'    => 'client_credentials',
-            ];
+        $params = [
+            'scope'         => 'https://graph.microsoft.com/.default',
+            'client_id'     => config('msgraph.clientId'),
+            'client_secret' => config('msgraph.clientSecret'),
+            'grant_type'    => 'client_credentials',
+        ];
 
-            $token = $this->dopost(config('msgraph.tenantUrlAccessToken'), $params);
+        $token = $this->dopost(config('msgraph.tenantUrlAccessToken'), $params);
 
-            // Store token
+        if (isset($token->access_token)) {
             $this->storeToken($token->access_token, '', $token->expires_in);
+        }
 
-            if ($redirect) {
-                return redirect(config('msgraph.msgraphLandingUri'));
-            }
+        if ($redirect) {
+            return redirect(config('msgraph.msgraphLandingUri'));
+        }
 
-            return $token->access_token;
-
-          } catch (Exception $e) {
-              throw new Exception($e->getMessage());
-          }
+        return $token->access_token ?? null;
     }
 
     /**

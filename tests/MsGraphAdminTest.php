@@ -30,14 +30,14 @@ test('is connected returns false when no data in db', function () {
 });
 
 test('is connected returns true when data exists in db', function () {
-    $userId = 1;
+
     MsGraphToken::create([
-        'user_id'      => $userId,
+        'user_id'      => null,
         'access_token' => 'ghgh4h22',
         'expires'      => strtotime('+1 day'),
     ]);
 
-    $connect = MsGraphAdminFacade::isConnected($userId);
+    $connect = MsGraphAdminFacade::isConnected();
 
     expect($connect)->toBeTrue();
 });
