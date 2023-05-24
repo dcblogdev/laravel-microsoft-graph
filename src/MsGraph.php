@@ -14,6 +14,7 @@ use Dcblogdev\MsGraph\Resources\Files;
 use Dcblogdev\MsGraph\Resources\Tasks;
 use Exception;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Http;
@@ -282,34 +283,41 @@ class MsGraph
      */
     protected function guzzle($type, $request, $data = [], $headers = [], $id = null)
     {
-        $client = new Client;
+        try {
+            $client = new Client;
 
-        $mainHeaders = [
-            'Authorization' => 'Bearer '.$this->getAccessToken($id),
-            'content-type'  => 'application/json',
-            'Prefer'        => config('msgraph.preferTimezone'),
-        ];
+            $mainHeaders = [
+                'Authorization' => 'Bearer '.$this->getAccessToken($id),
+                'content-type'  => 'application/json',
+                'Prefer'        => config('msgraph.preferTimezone'),
+            ];
 
-        if (is_array($headers)) {
-            $headers = array_merge($mainHeaders, $headers);
-        } else {
-            $headers = $mainHeaders;
+            if (is_array($headers)) {
+                $headers = array_merge($mainHeaders, $headers);
+            } else {
+                $headers = $mainHeaders;
+            }
+
+            $response = $client->$type(self::$baseUrl.$request, [
+                'headers' => $headers,
+                'body'    => json_encode($data),
+            ]);
+
+            $responseObject = $response->getBody()->getContents();
+
+            $isJson = $this->isJson($responseObject);
+
+            if ($isJson) {
+                return json_decode($responseObject, true);
+            }
+
+            return $responseObject;
+
+        } catch (ClientException $e) {
+            return json_decode(($e->getResponse()->getBody()->getContents()));
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
         }
-
-        $response = $client->$type(self::$baseUrl.$request, [
-            'headers' => $headers,
-            'body'    => json_encode($data),
-        ]);
-
-        $responseObject = $response->getBody()->getContents();
-
-        $isJson = $this->isJson($responseObject);
-
-        if ($isJson) {
-            return json_decode($responseObject, true);
-        }
-
-        return $responseObject;
     }
 
     /**
