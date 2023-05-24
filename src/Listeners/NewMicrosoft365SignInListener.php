@@ -3,24 +3,28 @@
 namespace App\Listeners;
 
 use App\Models\User;
-use Dcblogdev\MsGraph\Models\MsGraphToken;
+use Dcblogdev\MsGraph\MsGraph;
 use Illuminate\Support\Facades\Auth;
 
 class NewMicrosoft365SignInListener
 {
     public function handle($event)
     {
-        $token = MsGraphToken::find($event->token['token_id']);
         $user  = User::firstOrCreate([
-            'email' => $event->token['info']->mail,
+            'email' => $event->token['info']['mail'],
         ], [
-            'name'     => $event->token['info']->displayName,
-            'email'    => $event->token['info']->mail,
+            'name'     => $event->token['info']['displayName'],
+            'email'    => $event->token['info']['mail'] ?? $event->token['info']['userPrincipalName'],
             'password' => '',
         ]);
 
-        $token->user_id = $user->id;
-        $token->save();
+        (new MsGraph())->storeToken(
+            $event->token['accessToken'],
+            $event->token['refreshToken'],
+            $event->token['expires'],
+            $user->id,
+            $user->email
+        );
 
         Auth::login($user);
     }
