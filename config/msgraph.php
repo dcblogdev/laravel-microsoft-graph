@@ -17,7 +17,7 @@ return [
     /*
     * Set the url to trigger the oauth process this url should call return MsGraph::connect();
     */
-    'redirectUri' => env('MSGRAPH_OAUTH_URL'),
+    'redirectUri' => env('MSGRAPH_OAUTH_URL', 'connect'),
 
     /*
     * set the url to be redirected to once the token has been saved
