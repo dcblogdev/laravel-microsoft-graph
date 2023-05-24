@@ -19,13 +19,13 @@ test('redirected when connect is called', function () {
     $this->assertInstanceOf(RedirectResponse::class, $connect);
 });
 
-test('is connected returns false when no data in db', function () {
+test('is connected returns false when no valid token exists', function () {
     $connect = MsGraphFacade::isConnected();
 
     expect($connect)->toBeFalse();
 });
 
-test('is connected returns true when data exists in db', function () {
+test('is connected returns true when a valid token exists', function () {
     $userId = 1;
     MsGraphToken::create([
         'user_id'      => $userId,
@@ -38,15 +38,13 @@ test('is connected returns true when data exists in db', function () {
     expect($connect)->toBeTrue();
 });
 
-test('is redirected to logout', function () {
+test('is redirected on disconnection', function () {
     $userId = 1;
     MsGraphToken::create([
         'user_id'      => $userId,
         'access_token' => 'ghgh4h22',
         'expires'      => strtotime('+1 day'),
     ]);
-
-    $this->assertDatabaseCount('ms_graph_tokens', 1);
 
     $connect = MsGraphFacade::disconnect($redirectPath = '/', $logout = true);
 
