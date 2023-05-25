@@ -351,3 +351,11 @@ Where $behavior is either rename or replace
 ## Added
 
 - Added tests for both MsGraph and MsGraphAdmin
+
+## Fixed
+
+- Corrected refresh tokens after they expire
+- Stopped an infinate loop when a token needs to be refreshed
+- Stopped duplicating users when using a listener
+- Stopped token getting deleted on logout
+- Stopped token getting overwritten when another user logs in
