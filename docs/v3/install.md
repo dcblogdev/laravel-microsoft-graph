@@ -101,36 +101,30 @@ This contains the following listener:
 namespace App\Listeners;
 
 use App\Models\User;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
-use Dcblogdev\MsGraph\Models\MsGraphToken;
+use Dcblogdev\MsGraph\MsGraph;
 use Illuminate\Support\Facades\Auth;
 
 class NewMicrosoft365SignInListener
 {
     public function handle($event)
     {
-        $tokenId = $event->token['token_id'];
-        $token = MsGraphToken::find($tokenId)->first();
+        $user  = User::firstOrCreate([
+            'email' => $event->token['info']['mail'],
+        ], [
+            'name'     => $event->token['info']['displayName'],
+            'email'    => $event->token['info']['mail'] ?? $event->token['info']['userPrincipalName'],
+            'password' => '',
+        ]);
 
-        if ($token->user_id == null) {
-            $user = User::create([
-                'name'  => $event->token['info']['displayName'],
-                'email' => $event->token['info']['mail'],
-                'password' => ''
-            ]);
+        (new MsGraph())->storeToken(
+            $event->token['accessToken'],
+            $event->token['refreshToken'],
+            $event->token['expires'],
+            $user->id,
+            $user->email
+        );
 
-            $token->user_id = $user->id;
-            $token->save();
-
-            Auth::login($user);
-
-        } else {
-            $user = User::findOrFail($token->user_id);
-            $user->save();
-
-            Auth::login($user);
-        }
+        Auth::login($user);
     }
 }
 ```
@@ -175,6 +169,12 @@ Optionally add
 
 ```php
 MSGRAPH_PREFER_TIMEZONE='outlook.timezone="Europe/London"'
+```
+
+To set a prefered database connection add
+
+```php 
+MSGRAPH_DB_CONNECTION=sqlite
 ```
 
 ## Application Register

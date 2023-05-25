@@ -10,8 +10,8 @@ A routes example:
 Route::group(['middleware' => ['web', 'auth']], function(){
     Route::get('msgraph', function(){
 
-        if (! is_string(MsGraphAdmin::getAccessToken())) {
-            return redirect(env('MSGRAPH_OAUTH_URL'));
+        if (! MsGraphAdmin::isConnected()) {
+            return MsGraphAdmin::connect();
         } else {
             //display all users
             return MsGraphAdmin::get('users');
@@ -19,7 +19,7 @@ Route::group(['middleware' => ['web', 'auth']], function(){
 
     });
 
-    Route::get('msgraph/oauth', function(){
+    Route::get('msgraph/connect', function(){
         return MsGraphAdmin::connect();
     });
 });
@@ -35,7 +35,7 @@ Route::group(['middleware' => ['web', 'MsGraphAdminAuthenticated']], function(){
     });
 });
 
-Route::get('msgraph/oauth', function(){
+Route::get('msgraph/connect', function(){
     return MsGraphAdmin::connect();
 });
 ```

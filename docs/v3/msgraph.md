@@ -2,16 +2,16 @@
 title: MsGraph
 ---
 
-Note this package expects a user to be logged in.
-
 A routes example:
+
+When using with existing users then expect a user to be logged in and use auth middleware
 
 ```php
 Route::group(['middleware' => ['web', 'auth']], function(){
     Route::get('msgraph', function(){
 
         if (! MsGraph::isConnected()) {
-            return redirect('msgraph/oauth');
+            return redirect('msgraph/connect');
         } else {
             //display your details
             return MsGraph::get('me');
@@ -19,7 +19,7 @@ Route::group(['middleware' => ['web', 'auth']], function(){
 
     });
 
-    Route::get('msgraph/oauth', function(){
+    Route::get('msgraph/connect', function(){
         return MsGraph::connect();
     });
 });
@@ -34,7 +34,7 @@ Route::group(['middleware' => ['web', 'MsGraphAuthenticated']], function(){
     });
 });
 
-Route::get('msgraph/oauth', function(){
+Route::get('msgraph/connect', function(){
     return MsGraph::connect();
 });
 ```

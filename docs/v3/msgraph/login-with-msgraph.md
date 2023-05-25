@@ -112,18 +112,18 @@ The login route loads a method that in turn loads a view
 ```php
 Route::redirect('/', 'login');
 
-Route::group(['middleware' => ['web', 'guest'], 'namespace' => 'App\Http\Controllers\Auth'], function(){
-    Route::get('login', 'AuthController@login')->name('login');
-    Route::get('connect', 'AuthController@connect')->name('connect');
+Route::group(['middleware' => ['web', 'guest']], function(){
+    Route::get('login', AuthController::class, 'login')->name('login');
+    Route::get('connect', AuthController::class, 'connect')->name('connect');
 });
 
-Route::group(['middleware' => ['web', 'MsGraphAuthenticated'], 'prefix' => 'app', 'namespace' => 'App\Http\Controllers'], function(){
-    Route::get('/', 'PagesController@app')->name('app');
-    Route::get('logout', 'Auth\AuthController@logout')->name('logout');
+Route::group(['middleware' => ['web', 'MsGraphAuthenticated'], 'prefix' => 'app'], function(){
+    Route::get('/', PagesController::class, 'app')->name('app');
+    Route::get('logout', AuthController::class, 'logout')->name('logout');
 });
 ```
 
-The second group of routes run when a user is connected to MsGraph the middleware MsGraphAuthenticated is used to ensure the route won't run unless connected.
+The second group of routes run when a user is connected to MsGraph the middleware `MsGraphAuthenticated` is used to ensure the route won't run unless connected.
 
 Create a controller called AuthController inside `App\Http\Controllers\Auth`.
 This has three methods:
@@ -154,7 +154,7 @@ class AuthController extends Controller
 
     public function logout()
     {
-        return MsGraph::disconnect('/');
+        return MsGraph::disconnect();
     }
 }
 ```
