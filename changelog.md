@@ -334,3 +334,20 @@ Where $behavior is either rename or replace
 ## Changed
 
 - [@ChrisToxz](https://github.com/ChrisToxz) Rewrote MsGraphAdmin token methods [44](https://github.com/dcblogdev/laravel-microsoft-graph/pull/44)
+
+### 3.1.9
+
+## Changed
+
+- MsGraphAdmin::connect redirects by default add false to disable redirecting.
+
+### 3.2.0
+
+## Changed
+
+- Changed MsGraph Listener to store a token once authenticated directly
+- Re-wrote a lot of the internal workings of MsGraph, no user land changes required apart from the Listener has changed.
+
+## Added
+
+- Added tests for both MsGraph and MsGraphAdmin
