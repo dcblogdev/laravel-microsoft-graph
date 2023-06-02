@@ -24,7 +24,9 @@
         "guzzlehttp/guzzle": "6.x|7.x",
         "ext-json": "*",
         "ext-fileinfo": "*",
-        "ext-curl": "*"
+        "ext-curl": "*",
+        "shitware-ltd/flysystem-msgraph": "^1.0",
+        "microsoft/microsoft-graph": "^1.70"
     },
     "require-dev": {
         "orchestra/testbench": "^7.0|^8.0",

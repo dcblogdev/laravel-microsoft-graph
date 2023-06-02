@@ -4,8 +4,15 @@ namespace Dcblogdev\MsGraph;
 
 use Dcblogdev\MsGraph\Console\Commands\MsGraphAdminKeepAliveCommand;
 use Dcblogdev\MsGraph\Console\Commands\MsGraphKeepAliveCommand;
+use GuzzleHttp\Client;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Routing\Router;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
+use League\Flysystem\Filesystem;
+use Microsoft\Graph\Graph;
+use ShitwareLtd\FlysystemMsGraph\Adapter;
+use Dcblogdev\MsGraph\Facades\MsGraph as MsGraphFacade;
 
 class MsGraphServiceProvider extends ServiceProvider
 {
@@ -20,6 +27,7 @@ class MsGraphServiceProvider extends ServiceProvider
         $this->registerCommands();
         $this->registerMiddleware($router);
         $this->configurePublishing();
+        $this->registerFilesystem();
     }
 
     public function registerMiddleware($router)
@@ -59,6 +67,45 @@ class MsGraphServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/database/migrations/create_ms_graph_tokens_table.php' => $this->app->databasePath()."/migrations/{$timestamp}_create_ms_graph_tokens_table.php",
         ], 'migrations');
+    }
+
+    public function registerFilesystem()
+    {
+        Storage::extend('msgraph', function ($app, $config) {
+
+            $graph = new Graph;
+
+            if (MsGraphFacade::isConnected()) {
+                $this->graph = $graph->setAccessToken(MsGraphFacade::getAccessToken());
+            } else {
+                $tenantId     = config('msgraph.tenantId');
+                $clientId     = config('msgraph.clientId');
+                $clientSecret = config('msgraph.clientSecret');
+
+                $guzzle   = new Client();
+                $response = $guzzle->post("https://login.microsoftonline.com/$tenantId/oauth2/v2.0/token",
+                    [
+                        'headers'     => [
+                            'Host'         => 'login.microsoftonline.com',
+                            'Content-Type' => 'application/x-www-form-urlencoded'
+                        ],
+                        'form_params' => [
+                            'client_id'     => $clientId,
+                            'scope'         => 'https://graph.microsoft.com/.default',
+                            'client_secret' => $clientSecret,
+                            'grant_type'    => 'client_credentials'
+                        ]
+                    ]);
+                $body = json_decode($response->getBody()->getContents());
+                $this->graph = $graph->setAccessToken($body->access_token);
+            }
+
+            $adapter = new Adapter($graph, $config['driveId']);
+
+            return new FilesystemAdapter(
+                new Filesystem($adapter, $config), $adapter, $config,
+            );
+        });
     }
 
     /**
