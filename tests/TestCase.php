@@ -3,15 +3,10 @@
 namespace Dcblogdev\MsGraph\Tests;
 
 use Dcblogdev\MsGraph\MsGraphServiceProvider;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Orchestra\Testbench\TestCase as Orchestra;
-use function Orchestra\Testbench\artisan;
 
 class TestCase extends Orchestra
 {
-    //use DatabaseMigrations;
-
     protected function getPackageProviders($app)
     {
         return [
@@ -35,12 +30,6 @@ class TestCase extends Orchestra
         $this->loadLaravelMigrations();
 
         $this->loadMigrationsFrom(dirname(__DIR__).'/database/migrations');
-
-//        artisan($this, 'migrate');
-//
-//        $this->beforeApplicationDestroyed(
-//            fn () => artisan($this, 'migrate:rollback')
-//        );
     }
 }
 
