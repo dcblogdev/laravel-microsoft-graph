@@ -33,7 +33,7 @@ Add the drive id to be used.
 MSGRAPH_DRIVEID=''
 ```
 
-To find your drives use the Graph Explorer [Graph Explorer | Try Microsoft Graph APIs](https://developer.microsoft.com/en-us/graph/graph-explorer)
+To find your drives use the Graph Explorer [https://developer.microsoft.com/en-us/graph/graph-explorer](https://developer.microsoft.com/en-us/graph/graph-explorer)
 
 Login and then enter the url https://graph.microsoft.com/v1.0/drives
 
