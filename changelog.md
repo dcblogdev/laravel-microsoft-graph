@@ -366,6 +366,7 @@ Where $behavior is either rename or replace
 
 - Added `tenantId` to config file to allow the tenantId to be retrievable
 - Added package shitware-ltd/flysystem-msgraph into this package to allow using a files flysystem driver
+- Added page to the docs for the file system
 
 ## Changed
 
