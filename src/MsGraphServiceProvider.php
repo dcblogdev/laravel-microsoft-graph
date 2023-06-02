@@ -38,7 +38,7 @@ class MsGraphServiceProvider extends ServiceProvider
 
     public function registerCommands()
     {
-        if (! $this->app->runningInConsole()) {
+        if (!$this->app->runningInConsole()) {
             return;
         }
 
@@ -50,7 +50,7 @@ class MsGraphServiceProvider extends ServiceProvider
 
     public function configurePublishing()
     {
-        if (! $this->app->runningInConsole()) {
+        if (!$this->app->runningInConsole()) {
             return;
         }
 
@@ -72,7 +72,6 @@ class MsGraphServiceProvider extends ServiceProvider
     public function registerFilesystem()
     {
         Storage::extend('msgraph', function ($app, $config) {
-
             $graph = new Graph;
 
             if (MsGraphFacade::isConnected()) {
@@ -82,8 +81,8 @@ class MsGraphServiceProvider extends ServiceProvider
                 $clientId     = config('msgraph.clientId');
                 $clientSecret = config('msgraph.clientSecret');
 
-                $guzzle   = new Client();
-                $response = $guzzle->post("https://login.microsoftonline.com/$tenantId/oauth2/v2.0/token",
+                $guzzle      = new Client();
+                $response    = $guzzle->post("https://login.microsoftonline.com/$tenantId/oauth2/v2.0/token",
                     [
                         'headers'     => [
                             'Host'         => 'login.microsoftonline.com',
@@ -96,7 +95,7 @@ class MsGraphServiceProvider extends ServiceProvider
                             'grant_type'    => 'client_credentials'
                         ]
                     ]);
-                $body = json_decode($response->getBody()->getContents());
+                $body        = json_decode($response->getBody()->getContents());
                 $this->graph = $graph->setAccessToken($body->access_token);
             }
 
