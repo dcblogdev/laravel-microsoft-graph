@@ -9,7 +9,12 @@ return [
     'clientId' => env('MSGRAPH_CLIENT_ID'),
 
     /*
-    * set the application secret
+    * set the tenant id
+    */
+    'tenantId' => env('MSGRAPH_TENANT_ID'),
+
+    /*
+    * set the application secret id
     */
 
     'clientSecret' => env('MSGRAPH_SECRET_ID'),
