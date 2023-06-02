@@ -71,4 +71,4 @@ Storage::disk('msgraph')->files();
 Storage::disk('msgraph')->directories();
 ```
 
-See [The PHP Framework For Web Artisans](https://laravel.com/docs/10.x/filesystem) for more details on using Laravel file storage.
+See [https://laravel.com/docs/10.x/filesystem](https://laravel.com/docs/10.x/filesystem) for more details on using Laravel file storage.
