@@ -41,6 +41,10 @@ return [
                 'name'    => 'Files',
                 'url'     => 'msgraph/files'
             ],
+            [
+                'name'    => 'Filesystem',
+                'url'     => 'msgraph/filesystem'
+            ],
         ],
     ],
     [
