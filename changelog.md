@@ -359,3 +359,14 @@ Where $behavior is either rename or replace
 - Stopped duplicating users when using a listener
 - Stopped token getting deleted on logout
 - Stopped token getting overwritten when another user logs in
+
+### 3.2.1
+
+## Added
+
+- Added `tenantId` to config file to allow the tenantId to be retrievable
+- Added package shitware-ltd/flysystem-msgraph into this package to allow using a files flysystem driver
+
+## Changed
+
+- Removed unused imports from testcase
