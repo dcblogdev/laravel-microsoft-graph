@@ -21,6 +21,8 @@ use Illuminate\Support\Facades\Http;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Provider\GenericProvider;
 
+use function PHPUnit\Framework\throwException;
+
 class MsGraph
 {
     public function contacts()
@@ -48,6 +50,20 @@ class MsGraph
      * @var string
      */
     protected static $baseUrl = 'https://graph.microsoft.com/v1.0/';
+
+    /**
+     * @throws Exception
+     */
+    public function setApiVersion($version = '1.0'): static
+    {
+        self::$baseUrl = match ($version) {
+            '1.0' => 'https://graph.microsoft.com/v1.0/',
+            'beta' => 'https://graph.microsoft.com/beta/',
+            default => throw new Exception("API version $version is not supported!"),
+        };
+
+        return $this;
+    }
 
     /**
      * Make a connection or return a token where it's valid.

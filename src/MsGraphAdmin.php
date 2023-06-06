@@ -56,6 +56,20 @@ class MsGraphAdmin
     protected static $baseUrl = 'https://graph.microsoft.com/v1.0/';
 
     /**
+     * @throws Exception
+     */
+    public function setApiVersion($version = '1.0'): static
+    {
+        self::$baseUrl = match ($version) {
+            '1.0' => 'https://graph.microsoft.com/v1.0/',
+            'beta' => 'https://graph.microsoft.com/beta/',
+            default => throw new Exception("API version $version is not supported!"),
+        };
+
+        return $this;
+    }
+
+    /**
      * @return bool
      */
     public function isConnected()
