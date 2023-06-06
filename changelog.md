@@ -371,3 +371,9 @@ Where $behavior is either rename or replace
 ## Changed
 
 - Removed unused imports from testcase
+
+## 3.2.2
+
+## Added
+
+- Added method setApiVersion to set API version on call defaults to 1.0 `MsGraph::setApiVersion('beta')->get('me')`
