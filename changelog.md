@@ -374,6 +374,6 @@ Where $behavior is either rename or replace
 
 ## 3.2.2
 
-## Added
+### Added
 
 - Added method setApiVersion to set API version on call defaults to 1.0 `MsGraph::setApiVersion('beta')->get('me')`
