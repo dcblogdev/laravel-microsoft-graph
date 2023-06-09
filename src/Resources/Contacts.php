@@ -3,51 +3,24 @@
 namespace Dcblogdev\MsGraph\Resources;
 
 use Dcblogdev\MsGraph\Facades\MsGraph;
+use Dcblogdev\MsGraph\Helpers\Paginator;
 
 class Contacts extends MsGraph
 {
-    private $top;
-    private $skip;
-
-    public function top($top)
+    public function get($params = [], $perPage = 25)
     {
-        $this->top = $top;
-
-        return $this;
-    }
-
-    public function skip($skip)
-    {
-        $this->skip = $skip;
-
-        return $this;
-    }
-
-    public function get($params = [])
-    {
-        $top  = request('top', $this->top);
-        $skip = request('skip', $this->skip);
-
-        if ($params == []) {
-            $params = http_build_query([
-                '$orderby' => 'displayName',
-                '$top'     => $top,
-                '$skip'    => $skip,
-                '$count'   => 'true',
-            ]);
-        } else {
-            $params = http_build_query($params);
-        }
-
+        $perPage  = $params['$top'] ?? $perPage;
+        $params   = $this->getParams($params, $perPage);
         $contacts = MsGraph::get('me/contacts?'.$params);
-
-        $data = MsGraph::getPagination($contacts, $top, $skip);
+        $total    = $contacts['@odata.count'] ?? $perPage;
+        $pages    = new Paginator($perPage, 'p');
+        $pages->setTotal($total);
 
         return [
-            'contacts' => $contacts,
-            'total'    => $data['total'],
-            'top'      => $data['top'],
-            'skip'     => $data['skip'],
+            'contacts'    => $contacts,
+            'total'       => $total,
+            'links'       => $pages->page_links(),
+            'links_array' => $pages->page_links_array(),
         ];
     }
 
@@ -69,5 +42,40 @@ class Contacts extends MsGraph
     public function delete($id)
     {
         return MsGraph::delete("me/contacts/$id");
+    }
+
+    protected function getParams($params, $perPage)
+    {
+        $skip = $params['skip'] ?? 0;
+        $page = request('p', $skip);
+        if ($page > 0) {
+            $page--;
+        }
+
+        if ($params == []) {
+            $params = http_build_query([
+                '$orderby' => 'displayName',
+                '$top'     => $perPage,
+                '$skip'    => $page,
+                '$count'   => "true"
+            ]);
+        } else {
+            //ensure $top, $skip and $count are part of params
+            if (!in_array('$top', $params)) {
+                $params['$top'] = $perPage;
+            }
+
+            if (!in_array('$skip', $params)) {
+                $params['$skip'] = $page;
+            }
+
+            if (!in_array('$count', $params)) {
+                $params['$count'] = "true";
+            }
+
+            $params = http_build_query($params);
+        }
+
+        return $params;
     }
 }

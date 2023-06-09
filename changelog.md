@@ -377,3 +377,13 @@ Where $behavior is either rename or replace
 ### Added
 
 - Added method setApiVersion to set API version on call defaults to 1.0 `MsGraph::setApiVersion('beta')->get('me')`
+
+## 3.2.3
+
+### Added
+
+- Added pagination helper to build pages from a set number of records, for internal use
+
+### Updated
+
+- Updated contacts get method to use pagination of the contacts. Sets default per page to 25 contacts
