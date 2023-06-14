@@ -35,7 +35,7 @@ class Paginator
     public function page_links()
     {
         $path = '?';
-        $queryParams = request()->collect()->except('p');
+        $queryParams = request()->collect()->except($this->instance);
         if (count($queryParams->all()) !== 0) {
             $path = $path.http_build_query($queryParams->all()).'&';
         }
