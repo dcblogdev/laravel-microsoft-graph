@@ -387,3 +387,13 @@ Where $behavior is either rename or replace
 ### Updated
 
 - Updated contacts get method to use pagination of the contacts. Sets default per page to 25 contacts
+
+## 3.2.4
+
+### Added
+
+- Added TaskLists resource class for working with task lists
+
+### Updated
+
+- Updated Tasks resource class for working with tasks

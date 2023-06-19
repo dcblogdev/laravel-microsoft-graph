@@ -11,7 +11,8 @@ use Dcblogdev\MsGraph\Models\MsGraphToken;
 use Dcblogdev\MsGraph\Resources\Contacts;
 use Dcblogdev\MsGraph\Resources\Emails;
 use Dcblogdev\MsGraph\Resources\Files;
-use Dcblogdev\MsGraph\Resources\Tasks;
+use Dcblogdev\MsGraph\Resources\Tasks\TaskLists;
+use Dcblogdev\MsGraph\Resources\Tasks\Tasks;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
@@ -20,8 +21,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Http;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Provider\GenericProvider;
-
-use function PHPUnit\Framework\throwException;
 
 class MsGraph
 {
@@ -38,6 +37,11 @@ class MsGraph
     public function files()
     {
         return new Files();
+    }
+
+    public function tasklists()
+    {
+        return new TaskLists();
     }
 
     public function tasks()
