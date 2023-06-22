@@ -7,6 +7,7 @@ use Dcblogdev\MsGraph\Console\Commands\MsGraphKeepAliveCommand;
 use GuzzleHttp\Client;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Routing\Router;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
 use League\Flysystem\Filesystem;
@@ -23,7 +24,9 @@ class MsGraphServiceProvider extends ServiceProvider
      */
     public function boot(Router $router)
     {
-        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        if (! Schema::hasTable('ms_graph_tokens')) {
+            $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        }
         $this->registerCommands();
         $this->registerMiddleware($router);
         $this->configurePublishing();
