@@ -23,7 +23,6 @@ class MsGraphServiceProvider extends ServiceProvider
      */
     public function boot(Router $router)
     {
-        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         $this->registerCommands();
         $this->registerMiddleware($router);
         $this->configurePublishing();
