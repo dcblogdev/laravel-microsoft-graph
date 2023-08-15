@@ -29,7 +29,7 @@ class TestCase extends Orchestra
     {
         $this->loadLaravelMigrations();
 
-        $this->loadMigrationsFrom(dirname(__DIR__).'/database/migrations');
+        $this->loadMigrationsFrom(dirname(__DIR__).'/src/database/migrations');
     }
 }
 
