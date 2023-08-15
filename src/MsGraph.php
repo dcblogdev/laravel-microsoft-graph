@@ -56,6 +56,12 @@ class MsGraph
     protected static $baseUrl = 'https://graph.microsoft.com/v1.0/';
 
     /**
+     * Set the User model
+     * @var string
+     */
+    protected static $userModel;
+
+    /**
      * @throws Exception
      */
     public function setApiVersion($version = '1.0'): static
@@ -67,6 +73,16 @@ class MsGraph
         };
 
         return $this;
+    }
+
+    /**
+     * @return static
+     */
+    public static function setUserModel($model): static
+    {
+        self::$userModel = $model;
+
+        return new static();
     }
 
     /**
@@ -84,7 +100,7 @@ class MsGraph
 
             if ($token !== null) {
                 if ($token->expires < time()) {
-                    $user = config('auth.providers.users.model')::find($id);
+                    $user = (self::$userModel ?: config('auth.providers.users.model'))::find($id);
                     $this->renewExpiringToken($token, $id, $user->email);
                 }
             }
@@ -173,7 +189,7 @@ class MsGraph
         }
 
         if ($token->expires < time() + 300) {
-            $user = config('auth.providers.users.model')::find($id);
+            $user = (self::$userModel ?: config('auth.providers.users.model'))::find($id);
             return $this->renewExpiringToken($token, $id, $user->email);
         }
 
