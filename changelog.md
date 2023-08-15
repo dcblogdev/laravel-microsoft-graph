@@ -389,3 +389,17 @@ Where $behavior is either rename or replace
 
 - Updated contacts get method to use pagination of the contacts. Sets default per page to 25 contacts
 - Updated Tasks resource class for working with tasks
+
+## 3.2.4
+
+### Added
+
+- Add ability to override the User model by setting `setUserModel($model)` when using `MsGraph` class
+
+### Updated
+
+- Changed migrations to not run migrations automatically
+
+### Removed
+
+- Removed package level migrations, using src migrations instead
