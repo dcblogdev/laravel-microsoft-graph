@@ -1,3 +1,7 @@
+## Community
+
+There is a Discord community. https://discord.gg/VYau8hgwrm For quick help, ask questions in the appropriate channel.
+
 # Laravel Microsoft Graph
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/dcblogdev/laravel-microsoft-graph.svg?style=flat-square)](https://packagist.org/packages/dcblogdev/laravel-microsoft-graph)
