@@ -107,7 +107,9 @@ class MsGraph
         }
 
         if (!request()->has('code') && !$this->isConnected($id)) {
-            request()->session()->put('urlExpectedByUserNotAuthenticated', $redirectToUrl);
+            if(request()->hasSession()) {
+                request()->session()->put('urlExpectedByUserNotAuthenticated', $redirectToUrl);
+            }
             return redirect($provider->getAuthorizationUrl());
         } elseif (request()->has('code')) {
             $accessToken = $provider->getAccessToken('authorization_code', ['code' => request('code')]);
@@ -132,7 +134,7 @@ class MsGraph
             }
         }
 
-        $urlExpectedByUserNotAuthenticated = request()->session()->get('urlExpectedByUserNotAuthenticated');
+        $urlExpectedByUserNotAuthenticated = request()->hasSession() ? request()->session()->get('urlExpectedByUserNotAuthenticated') : null;
         return  $urlExpectedByUserNotAuthenticated ? redirect($urlExpectedByUserNotAuthenticated) : redirect(config('msgraph.msgraphLandingUri'));
     }
 
