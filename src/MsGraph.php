@@ -203,7 +203,7 @@ class MsGraph
     public function getTokenData($id = null)
     {
         $id = $this->getUserId($id);
-        return MsGraphToken::where('user_id', $id)->first();
+        return MsGraphToken::where('user_id', $id)->where('refresh_token', '<>', '')->first();
     }
 
     /**
