@@ -30,6 +30,7 @@ test('is connected returns true when a valid token exists', function () {
     MsGraphToken::create([
         'user_id'      => $userId,
         'access_token' => 'ghgh4h22',
+        'refresh_token' => 'rhrh4h22',
         'expires'      => strtotime('+1 day'),
     ]);
 
