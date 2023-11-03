@@ -150,6 +150,8 @@ class AuthController extends Controller
     public function connect()
     {
         return MsGraph::connect();
+        //If you want to redirect the user to this expected url
+        //return MsGraph::connect(redirectToUrl: url()->previous());
     }
 
     public function logout()

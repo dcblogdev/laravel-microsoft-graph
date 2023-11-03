@@ -89,7 +89,7 @@ class MsGraph
      * Make a connection or return a token where it's valid.
      * @return mixed
      */
-    public function connect($id = null)
+    public function connect($id = null, $redirectToUrl = null)
     {
         $id = $this->getUserId($id);
 
@@ -107,6 +107,9 @@ class MsGraph
         }
 
         if (!request()->has('code') && !$this->isConnected($id)) {
+            if(request()->hasSession()) {
+                request()->session()->put('urlExpectedByUserNotAuthenticated', $redirectToUrl);
+            }
             return redirect($provider->getAuthorizationUrl());
         } elseif (request()->has('code')) {
             $accessToken = $provider->getAccessToken('authorization_code', ['code' => request('code')]);
@@ -131,7 +134,8 @@ class MsGraph
             }
         }
 
-        return redirect(config('msgraph.msgraphLandingUri'));
+        $urlExpectedByUserNotAuthenticated = request()->hasSession() ? request()->session()->get('urlExpectedByUserNotAuthenticated') : null;
+        return  $urlExpectedByUserNotAuthenticated ? redirect($urlExpectedByUserNotAuthenticated) : redirect(config('msgraph.msgraphLandingUri'));
     }
 
     /**
