@@ -1,0 +1,10 @@
+#!/bin/bash
+
+echo "Running Pint ... "
+files=$(git diff --cached --name-only --diff-filter=ACM -- '*.php');
+./vendor/bin/pint $files
+
+git add $files
+
+echo "Running Pest ..."
+./vendor/bin/pest
