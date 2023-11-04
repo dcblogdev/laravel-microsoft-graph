@@ -35,7 +35,8 @@
     "friendsofphp/php-cs-fixer": "^3.9",
     "pestphp/pest-plugin-mock": "^1.0",
     "laravel/pint": "^1.13",
-    "pestphp/pest-plugin-parallel": "^1.2"
+    "pestphp/pest-plugin-parallel": "^1.2",
+    "isaac/composer-git-hooks": "^2.2"
   },
   "autoload": {
     "psr-4": {
@@ -61,11 +62,13 @@
   },
   "config": {
     "allow-plugins": {
-      "pestphp/pest-plugin": true
+      "pestphp/pest-plugin": true,
+      "isaac/composer-git-hooks": true
     }
   },
   "scripts": {
     "test": "vendor/bin/pest --parallel",
-    "pint": "vendor/bin/pint"
+    "pint": "vendor/bin/pint",
+    "install-git-hooks": "ISAAC\\ComposerGitHooks\\ComposerPlugin::process"
   }
 }

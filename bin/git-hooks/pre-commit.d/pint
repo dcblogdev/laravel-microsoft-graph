@@ -1,0 +1,95 @@
+#!/bin/bash
+
+# Allows us to read user input below, assigns stdin to keyboard
+exec < /dev/tty
+
+POSITIONAL_ARGS=()
+
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    -n|--no-verify)
+      exit 1
+      ;;
+    *)
+      POSITIONAL_ARGS+=("$1") # save positional arg
+      shift # past argument
+      ;;
+  esac
+done
+
+set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
+
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep ".php\{0,1\}$")
+
+ERROR_FILES=();
+
+# Disable if it's a merge
+git merge HEAD &> /dev/null
+IS_MERGE_PROCESS=$?
+if [ $IS_MERGE_PROCESS -ne 0 ]
+then
+  exit $?
+fi
+
+# Don't do anything if no staged files
+if [[ "$STAGED_FILES" = "" ]]; then
+  exit 0
+fi
+
+PASS=true
+
+echo -e "\e[92m Validating Pint... \e[0m"
+
+# Check for phpcs
+which ./vendor/bin/pint &> /dev/null
+if [[ "$?" == 1 ]]; then
+  echo -e "\e[31mPlease install Pint (composer require laravel/pint --dev)\e[0m"
+  exit 1
+fi
+
+RULESET=./pint.json
+
+# Pint every staged files
+for FILE in $STAGED_FILES
+do
+  ./vendor/bin/pint --test --config $RULESET "$FILE"
+
+  if [[ "$?" == 0 ]]; then
+    echo -e "\e[102m Pint Succeeded \e[0m \e[92m$FILE\e[0m"
+  else
+    echo -e "\e[101m Pint Failed \e[0m \e[91m$FILE\e[0m"
+    ERROR_FILES+=(${FILE})
+    PASS=false
+  fi
+done
+
+echo ""
+
+if ! $PASS; then
+  echo -e "\e[101m Commit Failed \e[0m \e[91mYour commit contains files that should pass Pint but do not. Please fix the Pint errors and try again.\e[0m"
+  echo ""
+  echo -e "\e[101m Files to correct \e[0m"
+  for FILE in "${ERROR_FILES[@]}"
+    do
+      echo -e "\e[91m$FILE\e[0m"
+    done
+
+  while true; do
+    read -p "$(echo -e "\e[36mWould you like to attempt to correct files automagically ? (Y/n)\e[0m")" yn
+    if [ "$yn" = "" ]; then
+      yn='Y'
+    fi
+    case $yn in
+      [Yy] ) ./vendor/bin/pint --config $RULESET "${ERROR_FILES[@]}" && git add "${ERROR_FILES[@]}"; exit;;
+      [Nn] ) exit 1;;
+      * ) exit 1;;
+    esac
+  done
+
+  exit 1
+else
+  echo -e "\e[102m Commit Succeeded \e[0m \e[92m$FILE\e[0m"
+  echo -e "\e[102mYou rocks buddy !\e[0m"
+fi
+
+exit $?
