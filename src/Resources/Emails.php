@@ -8,14 +8,23 @@ use Exception;
 class Emails extends MsGraph
 {
     private $top;
+
     private $skip;
+
     private $subject;
+
     private $body;
+
     private $comment;
+
     private $id;
+
     private $to;
+
     private $cc;
+
     private $bcc;
+
     private $attachments;
 
     public function id($id)
@@ -90,7 +99,7 @@ class Emails extends MsGraph
 
     public function get($folderId = null, $params = [])
     {
-        $top  = request('top', $this->top);
+        $top = request('top', $this->top);
         $skip = request('skip', $this->skip);
 
         if ($top === null) {
@@ -103,8 +112,8 @@ class Emails extends MsGraph
 
         if ($params == []) {
             $params = http_build_query([
-                '$top'   => $top,
-                '$skip'  => $skip,
+                '$top' => $top,
+                '$skip' => $skip,
                 '$count' => 'true',
             ]);
         } else {
@@ -216,12 +225,12 @@ class Emails extends MsGraph
 
     protected function prepareEmail()
     {
-        $subject     = $this->subject;
-        $body        = $this->body;
-        $comment     = $this->comment;
-        $to          = $this->to;
-        $cc          = $this->cc;
-        $bcc         = $this->bcc;
+        $subject = $this->subject;
+        $body = $this->body;
+        $comment = $this->comment;
+        $to = $this->to;
+        $cc = $this->cc;
+        $bcc = $this->bcc;
         $attachments = $this->attachments;
 
         $toArray = [];
@@ -251,9 +260,9 @@ class Emails extends MsGraph
                 $path = pathinfo($file);
 
                 $attachmentarray[] = [
-                    '@odata.type'  => '#microsoft.graph.fileAttachment',
-                    'name'         => $path['basename'],
-                    'contentType'  => mime_content_type($file),
+                    '@odata.type' => '#microsoft.graph.fileAttachment',
+                    'name' => $path['basename'],
+                    'contentType' => mime_content_type($file),
                     'contentBytes' => base64_encode(file_get_contents($file)),
                 ];
             }
@@ -266,7 +275,7 @@ class Emails extends MsGraph
         if ($body != null) {
             $envelope['message']['body'] = [
                 'contentType' => 'html',
-                'content'     => $body,
+                'content' => $body,
             ];
         }
         if ($toArray != null) {

@@ -15,16 +15,16 @@ class Tasks extends MsGraph
         unset($filteredParams['$top']);
         unset($filteredParams['$skip']);
 
-        $tasks         = MsGraph::get("me/todo/lists/$taskListId/tasks?".http_build_query($params));
+        $tasks = MsGraph::get("me/todo/lists/$taskListId/tasks?".http_build_query($params));
         $filteredTasks = MsGraph::get("me/todo/lists/$taskListId/tasks?".http_build_query($filteredParams));
-        $total         = count($filteredTasks['value']);
-        $pages         = new Paginator($perPage, $instance);
+        $total = count($filteredTasks['value']);
+        $pages = new Paginator($perPage, $instance);
         $pages->setTotal($total);
 
         return [
-            'tasks'       => $tasks,
-            'total'       => $total,
-            'links'       => $pages->page_links(),
+            'tasks' => $tasks,
+            'total' => $total,
+            'links' => $pages->page_links(),
             'links_array' => $pages->page_links_array(),
         ];
     }
@@ -60,16 +60,16 @@ class Tasks extends MsGraph
         if ($params == []) {
             $params = [
                 '$orderby' => 'createdDateTime',
-                '$top'     => $perPage,
-                '$skip'    => $page,
+                '$top' => $perPage,
+                '$skip' => $page,
             ];
         } else {
             //ensure $top, $skip and $count are part of params
-            if (!in_array('$top', $params)) {
+            if (! in_array('$top', $params)) {
                 $params['$top'] = $perPage;
             }
 
-            if (!in_array('$skip', $params)) {
+            if (! in_array('$skip', $params)) {
                 $params['$skip'] = $page;
             }
         }

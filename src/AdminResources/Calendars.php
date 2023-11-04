@@ -8,7 +8,9 @@ use Exception;
 class Calendars extends MsGraphAdmin
 {
     private $userId;
+
     private $top;
+
     private $skip;
 
     public function userid($userId)
@@ -38,15 +40,15 @@ class Calendars extends MsGraphAdmin
             throw new Exception('userId is required.');
         }
 
-        $top  = request('top', $this->top);
+        $top = request('top', $this->top);
         $skip = request('skip', $this->skip);
 
         if ($params == []) {
             $params = http_build_query([
                 '$orderby' => 'name',
-                '$top'     => $top,
-                '$skip'    => $skip,
-                '$count'   => 'true',
+                '$top' => $top,
+                '$skip' => $skip,
+                '$count' => 'true',
             ]);
         } else {
             $params = http_build_query($params);
@@ -58,9 +60,9 @@ class Calendars extends MsGraphAdmin
 
         return [
             'calendars' => $calendars,
-            'total'     => $data['total'],
-            'top'       => $data['top'],
-            'skip'      => $data['skip'],
+            'total' => $data['total'],
+            'top' => $data['top'],
+            'skip' => $data['skip'],
         ];
     }
 

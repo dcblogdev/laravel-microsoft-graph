@@ -28,10 +28,10 @@ test('is connected returns false when no valid token exists', function () {
 test('is connected returns true when a valid token exists', function () {
     $userId = 1;
     MsGraphToken::create([
-        'user_id'      => $userId,
+        'user_id' => $userId,
         'access_token' => 'ghgh4h22',
         'refresh_token' => 'rhrh4h22',
-        'expires'      => strtotime('+1 day'),
+        'expires' => strtotime('+1 day'),
     ]);
 
     $connect = MsGraphFacade::isConnected($userId);
@@ -42,9 +42,9 @@ test('is connected returns true when a valid token exists', function () {
 test('is redirected on disconnection', function () {
     $userId = 1;
     MsGraphToken::create([
-        'user_id'      => $userId,
+        'user_id' => $userId,
         'access_token' => 'ghgh4h22',
-        'expires'      => strtotime('+1 day'),
+        'expires' => strtotime('+1 day'),
     ]);
 
     $connect = MsGraphFacade::disconnect($redirectPath = '/', $logout = true);
@@ -65,9 +65,8 @@ test('redirected token when token has expired and redirectWhenNotConnected is tr
 });
 
 test('returns null when token has expired and redirectWhenNotConnected is false', function () {
-    $userId   = 1;
+    $userId = 1;
     $response = MsGraphFacade::getAccessToken($userId, false);
 
     $this->assertSame(null, $response);
 });
-

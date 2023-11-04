@@ -4,6 +4,7 @@ namespace Dcblogdev\MsGraph;
 
 use Dcblogdev\MsGraph\Console\Commands\MsGraphAdminKeepAliveCommand;
 use Dcblogdev\MsGraph\Console\Commands\MsGraphKeepAliveCommand;
+use Dcblogdev\MsGraph\Facades\MsGraph as MsGraphFacade;
 use GuzzleHttp\Client;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Routing\Router;
@@ -12,7 +13,6 @@ use Illuminate\Support\ServiceProvider;
 use League\Flysystem\Filesystem;
 use Microsoft\Graph\Graph;
 use ShitwareLtd\FlysystemMsGraph\Adapter;
-use Dcblogdev\MsGraph\Facades\MsGraph as MsGraphFacade;
 
 class MsGraphServiceProvider extends ServiceProvider
 {
@@ -37,7 +37,7 @@ class MsGraphServiceProvider extends ServiceProvider
 
     public function registerCommands()
     {
-        if (!$this->app->runningInConsole()) {
+        if (! $this->app->runningInConsole()) {
             return;
         }
 
@@ -49,7 +49,7 @@ class MsGraphServiceProvider extends ServiceProvider
 
     public function configurePublishing()
     {
-        if (!$this->app->runningInConsole()) {
+        if (! $this->app->runningInConsole()) {
             return;
         }
 
@@ -76,25 +76,25 @@ class MsGraphServiceProvider extends ServiceProvider
             if (MsGraphFacade::isConnected()) {
                 $this->graph = $graph->setAccessToken(MsGraphFacade::getAccessToken());
             } else {
-                $tenantId     = config('msgraph.tenantId');
-                $clientId     = config('msgraph.clientId');
+                $tenantId = config('msgraph.tenantId');
+                $clientId = config('msgraph.clientId');
                 $clientSecret = config('msgraph.clientSecret');
 
-                $guzzle      = new Client();
-                $response    = $guzzle->post("https://login.microsoftonline.com/$tenantId/oauth2/v2.0/token",
+                $guzzle = new Client();
+                $response = $guzzle->post("https://login.microsoftonline.com/$tenantId/oauth2/v2.0/token",
                     [
-                        'headers'     => [
-                            'Host'         => 'login.microsoftonline.com',
-                            'Content-Type' => 'application/x-www-form-urlencoded'
+                        'headers' => [
+                            'Host' => 'login.microsoftonline.com',
+                            'Content-Type' => 'application/x-www-form-urlencoded',
                         ],
                         'form_params' => [
-                            'client_id'     => $clientId,
-                            'scope'         => 'https://graph.microsoft.com/.default',
+                            'client_id' => $clientId,
+                            'scope' => 'https://graph.microsoft.com/.default',
                             'client_secret' => $clientSecret,
-                            'grant_type'    => 'client_credentials'
-                        ]
+                            'grant_type' => 'client_credentials',
+                        ],
                     ]);
-                $body        = json_decode($response->getBody()->getContents());
+                $body = json_decode($response->getBody()->getContents());
                 $this->graph = $graph->setAccessToken($body->access_token);
             }
 

@@ -9,17 +9,17 @@ class Contacts extends MsGraph
 {
     public function get($params = [], $perPage = 25)
     {
-        $perPage  = $params['$top'] ?? $perPage;
-        $params   = $this->getParams($params, $perPage);
+        $perPage = $params['$top'] ?? $perPage;
+        $params = $this->getParams($params, $perPage);
         $contacts = MsGraph::get('me/contacts?'.$params);
-        $total    = $contacts['@odata.count'] ?? $perPage;
-        $pages    = new Paginator($perPage, 'p');
+        $total = $contacts['@odata.count'] ?? $perPage;
+        $pages = new Paginator($perPage, 'p');
         $pages->setTotal($total);
 
         return [
-            'contacts'    => $contacts,
-            'total'       => $total,
-            'links'       => $pages->page_links(),
+            'contacts' => $contacts,
+            'total' => $total,
+            'links' => $pages->page_links(),
             'links_array' => $pages->page_links_array(),
         ];
     }
@@ -55,22 +55,22 @@ class Contacts extends MsGraph
         if ($params == []) {
             $params = http_build_query([
                 '$orderby' => 'displayName',
-                '$top'     => $perPage,
-                '$skip'    => $page,
-                '$count'   => "true"
+                '$top' => $perPage,
+                '$skip' => $page,
+                '$count' => 'true',
             ]);
         } else {
             //ensure $top, $skip and $count are part of params
-            if (!in_array('$top', $params)) {
+            if (! in_array('$top', $params)) {
                 $params['$top'] = $perPage;
             }
 
-            if (!in_array('$skip', $params)) {
+            if (! in_array('$skip', $params)) {
                 $params['$skip'] = $page;
             }
 
-            if (!in_array('$count', $params)) {
-                $params['$count'] = "true";
+            if (! in_array('$count', $params)) {
+                $params['$count'] = 'true';
             }
 
             $params = http_build_query($params);

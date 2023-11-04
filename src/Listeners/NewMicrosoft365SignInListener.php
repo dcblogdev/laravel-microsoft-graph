@@ -10,11 +10,11 @@ class NewMicrosoft365SignInListener
 {
     public function handle($event)
     {
-        $user  = User::firstOrCreate([
+        $user = User::firstOrCreate([
             'email' => $event->token['info']['mail'],
         ], [
-            'name'     => $event->token['info']['displayName'],
-            'email'    => $event->token['info']['mail'] ?? $event->token['info']['userPrincipalName'],
+            'name' => $event->token['info']['displayName'],
+            'email' => $event->token['info']['mail'] ?? $event->token['info']['userPrincipalName'],
             'password' => '',
         ]);
 

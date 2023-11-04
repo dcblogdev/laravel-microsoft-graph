@@ -28,7 +28,7 @@ return [
     * set the url to be redirected to once the token has been saved
     */
 
-    'msgraphLandingUri'  => env('MSGRAPH_LANDING_URL'),
+    'msgraphLandingUri' => env('MSGRAPH_LANDING_URL'),
 
     /*
     set the tenant authorize url

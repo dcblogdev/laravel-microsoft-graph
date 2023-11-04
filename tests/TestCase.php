@@ -18,10 +18,10 @@ class TestCase extends Orchestra
     {
         $app['config']->set('database.default', 'mysql');
         $app['config']->set('database.connections.mysql', [
-            'driver'   => 'sqlite',
-            'host'   => '127.0.0.1',
+            'driver' => 'sqlite',
+            'host' => '127.0.0.1',
             'database' => ':memory:',
-            'prefix'   => '',
+            'prefix' => '',
         ]);
     }
 
@@ -32,4 +32,3 @@ class TestCase extends Orchestra
         $this->loadMigrationsFrom(dirname(__DIR__).'/src/database/migrations');
     }
 }
-

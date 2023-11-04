@@ -8,15 +8,25 @@ use Exception;
 class Emails extends MsGraphAdmin
 {
     private $userId;
+
     private $top;
+
     private $skip;
+
     private $subject;
+
     private $body;
+
     private $comment;
+
     private $id;
+
     private $to;
+
     private $cc;
+
     private $bcc;
+
     private $attachments;
 
     public function userid($userId)
@@ -102,14 +112,14 @@ class Emails extends MsGraphAdmin
             throw new Exception('userId is required.');
         }
 
-        $top  = request('top', $this->top);
+        $top = request('top', $this->top);
         $skip = request('skip', $this->skip);
 
         if ($params == []) {
             $params = http_build_query([
-                '$top'     => $top,
-                '$skip'    => $skip,
-                '$count'   => 'true',
+                '$top' => $top,
+                '$skip' => $skip,
+                '$count' => 'true',
                 '$orderby' => 'sentDateTime desc',
             ]);
         } else {
@@ -123,9 +133,9 @@ class Emails extends MsGraphAdmin
 
         return [
             'emails' => $emails,
-            'total'  => $data['total'],
-            'top'    => $data['top'],
-            'skip'   => $data['skip'],
+            'total' => $data['total'],
+            'top' => $data['top'],
+            'skip' => $data['skip'],
         ];
     }
 
@@ -238,12 +248,12 @@ class Emails extends MsGraphAdmin
 
     protected function prepareEmail()
     {
-        $subject     = $this->subject;
-        $body        = $this->body;
-        $comment     = $this->comment;
-        $to          = $this->to;
-        $cc          = $this->cc;
-        $bcc         = $this->bcc;
+        $subject = $this->subject;
+        $body = $this->body;
+        $comment = $this->comment;
+        $to = $this->to;
+        $cc = $this->cc;
+        $bcc = $this->bcc;
         $attachments = $this->attachments;
 
         $toArray = [];
@@ -273,9 +283,9 @@ class Emails extends MsGraphAdmin
                 $path = pathinfo($file);
 
                 $attachmentarray[] = [
-                    '@odata.type'  => '#microsoft.graph.fileAttachment',
-                    'name'         => $path['basename'],
-                    'contentType'  => mime_content_type($file),
+                    '@odata.type' => '#microsoft.graph.fileAttachment',
+                    'name' => $path['basename'],
+                    'contentType' => mime_content_type($file),
                     'contentBytes' => base64_encode(file_get_contents($file)),
                 ];
             }
@@ -288,7 +298,7 @@ class Emails extends MsGraphAdmin
         if ($body != null) {
             $envelope['message']['body'] = [
                 'contentType' => 'html',
-                'content'     => $body,
+                'content' => $body,
             ];
         }
         if ($toArray != null) {

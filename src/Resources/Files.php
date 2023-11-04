@@ -46,8 +46,8 @@ class Files extends MsGraph
         $path = $path === null ? $type.'/drive/root/children' : $type.'/drive/root:'.$this->forceStartingSlash($path).':/children';
 
         return MsGraph::post($path, [
-            'name'                              => $name,
-            'folder'                            => new \stdClass(),
+            'name' => $name,
+            'folder' => new \stdClass(),
             '@microsoft.graph.conflictBehavior' => $behavior,
         ]);
     }
@@ -69,23 +69,23 @@ class Files extends MsGraph
     public function upload($name, $uploadPath, $path = null, $type = 'me', $behavior = 'rename')
     {
         $uploadSession = $this->createUploadSession($name, $path, $type, $behavior);
-        $uploadUrl     = $uploadSession['uploadUrl'];
+        $uploadUrl = $uploadSession['uploadUrl'];
 
-        $fragSize       = 320 * 1024;
-        $file           = file_get_contents($uploadPath);
-        $fileSize       = strlen($file);
-        $numFragments   = ceil($fileSize / $fragSize);
+        $fragSize = 320 * 1024;
+        $file = file_get_contents($uploadPath);
+        $fileSize = strlen($file);
+        $numFragments = ceil($fileSize / $fragSize);
         $bytesRemaining = $fileSize;
-        $i              = 0;
-        $ch             = curl_init($uploadUrl);
+        $i = 0;
+        $ch = curl_init($uploadUrl);
         while ($i < $numFragments) {
             $chunkSize = $numBytes = $fragSize;
-            $start     = $i * $fragSize;
-            $end       = $i * $fragSize + $chunkSize - 1;
-            $offset    = $i * $fragSize;
+            $start = $i * $fragSize;
+            $end = $i * $fragSize + $chunkSize - 1;
+            $offset = $i * $fragSize;
             if ($bytesRemaining < $chunkSize) {
                 $chunkSize = $numBytes = $bytesRemaining;
-                $end       = $fileSize - 1;
+                $end = $fileSize - 1;
             }
             if ($stream = fopen($uploadPath, 'r')) {
                 // get contents using offset
@@ -94,15 +94,15 @@ class Files extends MsGraph
             }
 
             $content_range = ' bytes '.$start.'-'.$end.'/'.$fileSize;
-            $headers       = [
+            $headers = [
                 'Content-Length' => $numBytes,
-                'Content-Range'  => $content_range,
+                'Content-Range' => $content_range,
             ];
 
-            $client   = new Client;
+            $client = new Client;
             $response = $client->put($uploadUrl, [
                 'headers' => $headers,
-                'body'    => $data,
+                'body' => $data,
             ]);
 
             $bytesRemaining = $bytesRemaining - $chunkSize;
@@ -117,7 +117,7 @@ class Files extends MsGraph
         return MsGraph::post($path, [
             'item' => [
                 '@microsoft.graph.conflictBehavior' => $behavior,
-                'name'                              => $name,
+                'name' => $name,
             ],
         ]);
     }

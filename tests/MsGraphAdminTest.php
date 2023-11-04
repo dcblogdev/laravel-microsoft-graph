@@ -1,7 +1,7 @@
 <?php
 
-use Dcblogdev\MsGraph\Models\MsGraphToken;
 use Dcblogdev\MsGraph\Facades\MsGraphAdmin as MsGraphAdminFacade;
+use Dcblogdev\MsGraph\Models\MsGraphToken;
 use Dcblogdev\MsGraph\MsGraphAdmin;
 
 beforeEach(function () {
@@ -14,9 +14,9 @@ test('can initalise', function () {
 
 test('can refresh token', function () {
     MsGraphToken::create([
-        'user_id'      => null,
+        'user_id' => null,
         'access_token' => 'ghgh4h22',
-        'expires'      => strtotime('+1 day'),
+        'expires' => strtotime('+1 day'),
     ]);
 
     $this->artisan('msgraphadmin:keep-alive')
@@ -32,9 +32,9 @@ test('is connected returns false when no data in db', function () {
 test('is connected returns true when data exists in db', function () {
 
     MsGraphToken::create([
-        'user_id'      => null,
+        'user_id' => null,
         'access_token' => 'ghgh4h22',
-        'expires'      => strtotime('+1 day'),
+        'expires' => strtotime('+1 day'),
     ]);
 
     $connect = MsGraphAdminFacade::isConnected();

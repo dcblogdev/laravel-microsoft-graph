@@ -403,3 +403,15 @@ Where $behavior is either rename or replace
 ### Removed
 
 - Removed package level migrations, using src migrations instead
+
+## Next
+
+## Added
+
+- Added sites resource for MsGraph
+- Added Pint with Laravel preset for formatting
+- Added composer scripts for formatting and testing
+
+## Changed
+- Fixed an issue in MsGraph connect having an infinite loop when an error is returned from Microsoft
+- Dropped support for using csfixer

@@ -20,15 +20,15 @@ class TaskLists extends MsGraph
 
     public function store(string $name)
     {
-        return MsGraph::post("me/todo/lists", [
-            'displayName' => $name
+        return MsGraph::post('me/todo/lists', [
+            'displayName' => $name,
         ]);
     }
 
     public function update(string $listId, string $name)
     {
         return MsGraph::patch("me/todo/lists/$listId", [
-            'displayName' => $name
+            'displayName' => $name,
         ]);
     }
 

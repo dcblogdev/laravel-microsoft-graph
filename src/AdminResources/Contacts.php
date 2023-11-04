@@ -8,7 +8,9 @@ use Exception;
 class Contacts extends MsGraphAdmin
 {
     private $userId;
+
     private $top;
+
     private $skip;
 
     public function userid($userId)
@@ -38,15 +40,15 @@ class Contacts extends MsGraphAdmin
             throw new Exception('userId is required.');
         }
 
-        $top  = request('top', $this->top);
+        $top = request('top', $this->top);
         $skip = request('skip', $this->skip);
 
         if ($params == []) {
             $params = http_build_query([
                 '$orderby' => 'displayName',
-                '$top'     => $top,
-                '$skip'    => $skip,
-                '$count'   => 'true',
+                '$top' => $top,
+                '$skip' => $skip,
+                '$count' => 'true',
             ]);
         } else {
             $params = http_build_query($params);
@@ -58,9 +60,9 @@ class Contacts extends MsGraphAdmin
 
         return [
             'contacts' => $contacts,
-            'total'    => $data['total'],
-            'top'      => $data['top'],
-            'skip'     => $data['skip'],
+            'total' => $data['total'],
+            'top' => $data['top'],
+            'skip' => $data['skip'],
         ];
     }
 
