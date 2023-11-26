@@ -4,38 +4,38 @@ namespace Dcblogdev\MsGraph\Helpers;
 
 class Paginator
 {
-    protected $perPage;
+    protected int $perPage;
 
-    protected $instance;
+    protected string $instance;
 
-    protected $page;
+    protected int $page;
 
-    protected $totalRows = 0;
+    protected int $totalRows = 0;
 
-    public function __construct($perPage, $instance)
+    public function __construct(int $perPage, string $instance)
     {
         $this->instance = $instance;
         $this->perPage = $perPage;
         $this->setInstance();
     }
 
-    public function get_start()
+    public function get_start(): float|int
     {
         return ($this->page * $this->perPage) - $this->perPage;
     }
 
-    protected function setInstance()
+    protected function setInstance(): void
     {
         $this->page = (int) (! isset($_GET[$this->instance]) ? 1 : $_GET[$this->instance]);
         $this->page = ($this->page == 0 ? 1 : ($this->page < 0 ? 1 : $this->page));
     }
 
-    public function setTotal($totalRows)
+    public function setTotal(int $totalRows): void
     {
         $this->totalRows = $totalRows;
     }
 
-    public function page_links()
+    public function page_links(): string
     {
         $path = '?';
         $queryParams = request()->collect()->except($this->instance);
@@ -117,7 +117,7 @@ class Paginator
         return $pagination;
     }
 
-    public function page_links_array($path = '?', $ext = null)
+    public function page_links_array(string $path = '?', string $ext = null): array
     {
         $lastpage = ceil($this->totalRows / $this->perPage);
         $pages = [];

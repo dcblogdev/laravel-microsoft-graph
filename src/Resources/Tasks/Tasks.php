@@ -7,7 +7,7 @@ use Dcblogdev\MsGraph\Helpers\Paginator;
 
 class Tasks extends MsGraph
 {
-    public function get($taskListId, $params = [], $perPage = 25, $instance = 'p')
+    public function get(string $taskListId, array $params = [], int $perPage = 25, string $instance = 'p'): array
     {
         $params = $this->getParams($params, $perPage, $instance);
 
@@ -29,27 +29,27 @@ class Tasks extends MsGraph
         ];
     }
 
-    public function find($taskListId, $taskId)
+    public function find(string $taskListId, string $taskId): MsGraph
     {
         return MsGraph::get("me/todo/lists/$taskListId/tasks/$taskId");
     }
 
-    public function store($taskListId, array $data)
+    public function store(string $taskListId, array $data): MsGraph
     {
         return MsGraph::post("me/todo/lists/$taskListId/tasks", $data);
     }
 
-    public function update($taskListId, $taskId, array $data)
+    public function update(string $taskListId, string $taskId, array $data): MsGraph
     {
         return MsGraph::patch("me/todo/lists/$taskListId/tasks/$taskId", $data);
     }
 
-    public function delete($taskListId, $taskId)
+    public function delete(string $taskListId, string $taskId): MsGraph
     {
         return MsGraph::delete("me/todo/lists/$taskListId/tasks/$taskId");
     }
 
-    protected function getParams($params, $perPage, $instance)
+    protected function getParams(array $params, int $perPage, string $instance): array
     {
         $skip = $params['skip'] ?? 0;
         $page = request($instance, $skip);

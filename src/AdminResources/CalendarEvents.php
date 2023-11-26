@@ -7,36 +7,39 @@ use Exception;
 
 class CalendarEvents extends MsGraphAdmin
 {
-    private $userId;
+    private string $userId = '';
 
-    private $top;
+    private string $top = '';
 
-    private $skip;
+    private string $skip = '';
 
-    public function userid($userId)
+    public function userid(string $userId): static
     {
         $this->userId = $userId;
 
         return $this;
     }
 
-    public function top($top)
+    public function top(string $top): static
     {
         $this->top = $top;
 
         return $this;
     }
 
-    public function skip($skip)
+    public function skip(string $skip): static
     {
         $this->skip = $skip;
 
         return $this;
     }
 
-    public function get($calendarId, $params = [])
+    /**
+     * @throws Exception
+     */
+    public function get(string $calendarId, array $params = []): array
     {
-        if ($this->userId == null) {
+        if ($this->userId === '') {
             throw new Exception('userId is required.');
         }
 
@@ -65,18 +68,24 @@ class CalendarEvents extends MsGraphAdmin
         ];
     }
 
-    public function find($calendarId, $eventId)
+    /**
+     * @throws Exception
+     */
+    public function find(string $calendarId, string $eventId): MsGraphAdmin
     {
-        if ($this->userId == null) {
+        if ($this->userId === '') {
             throw new Exception('userId is required.');
         }
 
         return MsGraphAdmin::get("users/$this->userId/calendars/$calendarId/events/$eventId");
     }
 
-    public function store($calendarId, $data)
+    /**
+     * @throws Exception
+     */
+    public function store(string $calendarId, array$data): MsGraphAdmin
     {
-        if ($this->userId == null) {
+        if ($this->userId === '') {
             throw new Exception('userId is required.');
         }
 

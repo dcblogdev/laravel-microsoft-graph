@@ -7,10 +7,11 @@ use Dcblogdev\MsGraph\Helpers\Paginator;
 
 class Contacts extends MsGraph
 {
-    public function get($params = [], $perPage = 25)
+    public function get(array $params = [], int $perPage = 25): array
     {
         $perPage = $params['$top'] ?? $perPage;
         $params = $this->getParams($params, $perPage);
+
         $contacts = MsGraph::get('me/contacts?'.$params);
         $total = $contacts['@odata.count'] ?? $perPage;
         $pages = new Paginator($perPage, 'p');
@@ -24,27 +25,27 @@ class Contacts extends MsGraph
         ];
     }
 
-    public function find($id)
+    public function find(string $id): array
     {
         return MsGraph::get("me/contacts/$id");
     }
 
-    public function store(array $data)
+    public function store(array $data): array
     {
         return MsGraph::post('me/contacts', $data);
     }
 
-    public function update($id, array $data)
+    public function update(string $id, array $data): array
     {
         return MsGraph::patch("me/contacts/$id", $data);
     }
 
-    public function delete($id)
+    public function delete(string $id): array
     {
         return MsGraph::delete("me/contacts/$id");
     }
 
-    protected function getParams($params, $perPage)
+    protected function getParams(array $params, int $perPage): string
     {
         $skip = $params['skip'] ?? 0;
         $page = request('p', $skip);

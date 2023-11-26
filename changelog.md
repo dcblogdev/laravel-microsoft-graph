@@ -355,7 +355,7 @@ Where $behavior is either rename or replace
 ## Fixed
 
 - Corrected refresh tokens after they expire
-- Stopped an infinate loop when a token needs to be refreshed
+- Stopped an infinite loop when a token needs to be refreshed
 - Stopped duplicating users when using a listener
 - Stopped token getting deleted on logout
 - Stopped token getting overwritten when another user logs in
@@ -414,5 +414,7 @@ Where $behavior is either rename or replace
 - Added isaac/composer-git-hooks package to run scripts on commit
 
 ## Changed
+
+- Dropped support for Laravel versions below 10
+- Dropped support for using cs-fixer
 - Fixed an issue in MsGraph connect having an infinite loop when an error is returned from Microsoft
-- Dropped support for using csfixer

@@ -16,50 +16,46 @@ use Dcblogdev\MsGraph\Models\MsGraphToken;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\GuzzleException;
 
 class MsGraphAdmin
 {
-    public function calendarEvents()
+    public function calendarEvents(): CalendarEvents
     {
         return new CalendarEvents();
     }
 
-    public function calendars()
+    public function calendars(): Calendars
     {
         return new Calendars();
     }
 
-    public function contacts()
+    public function contacts(): Contacts
     {
         return new Contacts();
     }
 
-    public function emails()
+    public function emails(): Emails
     {
         return new Emails();
     }
 
-    public function events()
+    public function events(): Events
     {
         return new Events();
     }
 
-    public function files()
+    public function files(): Files
     {
         return new Files();
     }
 
-    /**
-     * Set the base url that all API requests use.
-     *
-     * @var string
-     */
-    protected static $baseUrl = 'https://graph.microsoft.com/v1.0/';
+    protected static string $baseUrl = 'https://graph.microsoft.com/v1.0/';
 
     /**
      * @throws Exception
      */
-    public function setApiVersion($version = '1.0'): static
+    public function setApiVersion(string $version = '1.0'): static
     {
         self::$baseUrl = match ($version) {
             '1.0' => 'https://graph.microsoft.com/v1.0/',
@@ -70,10 +66,7 @@ class MsGraphAdmin
         return $this;
     }
 
-    /**
-     * @return bool
-     */
-    public function isConnected()
+    public function isConnected(): bool
     {
         $token = $this->getTokenData();
 
@@ -88,12 +81,7 @@ class MsGraphAdmin
         return true;
     }
 
-    /**
-     * Make a connection or return a token where it's valid.
-     *
-     * @return mixed
-     */
-    public function connect($redirect = true)
+    public function connect(bool $redirect = true): mixed
     {
         $params = [
             'scope' => 'https://graph.microsoft.com/.default',
@@ -102,7 +90,7 @@ class MsGraphAdmin
             'grant_type' => 'client_credentials',
         ];
 
-        $token = $this->dopost(config('msgraph.tenantUrlAccessToken'), $params);
+        $token = $this->doPost(config('msgraph.tenantUrlAccessToken'), $params);
 
         if (isset($token->access_token)) {
             $this->storeToken($token->access_token, '', $token->expires_in);
@@ -115,14 +103,7 @@ class MsGraphAdmin
         return $token->access_token ?? null;
     }
 
-    /**
-     * Return authenticated access token or request new token when expired.
-     *
-     * @param    $id integer - id of the user
-     * @param    $returnNullNoAccessToken null when set to true return null
-     * @return return string access token
-     */
-    public function getAccessToken($returnNullNoAccessToken = false, $redirect = false)
+    public function getAccessToken(bool $returnNullNoAccessToken = false, bool $redirect = false): mixed
     {
         // Admin token will be stored without user_id
         $token = MsGraphToken::where('user_id', null)->first();
@@ -148,25 +129,12 @@ class MsGraphAdmin
         }
     }
 
-    /**
-     * @param    $id - integar id of user
-     * @return object
-     */
-    public function getTokenData()
+    public function getTokenData(): MsGraphToken|null
     {
         return MsGraphToken::where('user_id', null)->first();
     }
 
-    /**
-     * Store token.
-     *
-     * @param    $access_token string
-     * @param    $refresh_token string
-     * @param    $expires string
-     * @param    $id integer
-     * @return object
-     */
-    protected function storeToken($access_token, $refresh_token, $expires)
+    protected function storeToken(string $access_token, string $refresh_token, string $expires): MsGraphToken
     {
         //Create or update a new record for admin token
         return MsGraphToken::updateOrCreate(['user_id' => null], [
@@ -178,13 +146,9 @@ class MsGraphAdmin
     }
 
     /**
-     * __call catches all requests when no founf method is requested.
-     *
-     * @param    $function - the verb to execute
-     * @param    $args - array of arguments
-     * @return json request
+     * @throws Exception
      */
-    public function __call($function, $args)
+    public function __call(string $function, array $args): mixed
     {
         $options = ['get', 'post', 'patch', 'put', 'delete'];
         $path = (isset($args[0])) ? $args[0] : null;
@@ -198,21 +162,15 @@ class MsGraphAdmin
         }
     }
 
-    protected function isJson($string)
+    protected function isJson(object $data): bool
     {
-        return is_string($string) && is_array(json_decode($string, true)) && (json_last_error() == JSON_ERROR_NONE);
+        return is_string($data) && is_array(json_decode($data, true)) && (json_last_error() == JSON_ERROR_NONE);
     }
 
     /**
-     * run guzzle to process requested url.
-     *
-     * @param    $type string
-     * @param    $request string
-     * @param    $data array
-     * @param    $id integer
-     * @return json object
+     * @throws Exception
      */
-    protected function guzzle($type, $request, $data = [])
+    protected function guzzle(string $type, string $request, array $data = []): mixed
     {
         try {
             $client = new Client;
@@ -242,15 +200,15 @@ class MsGraphAdmin
         }
     }
 
-    protected static function dopost($url, $params)
+    /**
+     * @throws GuzzleException
+     * @throws Exception
+     */
+    protected static function doPost(string $url, array $params): mixed
     {
         try {
             $client = new Client;
             $response = $client->post($url, ['form_params' => $params]);
-
-            if ($response == null) {
-                return null;
-            }
 
             return json_decode($response->getBody()->getContents());
         } catch (ClientException $e) {
@@ -260,31 +218,16 @@ class MsGraphAdmin
         }
     }
 
-    /**
-     * return tarray containing total, top and skip params.
-     *
-     * @param    $data array
-     * @param    $top  integer
-     * @param    $skip integer
-     * @return array
-     */
-    public function getPagination($data, $top, $skip)
+    public function getPagination(array $data, string $top = '0', string $skip = '0'): array
     {
-        if (! is_array($data)) {
-            dd($data);
-        }
-
-        $total = isset($data['@odata.count']) ? $data['@odata.count'] : 0;
+        $total = $data['@odata.count'] ?? 0;
 
         if (isset($data['@odata.nextLink'])) {
             $parts = parse_url($data['@odata.nextLink']);
             parse_str($parts['query'], $query);
 
-            $top = isset($query['$top']) ? $query['$top'] : 0;
-            $skip = isset($query['$skip']) ? $query['$skip'] : 0;
-        } else {
-            $top = 0;
-            $skip = 0;
+            $top = $query['$top'] ?? 0;
+            $skip = $query['$skip'] ?? 0;
         }
 
         return [

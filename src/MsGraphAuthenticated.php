@@ -4,16 +4,11 @@ namespace Dcblogdev\MsGraph;
 
 use Closure;
 use Dcblogdev\MsGraph\Facades\MsGraph;
+use Illuminate\Http\Request;
 
 class MsGraphAuthenticated
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return mixed
-     */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next): mixed
     {
         if (! MsGraph::isConnected()) {
             return MsGraph::connect();

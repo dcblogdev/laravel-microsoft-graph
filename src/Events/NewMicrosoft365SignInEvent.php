@@ -8,12 +8,12 @@ use Illuminate\Queue\SerializesModels;
 
 class NewMicrosoft365SignInEvent
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable;
+    use InteractsWithSockets;
+    use SerializesModels;
 
-    public $token;
-
-    public function __construct($token)
+    public function __construct(public array $token)
     {
-        $this->token = $token;
+
     }
 }

@@ -7,108 +7,111 @@ use Exception;
 
 class Emails extends MsGraphAdmin
 {
-    private $userId;
+    private string $userId = '';
 
-    private $top;
+    private string $top = '';
 
-    private $skip;
+    private string $skip = '';
 
-    private $subject;
+    private string $subject = '';
 
-    private $body;
+    private string $body = '';
 
-    private $comment;
+    private string $comment = '';
 
-    private $id;
+    private string $id = '';
 
-    private $to;
+    private array $to = [];
 
-    private $cc;
+    private array $cc = [];
 
-    private $bcc;
+    private array $bcc = [];
 
-    private $attachments;
+    private array $attachments = [];
 
-    public function userid($userId)
+    public function userid(string $userId): static
     {
         $this->userId = $userId;
 
         return $this;
     }
 
-    public function id($id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    public function to(array $to)
-    {
-        $this->to = $to;
-
-        return $this;
-    }
-
-    public function cc(array $cc)
-    {
-        $this->cc = $cc;
-
-        return $this;
-    }
-
-    public function bcc(array $bcc)
-    {
-        $this->bcc = $bcc;
-
-        return $this;
-    }
-
-    public function subject($subject)
-    {
-        $this->subject = $subject;
-
-        return $this;
-    }
-
-    public function body($body)
-    {
-        $this->body = $body;
-
-        return $this;
-    }
-
-    public function comment($comment)
-    {
-        $this->comment = $comment;
-
-        return $this;
-    }
-
-    public function attachments(array $attachments)
-    {
-        $this->attachments = $attachments;
-
-        return $this;
-    }
-
-    public function top($top)
+    public function top(string$top): static
     {
         $this->top = $top;
 
         return $this;
     }
 
-    public function skip($skip)
+    public function skip(string $skip): static
     {
         $this->skip = $skip;
 
         return $this;
     }
 
-    public function get($params = [])
+    public function id(string $id): static
     {
-        if ($this->userId == null) {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    public function to(array $to): static
+    {
+        $this->to = $to;
+
+        return $this;
+    }
+
+    public function cc(array $cc): static
+    {
+        $this->cc = $cc;
+
+        return $this;
+    }
+
+    public function bcc(array $bcc): static
+    {
+        $this->bcc = $bcc;
+
+        return $this;
+    }
+
+    public function subject(string $subject): static
+    {
+        $this->subject = $subject;
+
+        return $this;
+    }
+
+    public function body(string $body): static
+    {
+        $this->body = $body;
+
+        return $this;
+    }
+
+    public function comment(string $comment): static
+    {
+        $this->comment = $comment;
+
+        return $this;
+    }
+
+    public function attachments(array $attachments): static
+    {
+        $this->attachments = $attachments;
+
+        return $this;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function get(array $params = []): array
+    {
+        if ($this->userId === '') {
             throw new Exception('userId is required.');
         }
 
@@ -139,7 +142,10 @@ class Emails extends MsGraphAdmin
         ];
     }
 
-    public function find($id)
+    /**
+     * @throws Exception
+     */
+    public function find(string $id): MsGraphAdmin
     {
         if ($this->userId == null) {
             throw new Exception('userid is required.');
@@ -148,19 +154,19 @@ class Emails extends MsGraphAdmin
         return MsGraphAdmin::get('users/'.$this->userId.'/messages/'.$id);
     }
 
-    public function findAttachments($id)
+    public function findAttachments(string $id): MsGraphAdmin
     {
         return MsGraphAdmin::get('users/'.$this->userId.'/messages/'.$id.'/attachments');
     }
 
-    public function findInlineAttachments($email)
+    public function findInlineAttachments(array $email): array
     {
         $attachments = self::findAttachments($email['id']);
 
         //replace every case of <img='cid:' with the base64 image
         $email['body']['content'] = preg_replace_callback(
             '~cid.*?"~',
-            function ($m) use ($attachments) {
+            function (array $m) use ($attachments) {
                 //remove the last quote
                 $parts = explode('"', $m[0]);
 
@@ -175,6 +181,8 @@ class Emails extends MsGraphAdmin
                         return 'data:'.$file['contentType'].';base64,'.$file['contentBytes'].'"';
                     }
                 }
+
+                return true;
             },
             $email['body']['content']
         );
@@ -182,62 +190,74 @@ class Emails extends MsGraphAdmin
         return $email;
     }
 
-    public function send()
+    /**
+     * @throws Exception
+     */
+    public function send(): MsGraphAdmin
     {
-        if ($this->userId == null) {
+        if (strlen($this->userId) === 0) {
             throw new Exception('userId is required.');
         }
 
-        if ($this->to == null) {
+        if (count($this->to) === 0) {
             throw new Exception('To is required.');
         }
 
-        if ($this->subject == null) {
+        if (strlen($this->subject) === 0) {
             throw new Exception('Subject is required.');
         }
 
-        if ($this->comment != null) {
+        if (strlen($this->comment) > 0) {
             throw new Exception('Comment is only used for replies and forwarding, please use body instead.');
         }
 
         return MsGraphAdmin::post('users/'.$this->userId.'/sendMail', self::prepareEmail());
     }
 
-    public function reply()
+    /**
+     * @throws Exception
+     */
+    public function reply(): MsGraphAdmin
     {
-        if ($this->userId == null) {
+        if (strlen($this->userId) === 0) {
             throw new Exception('userId is required.');
         }
 
-        if ($this->id == null) {
+        if (strlen($this->id ) === 0) {
             throw new Exception('email id is required.');
         }
 
-        if ($this->body != null) {
+        if (strlen($this->body) > 0) {
             throw new Exception('Body is only used for sending new emails, please use comment instead.');
         }
 
         return MsGraphAdmin::post('users/'.$this->userId.'/messages/'.$this->id.'/replyAll', self::prepareEmail());
     }
 
-    public function forward()
+    /**
+     * @throws Exception
+     */
+    public function forward(): MsGraphAdmin
     {
-        if ($this->userId == null) {
+        if (strlen($this->userId) === 0) {
             throw new Exception('userId is required.');
         }
 
-        if ($this->id == null) {
+        if (strlen($this->id) === 0) {
             throw new Exception('email id is required.');
         }
 
-        if ($this->body != null) {
+        if (strlen($this->body) > 0) {
             throw new Exception('Body is only used for sending new emails, please use comment instead.');
         }
 
         return MsGraphAdmin::post('users/'.$this->userId.'/messages/'.$this->id.'/forward', self::prepareEmail());
     }
 
-    public function delete($id)
+    /**
+     * @throws Exception
+     */
+    public function delete(string $id): MsGraphAdmin
     {
         if ($this->userId == null) {
             throw new Exception('userId is required.');
@@ -246,7 +266,7 @@ class Emails extends MsGraphAdmin
         return MsGraphAdmin::delete('users/'.$this->userId.'/messages/'.$id);
     }
 
-    protected function prepareEmail()
+    protected function prepareEmail(): array
     {
         $subject = $this->subject;
         $body = $this->body;

@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 class NewMicrosoft365SignInListener
 {
-    public function handle($event)
+    public function handle(object $event): void
     {
         $user = User::firstOrCreate([
             'email' => $event->token['info']['mail'],

@@ -6,7 +6,7 @@ use Dcblogdev\MsGraph\Facades\MsGraph;
 
 class Sites extends MsGraph
 {
-    public function get()
+    public function get(): array
     {
         return MsGraph::get('sites?search=*');
     }

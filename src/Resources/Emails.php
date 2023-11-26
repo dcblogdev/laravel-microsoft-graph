@@ -7,97 +7,100 @@ use Exception;
 
 class Emails extends MsGraph
 {
-    private $top;
+    private string $top = '';
 
-    private $skip;
+    private string $skip = '';
 
-    private $subject;
+    private string $subject = '';
 
-    private $body;
+    private string $body = '';
 
-    private $comment;
+    private string $comment = '';
 
-    private $id;
+    private string $id = '';
 
-    private $to;
+    private array $to = [];
 
-    private $cc;
+    private array $cc = [];
 
-    private $bcc;
+    private array $bcc = [];
 
-    private $attachments;
+    private array $attachments = [];
 
-    public function id($id)
+    public function id(string $id): static
     {
         $this->id = $id;
 
         return $this;
     }
 
-    public function to(array $to)
+    public function to(array $to): static
     {
         $this->to = $to;
 
         return $this;
     }
 
-    public function cc(array $cc)
+    public function cc(array $cc): static
     {
         $this->cc = $cc;
 
         return $this;
     }
 
-    public function bcc(array $bcc)
+    public function bcc(array $bcc): static
     {
         $this->bcc = $bcc;
 
         return $this;
     }
 
-    public function subject($subject)
+    public function subject(string $subject): static
     {
         $this->subject = $subject;
 
         return $this;
     }
 
-    public function body($body)
+    public function body(string $body): static
     {
         $this->body = $body;
 
         return $this;
     }
 
-    public function comment($comment)
+    public function comment(string $comment): static
     {
         $this->comment = $comment;
 
         return $this;
     }
 
-    public function attachments(array $attachments)
+    public function attachments(array $attachments): static
     {
         $this->attachments = $attachments;
 
         return $this;
     }
 
-    public function top($top)
+    public function top(string $top): static
     {
         $this->top = $top;
 
         return $this;
     }
 
-    public function skip($skip)
+    public function skip(string $skip): static
     {
         $this->skip = $skip;
 
         return $this;
     }
 
-    public function get($folderId = null, $params = [])
+    /**
+     * @throws Exception
+     */
+    public function get(string $folderId = '', array $params = []): MsGraph
     {
         $top = request('top', $this->top);
         $skip = request('skip', $this->skip);
@@ -110,7 +113,7 @@ class Emails extends MsGraph
             $skip = 0;
         }
 
-        if ($params == []) {
+        if ($params === []) {
             $params = http_build_query([
                 '$top' => $top,
                 '$skip' => $skip,
@@ -120,7 +123,7 @@ class Emails extends MsGraph
             $params = http_build_query($params);
         }
 
-        $folder = $folderId == null ? 'Inbox' : $folderId;
+        $folder = $folderId == '' ? 'Inbox' : $folderId;
 
         //get inbox from folders list
         $folder = MsGraph::get("me/mailFolders?\$filter=startswith(displayName,'$folder')");
@@ -132,28 +135,28 @@ class Emails extends MsGraph
             //get messages from folderId
             return MsGraph::get("me/mailFolders/$folderId/messages?".$params);
         } else {
-            return throw new Exception('email folder not found');
+            throw new Exception('email folder not found');
         }
     }
 
-    public function find($id)
+    public function find(string $id): array
     {
         return MsGraph::get('me/messages/'.$id);
     }
 
-    public function findAttachments($id)
+    public function findAttachments(string $id): array
     {
         return MsGraph::get('me/messages/'.$id.'/attachments');
     }
 
-    public function findInlineAttachments($email)
+    public function findInlineAttachments(array $email): array
     {
         $attachments = self::findAttachments($email['id']);
 
         //replace every case of <img='cid:' with the base64 image
         $email['body']['content'] = preg_replace_callback(
             '~cid.*?"~',
-            function ($m) use ($attachments) {
+            function (array $m) use ($attachments) {
                 //remove the last quote
                 $parts = explode('"', $m[0]);
 
@@ -168,6 +171,8 @@ class Emails extends MsGraph
                         return 'data:'.$file['contentType'].';base64,'.$file['contentBytes'].'"';
                     }
                 }
+
+                return true;
             },
             $email['body']['content']
         );
@@ -175,55 +180,64 @@ class Emails extends MsGraph
         return $email;
     }
 
-    public function send()
+    /**
+     * @throws Exception
+     */
+    public function send(): void
     {
-        if ($this->to == null) {
+        if (count($this->to) === 0) {
             throw new Exception('To is required.');
         }
 
-        if ($this->subject == null) {
+        if ($this->subject === '') {
             throw new Exception('Subject is required.');
         }
 
-        if ($this->comment != null) {
+        if (strlen($this->comment) > 0) {
             throw new Exception('Comment is only used for replies and forwarding, please use body instead.');
         }
 
-        return MsGraph::post('me/sendMail', self::prepareEmail());
+        MsGraph::post('me/sendMail', self::prepareEmail());
     }
 
-    public function reply()
+    /**
+     * @throws Exception
+     */
+    public function reply(): void
     {
-        if ($this->id == null) {
+        if (strlen($this->id) === 0) {
             throw new Exception('email id is required.');
         }
 
-        if ($this->body != null) {
+        if (strlen($this->body) > 0) {
             throw new Exception('Body is only used for sending new emails, please use comment instead.');
         }
 
-        return MsGraph::post('me/messages/'.$this->id.'/replyAll', self::prepareEmail());
+        MsGraph::post('me/messages/'.$this->id.'/replyAll', self::prepareEmail());
     }
 
-    public function forward()
+    /**
+     * @throws Exception
+     */
+    public function forward(): void
     {
-        if ($this->id == null) {
+        if (strlen($this->id) === 0) {
             throw new Exception('email id is required.');
         }
 
-        if ($this->body != null) {
+        if (strlen($this->body) > 0) {
             throw new Exception('Body is only used for sending new emails, please use comment instead.');
         }
 
-        return MsGraph::post('me/messages/'.$this->id.'/forward', self::prepareEmail());
+        MsGraph::post('me/messages/'.$this->id.'/forward', self::prepareEmail());
     }
 
-    public function delete($id)
+    public function delete(string $id): void
     {
-        return MsGraph::delete('me/messages/'.$id);
+        MsGraph::delete('me/messages/'.$id);
     }
 
-    protected function prepareEmail()
+    protected function prepareEmail(): array
     {
         $subject = $this->subject;
         $body = $this->body;
@@ -234,63 +248,61 @@ class Emails extends MsGraph
         $attachments = $this->attachments;
 
         $toArray = [];
-        if ($to != null) {
-            foreach ($to as $email) {
-                $toArray[]['emailAddress'] = ['address' => $email];
-            }
+        foreach ($to as $email) {
+            $toArray[]['emailAddress'] = ['address' => $email];
         }
 
         $ccArray = [];
-        if ($cc != null) {
-            foreach ($cc as $email) {
-                $ccArray[]['emailAddress'] = ['address' => $email];
-            }
+        foreach ($cc as $email) {
+            $ccArray[]['emailAddress'] = ['address' => $email];
         }
 
         $bccArray = [];
-        if ($bcc != null) {
-            foreach ($bcc as $email) {
-                $bccArray[]['emailAddress'] = ['address' => $email];
-            }
+        foreach ($bcc as $email) {
+            $bccArray[]['emailAddress'] = ['address' => $email];
         }
 
-        $attachmentarray = [];
-        if ($attachments != null) {
-            foreach ($attachments as $file) {
-                $path = pathinfo($file);
+        $attachmentArray = [];
+        foreach ($attachments as $file) {
+            $path = pathinfo($file);
 
-                $attachmentarray[] = [
-                    '@odata.type' => '#microsoft.graph.fileAttachment',
-                    'name' => $path['basename'],
-                    'contentType' => mime_content_type($file),
-                    'contentBytes' => base64_encode(file_get_contents($file)),
-                ];
-            }
+            $attachmentArray[] = [
+                '@odata.type' => '#microsoft.graph.fileAttachment',
+                'name' => $path['basename'],
+                'contentType' => mime_content_type($file),
+                'contentBytes' => base64_encode(file_get_contents($file)),
+            ];
         }
 
         $envelope = [];
-        if ($subject != null) {
+        if ($subject !== '') {
             $envelope['message']['subject'] = $subject;
         }
-        if ($body != null) {
+
+        if ($body !== '') {
             $envelope['message']['body'] = [
                 'contentType' => 'html',
                 'content' => $body,
             ];
         }
-        if ($toArray != null) {
+
+        if (count($toArray) > 0) {
             $envelope['message']['toRecipients'] = $toArray;
         }
-        if ($ccArray != null) {
+
+        if (count($ccArray) > 0) {
             $envelope['message']['ccRecipients'] = $ccArray;
         }
-        if ($bccArray != null) {
+
+        if (count($bccArray) > 0) {
             $envelope['message']['bccRecipients'] = $bccArray;
         }
-        if ($attachmentarray != null) {
-            $envelope['message']['attachments'] = $attachmentarray;
+
+        if (count($attachmentArray) > 0) {
+            $envelope['message']['attachments'] = $attachmentArray;
         }
-        if ($comment != null) {
+
+        if ($comment !== '') {
             $envelope['comment'] = $comment;
         }
 

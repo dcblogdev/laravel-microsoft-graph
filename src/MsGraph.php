@@ -18,61 +18,52 @@ use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Http;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Provider\GenericProvider;
 
 class MsGraph
 {
-    public function contacts()
+    public function contacts(): Contacts
     {
         return new Contacts();
     }
 
-    public function emails()
+    public function emails(): Emails
     {
         return new Emails();
     }
 
-    public function files()
+    public function files(): Files
     {
         return new Files();
     }
 
-    public function sites()
+    public function sites(): Sites
     {
         return new Sites();
     }
 
-    public function tasklists()
+    public function tasklists(): TaskLists
     {
         return new TaskLists();
     }
 
-    public function tasks()
+    public function tasks(): Tasks
     {
         return new Tasks();
     }
 
-    /**
-     * Set the base url that all API requests use.
-     *
-     * @var string
-     */
-    protected static $baseUrl = 'https://graph.microsoft.com/v1.0/';
-
-    /**
-     * Set the User model
-     *
-     * @var string
-     */
-    protected static $userModel;
+    protected static string $baseUrl = 'https://graph.microsoft.com/v1.0/';
+    protected static string $userModel = '';
 
     /**
      * @throws Exception
      */
-    public function setApiVersion($version = '1.0'): static
+    public function setApiVersion(string $version = '1.0'): static
     {
         self::$baseUrl = match ($version) {
             '1.0' => 'https://graph.microsoft.com/v1.0/',
@@ -83,7 +74,12 @@ class MsGraph
         return $this;
     }
 
-    public static function setUserModel($model): static
+    public function getApiVersion(): string
+    {
+        return self::$baseUrl;
+    }
+
+    public static function setUserModel(object $model): static
     {
         self::$userModel = $model;
 
@@ -91,11 +87,9 @@ class MsGraph
     }
 
     /**
-     * Make a connection or return a token where it's valid.
-     *
-     * @return mixed
+     * @throws Exception
      */
-    public function connect($id = null)
+    public function connect(string $id = null): Redirector|RedirectResponse
     {
         $id = $this->getUserId($id);
 
@@ -113,19 +107,16 @@ class MsGraph
         }
 
         if (request()->has('error')) {
+            throw new Exception('Error: '.request('error').'<br/>Description: '.request('error_description'));
+        }
 
-            return trigger_error('Error: '.request('error').'<br/>Description: '.request('error_description'),
-                E_USER_ERROR);
-
-        } elseif (! request()->has('code') && ! $this->isConnected($id)) {
-
+        if (! request()->has('code') && ! $this->isConnected($id)) {
             return redirect($provider->getAuthorizationUrl());
+        }
 
-        } elseif (request()->has('code')) {
+        if (request()->has('code')) {
 
             $accessToken = $provider->getAccessToken('authorization_code', ['code' => request('code')]);
-
-            $response = Http::withToken($accessToken->getToken())->get(self::$baseUrl.'me');
 
             if (auth()->check()) {
                 $this->storeToken(
@@ -136,6 +127,9 @@ class MsGraph
                     auth()->user()->email
                 );
             } else {
+
+                $response = Http::withToken($accessToken->getToken())->get(self::$baseUrl.'me');
+
                 event(new NewMicrosoft365SignInEvent([
                     'info' => $response->json(),
                     'accessToken' => $accessToken->getToken(),
@@ -148,10 +142,7 @@ class MsGraph
         return redirect(config('msgraph.msgraphLandingUri'));
     }
 
-    /**
-     * @return bool
-     */
-    public function isConnected($id = null)
+    public function isConnected(string $id = null): bool
     {
         $token = $this->getTokenData($id);
 
@@ -166,13 +157,7 @@ class MsGraph
         return true;
     }
 
-    /**
-     * logout of application and Microsoft 365, redirects back to the provided path.
-     *
-     * @param  string  $redirectPath
-     * @return RedirectResponse
-     */
-    public function disconnect($redirectPath = '/', $logout = true)
+    public function disconnect(string $redirectPath = '/', bool $logout = true): RedirectResponse
     {
         if ($logout === true && auth()->check()) {
             auth()->logout();
@@ -181,14 +166,7 @@ class MsGraph
         return redirect()->away('https://login.microsoftonline.com/common/oauth2/v2.0/logout?post_logout_redirect_uri='.url($redirectPath));
     }
 
-    /**
-     * Return authenticated access token or request new token when expired.
-     *
-     * @param    $id integer - id of the user
-     * @param    $returnNullNoAccessToken null when set to true return null
-     * @return Application|\Illuminate\Foundation\Application|RedirectResponse|\Illuminate\Routing\Redirector string access token
-     */
-    public function getAccessToken($id = null, $redirectWhenNotConnected = true)
+    public function getAccessToken(string $id = null, bool $redirectWhenNotConnected = true): Application|Redirector|string|RedirectResponse|null
     {
         $token = $this->getTokenData($id);
         $id = $this->getUserId($id);
@@ -212,27 +190,14 @@ class MsGraph
         return $token->access_token;
     }
 
-    /**
-     * @param    $id  - integar id of user
-     * @return object
-     */
-    public function getTokenData($id = null)
+    public function getTokenData(string $id = null): MsGraphToken|null
     {
         $id = $this->getUserId($id);
 
         return MsGraphToken::where('user_id', $id)->where('refresh_token', '<>', '')->first();
     }
 
-    /**
-     * Store token.
-     *
-     * @param    $access_token string
-     * @param    $refresh_token string
-     * @param    $expires string
-     * @param    $id integer
-     * @return object
-     */
-    public function storeToken($access_token, $refresh_token, $expires, $id, $email)
+    public function storeToken(string $access_token, string $refresh_token, string $expires, int $id, string $email): MsGraphToken
     {
         return MsGraphToken::updateOrCreate(['user_id' => $id], [
             'user_id' => $id,
@@ -243,16 +208,7 @@ class MsGraph
         ]);
     }
 
-    /**
-     * return array containing previous and next page counts.
-     *
-     * @param    $data array
-     * @param    $total array
-     * @param    $limit  integer
-     * @param    $skip integer
-     * @return array
-     */
-    public function getPagination(array $data, int $total, int $limit, int $skip)
+    public function getPagination(array $data, int $total, int $limit, int $skip): array
     {
         $previous = 0;
         $next = 0;
@@ -289,34 +245,14 @@ class MsGraph
     }
 
     /**
-     * @return mixed|string
-     *
-     * @throws IdentityProviderException
-     */
-    protected function renewExpiringToken($token, $id, $email)
-    {
-        $oauthClient = $this->getProvider();
-        $newToken = $oauthClient->getAccessToken('refresh_token', ['refresh_token' => $token->refresh_token]);
-        $this->storeToken($newToken->getToken(), $newToken->getRefreshToken(), $newToken->getExpires(), $id, $email);
-
-        return $newToken->getToken();
-    }
-
-    /**
-     * __call catches all requests when no found method is requested.
-     *
-     * @param    $function  - the verb to execute
-     * @param    $args  - array of arguments
-     * @return json request
-     *
      * @throws Exception
      */
-    public function __call($function, $args)
+    public function __call(string $function, array $args)
     {
         $options = ['get', 'post', 'patch', 'put', 'delete'];
-        $path = (isset($args[0])) ? $args[0] : null;
-        $data = (isset($args[1])) ? $args[1] : null;
-        $headers = (isset($args[2])) ? $args[2] : null;
+        $path = (isset($args[0])) ? $args[0] : '';
+        $data = (isset($args[1])) ? $args[1] : [];
+        $headers = (isset($args[2])) ? $args[2] : [];
         $id = (isset($args[3])) ? $args[3] : auth()->id();
 
         if (in_array($function, $options)) {
@@ -328,16 +264,21 @@ class MsGraph
     }
 
     /**
-     * run guzzle to process requested url.
-     *
-     * @param    $type string
-     * @param    $request string
-     * @param    $data array
-     * @param  array  $headers
-     * @param    $id integer
-     * @return json object
+     * @throws IdentityProviderException
      */
-    protected function guzzle($type, $request, $data = [], $headers = [], $id = null)
+    protected function renewExpiringToken(object $token, string $id, string $email): mixed
+    {
+        $oauthClient = $this->getProvider();
+        $newToken = $oauthClient->getAccessToken('refresh_token', ['refresh_token' => $token->refresh_token]);
+        $this->storeToken($newToken->getToken(), $newToken->getRefreshToken(), $newToken->getExpires(), $id, $email);
+
+        return $newToken->getToken();
+    }
+
+    /**
+     * @throws Exception
+     */
+    protected function guzzle(string $type, string $request, array $data = [], array $headers = [], int|string $id = null): mixed
     {
         try {
             $client = new Client;
@@ -376,18 +317,12 @@ class MsGraph
         }
     }
 
-    /**
-     * @return bool
-     */
-    protected function isJson($string)
+    protected function isJson(string $string): bool
     {
-        return is_string($string) && is_array(json_decode($string, true)) && (json_last_error() == JSON_ERROR_NONE);
+        return is_array(json_decode($string, true)) && (json_last_error() == JSON_ERROR_NONE);
     }
 
-    /**
-     * @return int|mixed|string|null
-     */
-    protected function getUserId($id = null)
+    protected function getUserId(string $id = null): string|null
     {
         if ($id === null) {
             $id = auth()->id();
@@ -396,20 +331,21 @@ class MsGraph
         return $id;
     }
 
-    /**
-     * @return GenericProvider
-     */
-    protected function getProvider()
+    protected function getProvider(): GenericProvider
     {
-        //set up the provides loaded values from the config
-        return new GenericProvider([
-            'clientId' => config('msgraph.clientId'),
-            'clientSecret' => config('msgraph.clientSecret'),
-            'redirectUri' => config('msgraph.redirectUri'),
-            'urlAuthorize' => config('msgraph.urlAuthorize'),
-            'urlAccessToken' => config('msgraph.urlAccessToken'),
-            'urlResourceOwnerDetails' => config('msgraph.urlResourceOwnerDetails'),
-            'scopes' => config('msgraph.scopes'),
-        ]);
+        app()->singleton(GenericProvider::class, function () {
+            return new GenericProvider([
+                'clientId' => config('msgraph.clientId'),
+                'clientSecret' => config('msgraph.clientSecret'),
+                'redirectUri' => config('msgraph.redirectUri'),
+                'urlAuthorize' => config('msgraph.urlAuthorize'),
+                'urlAccessToken' => config('msgraph.urlAccessToken'),
+                'urlResourceOwnerDetails' => config('msgraph.urlResourceOwnerDetails'),
+                'scopes' => config('msgraph.scopes'),
+            ]);
+        });
+
+        // You can now resolve GenericProvider from the service container
+        return app(GenericProvider::class);
     }
 }

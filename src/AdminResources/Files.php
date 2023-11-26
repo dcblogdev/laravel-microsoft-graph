@@ -4,30 +4,37 @@ namespace Dcblogdev\MsGraph\AdminResources;
 
 use Dcblogdev\MsGraph\Facades\MsGraphAdmin;
 use Exception;
+use Illuminate\Http\RedirectResponse;
 
 class Files extends MsGraphAdmin
 {
-    private $userId;
+    private string $userId = '';
 
-    public function userid($userId)
+    public function userid(string $userId): static
     {
         $this->userId = $userId;
 
         return $this;
     }
 
-    public function getDrives()
+    /**
+     * @throws Exception
+     */
+    public function getDrives(): MsGraphAdmin
     {
-        if ($this->userId == null) {
+        if ($this->userId === '') {
             throw new Exception('userId is required.');
         }
 
         return MsGraphAdmin::get('users/'.$this->userId.'/drives');
     }
 
-    public function downloadFile($id)
+    /**
+     * @throws Exception
+     */
+    public function downloadFile(string $id): RedirectResponse
     {
-        if ($this->userId == null) {
+        if ($this->userId === '') {
             throw new Exception('userId is required.');
         }
 
@@ -36,9 +43,12 @@ class Files extends MsGraphAdmin
         return redirect()->away($id['@microsoft.graph.downloadUrl']);
     }
 
-    public function deleteFile($id)
+    /**
+     * @throws Exception
+     */
+    public function deleteFile(string $id): MsGraphAdmin
     {
-        if ($this->userId == null) {
+        if ($this->userId === '') {
             throw new Exception('userId is required.');
         }
 

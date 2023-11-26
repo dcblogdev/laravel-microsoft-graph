@@ -11,7 +11,7 @@ class MsGraphKeepAliveCommand extends Command
 
     protected $description = 'Run this command to refresh token if its due to expire. schedule this to run daily to avoid token expiring when using CLI commands';
 
-    public function handle()
+    public function handle(): void
     {
         if (MsGraph::isConnected()) {
             MsGraph::getAccessToken($redirectWhenNotConnected = false);

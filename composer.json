@@ -19,9 +19,9 @@
     "Microsoft365"
   ],
   "require": {
-    "illuminate/support": "5.5.x|5.6.x|5.7.x|5.8.x|6.x|7.x|8.x|9.x|^10.0",
-    "league/oauth2-client": "^1.4|^2",
-    "guzzlehttp/guzzle": "6.x|7.x",
+    "illuminate/support": "^10.0",
+    "league/oauth2-client": "^2",
+    "guzzlehttp/guzzle": "7.x",
     "ext-json": "*",
     "ext-fileinfo": "*",
     "ext-curl": "*",
@@ -29,13 +29,12 @@
     "microsoft/microsoft-graph": "^1.70"
   },
   "require-dev": {
-    "orchestra/testbench": "^7.0|^8.0",
-    "pestphp/pest": "^1.21",
-    "pestphp/pest-plugin-laravel": "^1.1",
-    "friendsofphp/php-cs-fixer": "^3.9",
-    "pestphp/pest-plugin-mock": "^1.0",
+    "orchestra/testbench": "^8.0",
+    "pestphp/pest": "^v2.24.2",
+    "pestphp/pest-plugin-laravel": "^v2.2.0",
     "laravel/pint": "^1.13",
-    "pestphp/pest-plugin-parallel": "^1.2"
+    "pestphp/pest-plugin-type-coverage": "^2.4",
+    "mockery/mockery": "^1.6"
   },
   "autoload": {
     "psr-4": {
@@ -65,7 +64,9 @@
     }
   },
   "scripts": {
-    "test": "vendor/bin/pest --parallel",
+    "pest": "vendor/bin/pest --parallel",
+    "pest-cov": "vendor/bin/pest --coverage",
+    "pest-type": "vendor/bin/pest --type-coverage",
     "pint": "vendor/bin/pint"
   }
 }

@@ -5,6 +5,7 @@ namespace Dcblogdev\MsGraph;
 use Dcblogdev\MsGraph\Console\Commands\MsGraphAdminKeepAliveCommand;
 use Dcblogdev\MsGraph\Console\Commands\MsGraphKeepAliveCommand;
 use Dcblogdev\MsGraph\Facades\MsGraph as MsGraphFacade;
+use Dcblogdev\MsGraph\Services\ProviderService;
 use GuzzleHttp\Client;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Routing\Router;
@@ -16,12 +17,7 @@ use ShitwareLtd\FlysystemMsGraph\Adapter;
 
 class MsGraphServiceProvider extends ServiceProvider
 {
-    /**
-     * Perform post-registration booting of services.
-     *
-     * @return void
-     */
-    public function boot(Router $router)
+    public function boot(Router $router): void
     {
         $this->registerCommands();
         $this->registerMiddleware($router);
@@ -29,13 +25,13 @@ class MsGraphServiceProvider extends ServiceProvider
         $this->registerFilesystem();
     }
 
-    public function registerMiddleware($router)
+    public function registerMiddleware(Router $router): void
     {
         $router->aliasMiddleware('MsGraphAuthenticated', MsGraphAuthenticated::class);
         $router->aliasMiddleware('MsGraphAdminAuthenticated', MsGraphAdminAuthenticated::class);
     }
 
-    public function registerCommands()
+    public function registerCommands(): void
     {
         if (! $this->app->runningInConsole()) {
             return;
@@ -47,7 +43,7 @@ class MsGraphServiceProvider extends ServiceProvider
         ]);
     }
 
-    public function configurePublishing()
+    public function configurePublishing(): void
     {
         if (! $this->app->runningInConsole()) {
             return;
@@ -68,9 +64,9 @@ class MsGraphServiceProvider extends ServiceProvider
         ], 'migrations');
     }
 
-    public function registerFilesystem()
+    public function registerFilesystem(): void
     {
-        Storage::extend('msgraph', function ($app, $config) {
+        Storage::extend('msgraph', function (string $app, array $config) {
             $graph = new Graph;
 
             if (MsGraphFacade::isConnected()) {
@@ -106,31 +102,21 @@ class MsGraphServiceProvider extends ServiceProvider
         });
     }
 
-    /**
-     * Register any package services.
-     *
-     * @return void
-     */
-    public function register()
+    public function register(): void
     {
         $this->mergeConfigFrom(__DIR__.'/../config/msgraph.php', 'msgraph');
 
         // Register the service the package provides.
-        $this->app->singleton('msgraph', function ($app) {
+        $this->app->singleton('msgraph', function () {
             return new MsGraph;
         });
 
-        $this->app->singleton('msgraphadmin', function ($app) {
+        $this->app->singleton('msgraphadmin', function () {
             return new MsGraphAdmin;
         });
     }
 
-    /**
-     * Get the services provided by the provider.
-     *
-     * @return array
-     */
-    public function provides()
+    public function provides(): array
     {
         return ['msgraph'];
     }

@@ -10,6 +10,8 @@ class MsGraphToken extends Model
 
     public function __construct()
     {
+        parent::__construct();
+
         $this->setConnection(config('msgraph.dbConnection'));
     }
 }

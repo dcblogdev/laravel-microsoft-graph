@@ -7,36 +7,39 @@ use Exception;
 
 class Events extends MsGraphAdmin
 {
-    private $userId;
+    private string $userId = '';
 
-    private $top;
+    private string $top = '';
 
-    private $skip;
+    private string $skip = '';
 
-    public function userid($userId)
+    public function userid(string $userId): static
     {
         $this->userId = $userId;
 
         return $this;
     }
 
-    public function top($top)
+    public function top(string $top): static
     {
         $this->top = $top;
 
         return $this;
     }
 
-    public function skip($skip)
+    public function skip(string $skip): static
     {
         $this->skip = $skip;
 
         return $this;
     }
 
-    public function get($params = [])
+    /**
+     * @throws Exception
+     */
+    public function get(array $params = []): array
     {
-        if ($this->userId == null) {
+        if ($this->userId === '') {
             throw new Exception('userId is required.');
         }
 
@@ -66,36 +69,48 @@ class Events extends MsGraphAdmin
         ];
     }
 
-    public function find($id)
+    /**
+     * @throws Exception
+     */
+    public function find(string $id): MsGraphAdmin
     {
-        if ($this->userId == null) {
+        if ($this->userId === '') {
             throw new Exception('userId is required.');
         }
 
         return MsGraphAdmin::get("users/$this->userId/events/$id");
     }
 
-    public function store(array $data)
+    /**
+     * @throws Exception
+     */
+    public function store(array $data): MsGraphAdmin
     {
-        if ($this->userId == null) {
+        if ($this->userId === '') {
             throw new Exception('userId is required.');
         }
 
         return MsGraphAdmin::post("users/$this->userId/events", $data);
     }
 
-    public function update($id, array $data)
+    /**
+     * @throws Exception
+     */
+    public function update(string $id, array $data): MsGraphAdmin
     {
-        if ($this->userId == null) {
+        if ($this->userId === '') {
             throw new Exception('userId is required.');
         }
 
         return MsGraphAdmin::patch("users/$this->userId/events/$id", $data);
     }
 
-    public function delete($id)
+    /**
+     * @throws Exception
+     */
+    public function delete(string $id): MsGraphAdmin
     {
-        if ($this->userId == null) {
+        if ($this->userId === '') {
             throw new Exception('userId is required.');
         }
 
