@@ -1,72 +1,72 @@
 {
-  "name": "dcblogdev/laravel-microsoft-graph",
-  "description": "A Laravel Microsoft Graph API (Office365) package",
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "David Carr",
-      "email": "dave@dcblog.dev",
-      "homepage": "https://dcblog.dev"
+    "name": "dcblogdev/laravel-microsoft-graph",
+    "description": "A Laravel Microsoft Graph API (Office365) package",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "David Carr",
+            "email": "dave@dcblog.dev",
+            "homepage": "https://dcblog.dev"
+        }
+    ],
+    "homepage": "https://github.com/dcblogdev/laravel-microsoft-graph",
+    "keywords": [
+        "Laravel",
+        "MsGraph",
+        "Graph",
+        "Microsoft Graph",
+        "Office365",
+        "Microsoft365"
+    ],
+    "require": {
+        "illuminate/support": "^10.0|^11.0",
+        "league/oauth2-client": "^2",
+        "guzzlehttp/guzzle": "7.x",
+        "ext-json": "*",
+        "ext-fileinfo": "*",
+        "ext-curl": "*",
+        "shitware-ltd/flysystem-msgraph": "^1.0",
+        "microsoft/microsoft-graph": "^1.70|^2.2"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^8.0|^9.0",
+        "pestphp/pest": "^v2.24.2",
+        "pestphp/pest-plugin-laravel": "^v2.2.0",
+        "laravel/pint": "^1.13",
+        "pestphp/pest-plugin-type-coverage": "^2.4",
+        "mockery/mockery": "^1.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "Dcblogdev\\MsGraph\\": "src/",
+            "Dcblogdev\\MsGraph\\Tests\\": "tests"
+        }
+    },
+    "autoload-dev": {
+        "classmap": [
+            "tests/TestCase.php"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Dcblogdev\\MsGraph\\MsGraphServiceProvider"
+            ],
+            "aliases": {
+                "MsGraph": "Dcblogdev\\MsGraph\\Facades\\MsGraph",
+                "MsGraphAdmin": "Dcblogdev\\MsGraph\\Facades\\MsGraphAdmin"
+            }
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "scripts": {
+        "pest": "vendor/bin/pest --parallel",
+        "pest-cov": "vendor/bin/pest --coverage",
+        "pest-type": "vendor/bin/pest --type-coverage",
+        "pint": "vendor/bin/pint"
     }
-  ],
-  "homepage": "https://github.com/dcblogdev/laravel-microsoft-graph",
-  "keywords": [
-    "Laravel",
-    "MsGraph",
-    "Graph",
-    "Microsoft Graph",
-    "Office365",
-    "Microsoft365"
-  ],
-  "require": {
-    "illuminate/support": "^10.0",
-    "league/oauth2-client": "^2",
-    "guzzlehttp/guzzle": "7.x",
-    "ext-json": "*",
-    "ext-fileinfo": "*",
-    "ext-curl": "*",
-    "shitware-ltd/flysystem-msgraph": "^1.0",
-    "microsoft/microsoft-graph": "^1.70"
-  },
-  "require-dev": {
-    "orchestra/testbench": "^8.0",
-    "pestphp/pest": "^v2.24.2",
-    "pestphp/pest-plugin-laravel": "^v2.2.0",
-    "laravel/pint": "^1.13",
-    "pestphp/pest-plugin-type-coverage": "^2.4",
-    "mockery/mockery": "^1.6"
-  },
-  "autoload": {
-    "psr-4": {
-      "Dcblogdev\\MsGraph\\": "src/",
-      "Dcblogdev\\MsGraph\\Tests\\": "tests"
-    }
-  },
-  "autoload-dev": {
-    "classmap": [
-      "tests/TestCase.php"
-    ]
-  },
-  "extra": {
-    "laravel": {
-      "providers": [
-        "Dcblogdev\\MsGraph\\MsGraphServiceProvider"
-      ],
-      "aliases": {
-        "MsGraph": "Dcblogdev\\MsGraph\\Facades\\MsGraph",
-        "MsGraphAdmin": "Dcblogdev\\MsGraph\\Facades\\MsGraphAdmin"
-      }
-    }
-  },
-  "config": {
-    "allow-plugins": {
-      "pestphp/pest-plugin": true
-    }
-  },
-  "scripts": {
-    "pest": "vendor/bin/pest --parallel",
-    "pest-cov": "vendor/bin/pest --coverage",
-    "pest-type": "vendor/bin/pest --type-coverage",
-    "pint": "vendor/bin/pint"
-  }
 }
