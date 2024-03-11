@@ -83,7 +83,7 @@ class CalendarEvents extends MsGraphAdmin
     /**
      * @throws Exception
      */
-    public function store(string $calendarId, array$data): MsGraphAdmin
+    public function store(string $calendarId, array $data): MsGraphAdmin
     {
         if ($this->userId === '') {
             throw new Exception('userId is required.');

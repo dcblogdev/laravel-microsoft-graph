@@ -124,7 +124,7 @@ class Files extends MsGraph
 
     protected function forceStartingSlash(string $string): string
     {
-        if (!str_starts_with($string, '/')) {
+        if (! str_starts_with($string, '/')) {
             $string = "/$string";
         }
 

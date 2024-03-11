@@ -5,7 +5,6 @@ namespace Dcblogdev\MsGraph;
 use Dcblogdev\MsGraph\Console\Commands\MsGraphAdminKeepAliveCommand;
 use Dcblogdev\MsGraph\Console\Commands\MsGraphKeepAliveCommand;
 use Dcblogdev\MsGraph\Facades\MsGraph as MsGraphFacade;
-use Dcblogdev\MsGraph\Services\ProviderService;
 use GuzzleHttp\Client;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Routing\Router;

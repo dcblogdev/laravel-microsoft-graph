@@ -18,7 +18,6 @@ use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Http;
@@ -58,6 +57,7 @@ class MsGraph
     }
 
     protected static string $baseUrl = 'https://graph.microsoft.com/v1.0/';
+
     protected static string $userModel = '';
 
     /**
@@ -190,7 +190,7 @@ class MsGraph
         return $token->access_token;
     }
 
-    public function getTokenData(string $id = null): MsGraphToken|null
+    public function getTokenData(string $id = null): ?MsGraphToken
     {
         $id = $this->getUserId($id);
 
@@ -322,7 +322,7 @@ class MsGraph
         return is_array(json_decode($string, true)) && (json_last_error() == JSON_ERROR_NONE);
     }
 
-    protected function getUserId(string $id = null): string|null
+    protected function getUserId(string $id = null): ?string
     {
         if ($id === null) {
             $id = auth()->id();

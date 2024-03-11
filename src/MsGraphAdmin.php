@@ -129,7 +129,7 @@ class MsGraphAdmin
         }
     }
 
-    public function getTokenData(): MsGraphToken|null
+    public function getTokenData(): ?MsGraphToken
     {
         return MsGraphToken::where('user_id', null)->first();
     }

@@ -76,9 +76,9 @@ test('can connect with valid code', function () {
     $this->mock(GenericProvider::class, function (MockInterface $mock) {
         $mockAccessToken = new AccessToken(['access_token' => 'mock_token']);
         $mock->shouldReceive('getAccessToken')
-             ->with('authorization_code', ['code' => 'sample'])
-             ->once()
-             ->andReturn($mockAccessToken);
+            ->with('authorization_code', ['code' => 'sample'])
+            ->once()
+            ->andReturn($mockAccessToken);
     });
 
     // Simulate a GET request with the 'code' query parameter
@@ -153,7 +153,7 @@ test('returns null when token has expired and redirectWhenNotConnected is false'
     expect($response)->toBeNull();
 });
 
-test('can store token data', function() {
+test('can store token data', function () {
 
     $id = 1;
     $email = 'user@demo.com';

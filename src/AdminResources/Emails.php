@@ -36,7 +36,7 @@ class Emails extends MsGraphAdmin
         return $this;
     }
 
-    public function top(string$top): static
+    public function top(string $top): static
     {
         $this->top = $top;
 
@@ -223,7 +223,7 @@ class Emails extends MsGraphAdmin
             throw new Exception('userId is required.');
         }
 
-        if (strlen($this->id ) === 0) {
+        if (strlen($this->id) === 0) {
             throw new Exception('email id is required.');
         }
 
