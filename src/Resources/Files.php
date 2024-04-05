@@ -7,7 +7,7 @@ use GuzzleHttp\Client;
 
 class Files extends MsGraph
 {
-    public function getFiles(string $path = '', string $type = 'me'): array
+    public function getFiles(string $path = '', string $type = 'me'): object
     {
         $path = $path === null ? $type.'/drive/root/children?$orderby=name%20asc' : $type.'/drive/root:'.$this->forceStartingSlash($path).':/children';
 
