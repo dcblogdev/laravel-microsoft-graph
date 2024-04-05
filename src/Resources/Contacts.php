@@ -7,7 +7,7 @@ use Dcblogdev\MsGraph\Helpers\Paginator;
 
 class Contacts extends MsGraph
 {
-    public function get(array $params = [], int $perPage = 25): array
+    public function get(array $params = [], int $perPage = 25): object
     {
         $perPage = $params['$top'] ?? $perPage;
         $params = $this->getParams($params, $perPage);
