@@ -79,7 +79,7 @@ class MsGraph
         return self::$baseUrl;
     }
 
-    public static function setUserModel(object $model): static
+    public static function setUserModel(string $model): static
     {
         self::$userModel = $model;
 
