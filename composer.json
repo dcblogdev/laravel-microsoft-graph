@@ -29,7 +29,7 @@
     "microsoft/microsoft-graph": "^1.110"
   },
   "require-dev": {
-    "orchestra/testbench": "v9.0",
+    "orchestra/testbench": "v8.0|v9.0",
     "pestphp/pest": "^v2.34",
     "pestphp/pest-plugin-laravel": "v2.4",
     "laravel/pint": "^1.13",
