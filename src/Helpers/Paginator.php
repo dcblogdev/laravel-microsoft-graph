@@ -117,7 +117,7 @@ class Paginator
         return $pagination;
     }
 
-    public function page_links_array(string $path = '?', string $ext = null): array
+    public function page_links_array(string $path = '?', ?string $ext = null): array
     {
         $lastpage = ceil($this->totalRows / $this->perPage);
         $pages = [];

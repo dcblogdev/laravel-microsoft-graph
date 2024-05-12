@@ -89,7 +89,7 @@ class MsGraph
     /**
      * @throws Exception
      */
-    public function connect(string $id = null): Redirector|RedirectResponse
+    public function connect(?string $id = null): Redirector|RedirectResponse
     {
         $id = $this->getUserId($id);
 
@@ -142,7 +142,7 @@ class MsGraph
         return redirect(config('msgraph.msgraphLandingUri'));
     }
 
-    public function isConnected(string $id = null): bool
+    public function isConnected(?string $id = null): bool
     {
         $token = $this->getTokenData($id);
 
@@ -166,7 +166,7 @@ class MsGraph
         return redirect()->away('https://login.microsoftonline.com/common/oauth2/v2.0/logout?post_logout_redirect_uri='.url($redirectPath));
     }
 
-    public function getAccessToken(string $id = null, bool $redirectWhenNotConnected = true): Application|Redirector|string|RedirectResponse|null
+    public function getAccessToken(?string $id = null, bool $redirectWhenNotConnected = true): Application|Redirector|string|RedirectResponse|null
     {
         $token = $this->getTokenData($id);
         $id = $this->getUserId($id);
@@ -190,7 +190,7 @@ class MsGraph
         return $token->access_token;
     }
 
-    public function getTokenData(string $id = null): ?MsGraphToken
+    public function getTokenData(?string $id = null): ?MsGraphToken
     {
         $id = $this->getUserId($id);
 
@@ -278,7 +278,7 @@ class MsGraph
     /**
      * @throws Exception
      */
-    protected function guzzle(string $type, string $request, array $data = [], array $headers = [], int|string $id = null): mixed
+    protected function guzzle(string $type, string $request, array $data = [], array $headers = [], int|string|null $id = null): mixed
     {
         try {
             $client = new Client;
@@ -322,7 +322,7 @@ class MsGraph
         return is_array(json_decode($string, true)) && (json_last_error() == JSON_ERROR_NONE);
     }
 
-    protected function getUserId(string $id = null): ?string
+    protected function getUserId(?string $id = null): ?string
     {
         if ($id === null) {
             $id = auth()->id();
