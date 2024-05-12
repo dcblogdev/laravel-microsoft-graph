@@ -10,8 +10,8 @@ class Files extends MsGraph
     public function getFiles(string $path = '', string $type = 'me'): array
     {
         $path = blank($path)
-            ? $type . '/drive/root/children?$orderby=name%20asc'
-            : $type . '/drive/root:' . $this->forceStartingSlash($path) . ':/children';
+            ? $type.'/drive/root/children?$orderby=name%20asc'
+            : $type.'/drive/root:'.$this->forceStartingSlash($path).':/children';
 
         if (is_array($msGraph = MsGraph::get($path))) {
             return $msGraph;
