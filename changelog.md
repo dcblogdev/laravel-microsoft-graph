@@ -404,17 +404,7 @@ Where $behavior is either rename or replace
 
 - Removed package level migrations, using src migrations instead
 
-## Next
+# Change Log no longer maintained
 
-## Added
-
-- Added sites resource for MsGraph
-- Added Pint with Laravel preset for formatting
-- Added composer scripts for formatting and testing
-- Added isaac/composer-git-hooks package to run scripts on commit
-
-## Changed
-
-- Dropped support for Laravel versions below 10
-- Dropped support for using cs-fixer
-- Fixed an issue in MsGraph connect having an infinite loop when an error is returned from Microsoft
+See https://github.com/dcblogdev/laravel-microsoft-graph/releases for all releases
+```
