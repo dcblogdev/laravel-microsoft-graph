@@ -69,7 +69,7 @@ class MsGraphServiceProvider extends ServiceProvider
             $graph = new Graph;
 
             if (MsGraphFacade::isConnected()) {
-                $this->graph = $graph->setAccessToken(MsGraphFacade::getAccessToken());
+                $graph = $graph->setAccessToken(MsGraphFacade::getAccessToken());
             } else {
                 $tenantId = config('msgraph.tenantId');
                 $clientId = config('msgraph.clientId');
@@ -90,7 +90,7 @@ class MsGraphServiceProvider extends ServiceProvider
                         ],
                     ]);
                 $body = json_decode($response->getBody()->getContents());
-                $this->graph = $graph->setAccessToken($body->access_token);
+                $graph = $graph->setAccessToken($body->access_token);
             }
 
             $adapter = new Adapter($graph, $config['driveId']);

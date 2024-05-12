@@ -7,11 +7,17 @@ use GuzzleHttp\Client;
 
 class Files extends MsGraph
 {
-    public function getFiles(string $path = '', string $type = 'me'): object
+    public function getFiles(string $path = '', string $type = 'me'): array
     {
-        $path = $path === null ? $type.'/drive/root/children?$orderby=name%20asc' : $type.'/drive/root:'.$this->forceStartingSlash($path).':/children';
+        $path = blank($path)
+            ? $type . '/drive/root/children?$orderby=name%20asc'
+            : $type . '/drive/root:' . $this->forceStartingSlash($path) . ':/children';
 
-        return MsGraph::get($path);
+        if (is_array($msGraph = MsGraph::get($path))) {
+            return $msGraph;
+        }
+
+        return get_object_vars($msGraph);
     }
 
     public function getDrive(string $type = 'me'): array
