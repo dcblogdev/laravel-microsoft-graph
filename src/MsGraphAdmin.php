@@ -162,9 +162,9 @@ class MsGraphAdmin
         }
     }
 
-    protected function isJson(object|string $data): bool
+    protected function isJson(string $data): bool
     {
-        return is_string($data) && is_array(json_decode($data, true)) && (json_last_error() == JSON_ERROR_NONE);
+        return is_array(json_decode($data, true)) && (json_last_error() == JSON_ERROR_NONE);
     }
 
     /**
