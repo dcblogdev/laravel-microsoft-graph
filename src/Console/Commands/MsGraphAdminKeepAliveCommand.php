@@ -14,7 +14,7 @@ class MsGraphAdminKeepAliveCommand extends Command
     public function handle(): void
     {
         if (MsGraphAdmin::isConnected()) {
-            MsGraphAdmin::getAccessToken($redirectWhenNotConnected = false);
+            MsGraphAdmin::getAccessToken($returnNullNoAccessToken = true);
             $this->comment('connected');
         }
     }
