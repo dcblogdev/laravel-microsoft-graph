@@ -56,6 +56,8 @@ class MsGraph
         return new Tasks();
     }
 
+    protected static $user;
+
     protected static string $baseUrl = 'https://graph.microsoft.com/v1.0/';
 
     protected static string $userModel = '';
@@ -84,6 +86,15 @@ class MsGraph
         self::$userModel = $model;
 
         return new static();
+    }
+
+
+    public static function login($user) {
+        self::$user = $user;
+    }
+
+    public static function getUser() {
+        return self::$user;
     }
 
     /**
@@ -151,6 +162,9 @@ class MsGraph
         }
 
         if ($token->expires < time()) {
+            // $user = (self::$userModel ?: config('auth.providers.users.model'))::find($id);
+
+            // return $this->renewExpiringToken($token, $id, $user->email);
             return false;
         }
 
@@ -171,11 +185,11 @@ class MsGraph
         $token = $this->getTokenData($id);
         $id = $this->getUserId($id);
 
-        if ($redirectWhenNotConnected) {
-            if (! $this->isConnected()) {
-                return redirect()->away(config('msgraph.redirectUri'));
-            }
-        }
+        // if ($redirectWhenNotConnected) {
+        //     if (! $this->isConnected()) {
+        //         return redirect()->away(config('msgraph.redirectUri'));
+        //     }
+        // }
 
         if ($token === null) {
             return null;
@@ -324,6 +338,10 @@ class MsGraph
 
     protected function getUserId(?string $id = null): ?string
     {
+        if($this->getUser() !== null) {
+            $id = $this->getUser()->id;
+        }
+
         if ($id === null) {
             $id = auth()->id();
         }
