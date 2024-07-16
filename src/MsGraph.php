@@ -162,9 +162,6 @@ class MsGraph
         }
 
         if ($token->expires < time()) {
-            // $user = (self::$userModel ?: config('auth.providers.users.model'))::find($id);
-
-            // return $this->renewExpiringToken($token, $id, $user->email);
             return false;
         }
 
