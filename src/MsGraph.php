@@ -185,11 +185,11 @@ class MsGraph
         $token = $this->getTokenData($id);
         $id = $this->getUserId($id);
 
-        // if ($redirectWhenNotConnected) {
-        //     if (! $this->isConnected()) {
-        //         return redirect()->away(config('msgraph.redirectUri'));
-        //     }
-        // }
+        if ($this->getUser() === null && $redirectWhenNotConnected) {
+            if (! $this->isConnected()) {
+                return redirect()->away(config('msgraph.redirectUri'));
+            }
+        }
 
         if ($token === null) {
             return null;
