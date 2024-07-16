@@ -88,12 +88,13 @@ class MsGraph
         return new static();
     }
 
-
-    public static function login($user) {
+    public static function login($user)
+    {
         self::$user = $user;
     }
 
-    public static function getUser() {
+    public static function getUser()
+    {
         return self::$user;
     }
 
@@ -335,7 +336,7 @@ class MsGraph
 
     protected function getUserId(?string $id = null): ?string
     {
-        if($this->getUser() !== null) {
+        if ($this->getUser() !== null) {
             $id = $this->getUser()->id;
         }
 
