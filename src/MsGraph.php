@@ -197,7 +197,7 @@ class MsGraph
         return MsGraphToken::where('user_id', $id)->where('refresh_token', '<>', '')->first();
     }
 
-    public function storeToken(string $access_token, string $refresh_token, string $expires, int $id, string $email): MsGraphToken
+    public function storeToken(string $access_token, string $refresh_token, string $expires, string $id, string $email): MsGraphToken
     {
         return MsGraphToken::updateOrCreate(['user_id' => $id], [
             'user_id' => $id,
