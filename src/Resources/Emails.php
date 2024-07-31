@@ -27,6 +27,8 @@ class Emails extends MsGraph
 
     private array $attachments = [];
 
+    private array $singleValueExtendedProperties = [];
+
     public function id(string $id): static
     {
         $this->id = $id;
@@ -246,6 +248,7 @@ class Emails extends MsGraph
         $cc = $this->cc;
         $bcc = $this->bcc;
         $attachments = $this->attachments;
+        $singleValueExtendedProperties = $this->singleValueExtendedProperties;
 
         $toArray = [];
         foreach ($to as $email) {
@@ -272,6 +275,14 @@ class Emails extends MsGraph
                 'contentType' => mime_content_type($file),
                 'contentBytes' => base64_encode(file_get_contents($file)),
             ];
+        }
+
+        $singleValueExtendedPropertiesarray = [];
+        foreach ($singleValueExtendedProperties as $value) {
+          $singleValueExtendedPropertiesarray[] = [
+            'id' => $value['id'],
+            'value' => $value['value'],
+          ];
         }
 
         $envelope = [];
