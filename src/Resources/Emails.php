@@ -85,6 +85,13 @@ class Emails extends MsGraph
         return $this;
     }
 
+    public function singleValueExtendedProperties(array $singleValueExtendedProperties): static
+    {
+        $this->singleValueExtendedProperties = $singleValueExtendedProperties;
+
+        return $this;
+    }
+
     public function top(string $top): static
     {
         $this->top = $top;
