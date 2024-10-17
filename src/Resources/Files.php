@@ -116,7 +116,7 @@ class Files extends MsGraph
         }
     }
 
-    protected function createUploadSession(string $name, string $path = '', string $type = 'me', string $behavior = 'rename'): array
+    protected function createUploadSession(string $name, string $path = '', string $type = 'me', string $behavior = 'rename')
     {
         $path = $path === '' ? $type."/drive/root:/$name:/createUploadSession" : $type.'/drive/root:'.$this->forceStartingSlash($path)."/$name:/createUploadSession";
 
