@@ -28,32 +28,32 @@ class MsGraph
 {
     public function contacts(): Contacts
     {
-        return new Contacts();
+        return new Contacts;
     }
 
     public function emails(): Emails
     {
-        return new Emails();
+        return new Emails;
     }
 
     public function files(): Files
     {
-        return new Files();
+        return new Files;
     }
 
     public function sites(): Sites
     {
-        return new Sites();
+        return new Sites;
     }
 
     public function tasklists(): TaskLists
     {
-        return new TaskLists();
+        return new TaskLists;
     }
 
     public function tasks(): Tasks
     {
-        return new Tasks();
+        return new Tasks;
     }
 
     protected static string $baseUrl = 'https://graph.microsoft.com/v1.0/';
@@ -83,7 +83,7 @@ class MsGraph
     {
         self::$userModel = $model;
 
-        return new static();
+        return new static;
     }
 
     /**
@@ -111,7 +111,15 @@ class MsGraph
         }
 
         if (! request()->has('code') && ! $this->isConnected($id)) {
-            return redirect($provider->getAuthorizationUrl());
+            $codeVerifier = bin2hex(random_bytes(32));
+            $codeChallenge = rtrim(
+                strtr(base64_encode(hash('sha256', $codeVerifier, true)), '+/', '-_'), '='
+            );
+
+            return redirect($provider->getAuthorizationUrl([
+                'code_challenge' => $codeChallenge,
+                'code_challenge_method' => 'S256',
+            ]));
         }
 
         if (request()->has('code')) {
