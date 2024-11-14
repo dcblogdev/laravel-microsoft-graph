@@ -170,7 +170,7 @@ class MsGraphAdmin
     /**
      * @throws Exception
      */
-    protected function guzzle(string $type, string $request, array $data = []): mixed
+    protected function guzzle(string $type, string $request, ?array $data = []): mixed
     {
         try {
             $client = new Client;
