@@ -274,30 +274,30 @@ class Emails extends MsGraph
 
         $attachmentArray = [];
         foreach ($attachments as $file) {
-          if (array_key_exists('name', $file) && array_key_exists('contentBytes', $file)) {
-          $attachmentArray[] = [
-              '@odata.type' => '#microsoft.graph.fileAttachment',
-              'name' => $file['name'],
-              'contentBytes' => $file['contentBytes'],
-            ];
-          } else {
-            $path = pathinfo($file);
+            if (array_key_exists('name', $file) && array_key_exists('contentBytes', $file)) {
+                $attachmentArray[] = [
+                    '@odata.type' => '#microsoft.graph.fileAttachment',
+                    'name' => $file['name'],
+                    'contentBytes' => $file['contentBytes'],
+                ];
+            } else {
+                $path = pathinfo($file);
 
-            $attachmentArray[] = [
-              '@odata.type' => '#microsoft.graph.fileAttachment',
-              'name' => $path['basename'],
-              'contentType' => mime_content_type($file),
-              'contentBytes' => base64_encode(file_get_contents($file)),
-            ];
-          }
+                $attachmentArray[] = [
+                    '@odata.type' => '#microsoft.graph.fileAttachment',
+                    'name' => $path['basename'],
+                    'contentType' => mime_content_type($file),
+                    'contentBytes' => base64_encode(file_get_contents($file)),
+                ];
+            }
         }
 
         $singleValueExtendedPropertiesarray = [];
         foreach ($singleValueExtendedProperties as $value) {
-          $singleValueExtendedPropertiesarray[] = [
-            'id' => $value['id'],
-            'value' => $value['value'],
-          ];
+            $singleValueExtendedPropertiesarray[] = [
+                'id' => $value['id'],
+                'value' => $value['value'],
+            ];
         }
 
         $envelope = [];

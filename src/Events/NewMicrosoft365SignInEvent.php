@@ -12,5 +12,7 @@ class NewMicrosoft365SignInEvent
     use InteractsWithSockets;
     use SerializesModels;
 
-    public function __construct(public array $token) {}
+    public function __construct(public array $token)
+    {
+    }
 }
