@@ -29,22 +29,22 @@ class Tasks extends MsGraph
         ];
     }
 
-    public function find(string $taskListId, string $taskId): MsGraph
+    public function find(string $taskListId, string $taskId): array
     {
         return MsGraph::get("me/todo/lists/$taskListId/tasks/$taskId");
     }
 
-    public function store(string $taskListId, array $data): MsGraph
+    public function store(string $taskListId, array $data): array
     {
         return MsGraph::post("me/todo/lists/$taskListId/tasks", $data);
     }
 
-    public function update(string $taskListId, string $taskId, array $data): MsGraph
+    public function update(string $taskListId, string $taskId, array $data): array
     {
         return MsGraph::patch("me/todo/lists/$taskListId/tasks/$taskId", $data);
     }
 
-    public function delete(string $taskListId, string $taskId): MsGraph
+    public function delete(string $taskListId, string $taskId): string
     {
         return MsGraph::delete("me/todo/lists/$taskListId/tasks/$taskId");
     }

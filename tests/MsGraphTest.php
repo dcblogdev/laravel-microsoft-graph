@@ -5,7 +5,6 @@ use Dcblogdev\MsGraph\Models\MsGraphToken;
 use Dcblogdev\MsGraph\MsGraph;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Redirector;
-use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Provider\GenericProvider;
 use League\OAuth2\Client\Token\AccessToken;
 use Mockery\MockInterface;
