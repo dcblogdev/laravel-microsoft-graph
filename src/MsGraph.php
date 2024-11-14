@@ -111,20 +111,23 @@ class MsGraph
         }
 
         if (! request()->has('code') && ! $this->isConnected($id)) {
-            $codeVerifier = bin2hex(random_bytes(32));
-            $codeChallenge = rtrim(
-                strtr(base64_encode(hash('sha256', $codeVerifier, true)), '+/', '-_'), '='
-            );
-
-            return redirect($provider->getAuthorizationUrl([
-                'code_challenge' => $codeChallenge,
-                'code_challenge_method' => 'S256',
-            ]));
+            return redirect($provider->getAuthorizationUrl());
         }
 
         if (request()->has('code')) {
 
-            $accessToken = $provider->getAccessToken('authorization_code', ['code' => request('code')]);
+            try {
+                $accessToken = $provider->getAccessToken('authorization_code', ['code' => request('code')]);
+            } catch (IdentityProviderException $e) {
+
+                $response = $e->getResponseBody();
+
+                $errorMessage = "{$response['error']} {$response['error_description']}\n".
+                    'Error Code: '.($response['error_codes'][0] ?? 'N/A')."\n".
+                    "More Info: {$response['error_uri']}";
+
+                throw new Exception($errorMessage);
+            }
 
             if (auth()->check()) {
                 $this->storeToken(
@@ -342,6 +345,9 @@ class MsGraph
     protected function getProvider(): GenericProvider
     {
         app()->singleton(GenericProvider::class, function () {
+
+            $codeVerifier = bin2hex(random_bytes(32));
+
             return new GenericProvider([
                 'clientId' => config('msgraph.clientId'),
                 'clientSecret' => config('msgraph.clientSecret'),
@@ -350,6 +356,10 @@ class MsGraph
                 'urlAccessToken' => config('msgraph.urlAccessToken'),
                 'urlResourceOwnerDetails' => config('msgraph.urlResourceOwnerDetails'),
                 'scopes' => config('msgraph.scopes'),
+                'code_challenge_method' => 'S256',
+                'code_challenge' => rtrim(
+                    strtr(base64_encode(hash('sha256', $codeVerifier, true)), '+/', '-_'), '='
+                ),
             ]);
         });
 
