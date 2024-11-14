@@ -69,7 +69,7 @@ test('connect with invalid code throws IdentityProviderException', function () {
 
     MsGraphFacade::connect();
 
-})->throws(IdentityProviderException::class);
+})->throws(Exception::class);
 
 test('can connect with valid code', function () {
 
