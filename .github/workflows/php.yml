@@ -30,7 +30,7 @@ jobs:
       run: composer install --prefer-dist --no-progress
 
     - name: Run Pint
-      run: ./vendor/bin/pint --test
+      run: ./vendor/bin/pint
 
     - name: Run test suite
       run: ./vendor/bin/pest --parallel
