@@ -134,6 +134,14 @@ To view an email call **->find($id)** followed by the id of the email.
 MsGraph::emails()->find($id);
 ```
 
+Retrieve the emails using singleValueExtendedProperties.
+
+```php
+MsGraph::emails()->get([
+  '\$filter' => 'singleValueExtendedProperties/Any(ep: ep/id eq \'String {00020329-0000-0000-C000-000000000046} Name CustomProperty\' and ep/value eq \'CustomValue\')'
+]);
+```
+
 ## Send Email
 
 To send an email the format is different to normal calls. The format is to call multiple methods to set the email properties.
@@ -172,6 +180,22 @@ MsGraph::emails()
 ->send()
 ```
 
+singleValueExtendedProperties() can be used to add custom properties to the email.
+
+```php
+MsGraph::emails()
+->to(['email@domains.com'])
+->subject('the subject')
+->body('the content')
+->singleValueExtendedProperties([
+    [
+        "id" => "String {00020329-0000-0000-C000-000000000046} Name CustomProperty",
+        "value" => "CustomValue"
+    ]
+])
+->send()
+```
+
 ## Forward Email
 
 To forward to an email call **->forward()** and use **->comment()** instead of **->body()**.
@@ -205,7 +229,3 @@ To delete an email call **->delete($id)** followed by the id of the email.
 ```php
 MsGraph::emails()->delete($id);
 ```
-
-
-
-
