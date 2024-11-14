@@ -124,7 +124,7 @@ class MsGraph
 
                 $errorMessage = "{$response['error']} {$response['error_description']}\n".
                     'Error Code: '.($response['error_codes'][0] ?? 'N/A')."\n".
-                    "More Info: {$response['error_uri']}";
+                    'More Info: '.($response['error_uri'] ?? 'N/A');
 
                 throw new Exception($errorMessage);
             }
