@@ -145,7 +145,7 @@ class Emails extends MsGraphAdmin
     /**
      * @throws Exception
      */
-    public function find(string $id): MsGraphAdmin
+    public function find(string $id): array
     {
         if ($this->userId == null) {
             throw new Exception('userid is required.');
@@ -154,7 +154,7 @@ class Emails extends MsGraphAdmin
         return MsGraphAdmin::get('users/'.$this->userId.'/messages/'.$id);
     }
 
-    public function findAttachments(string $id): MsGraphAdmin
+    public function findAttachments(string $id): array
     {
         return MsGraphAdmin::get('users/'.$this->userId.'/messages/'.$id.'/attachments');
     }
