@@ -145,7 +145,7 @@ class Emails extends MsGraphAdmin
     /**
      * @throws Exception
      */
-    public function find(string $id): MsGraphAdmin
+    public function find(string $id): array
     {
         if ($this->userId == null) {
             throw new Exception('userid is required.');
@@ -154,7 +154,7 @@ class Emails extends MsGraphAdmin
         return MsGraphAdmin::get('users/'.$this->userId.'/messages/'.$id);
     }
 
-    public function findAttachments(string $id): MsGraphAdmin
+    public function findAttachments(string $id): array
     {
         return MsGraphAdmin::get('users/'.$this->userId.'/messages/'.$id.'/attachments');
     }
@@ -193,7 +193,7 @@ class Emails extends MsGraphAdmin
     /**
      * @throws Exception
      */
-    public function send(): MsGraphAdmin
+    public function send(): void
     {
         if (strlen($this->userId) === 0) {
             throw new Exception('userId is required.');
@@ -211,13 +211,13 @@ class Emails extends MsGraphAdmin
             throw new Exception('Comment is only used for replies and forwarding, please use body instead.');
         }
 
-        return MsGraphAdmin::post('users/'.$this->userId.'/sendMail', self::prepareEmail());
+        MsGraphAdmin::post('users/'.$this->userId.'/sendMail', self::prepareEmail());
     }
 
     /**
      * @throws Exception
      */
-    public function reply(): MsGraphAdmin
+    public function reply()
     {
         if (strlen($this->userId) === 0) {
             throw new Exception('userId is required.');
@@ -231,13 +231,13 @@ class Emails extends MsGraphAdmin
             throw new Exception('Body is only used for sending new emails, please use comment instead.');
         }
 
-        return MsGraphAdmin::post('users/'.$this->userId.'/messages/'.$this->id.'/replyAll', self::prepareEmail());
+        MsGraphAdmin::post('users/'.$this->userId.'/messages/'.$this->id.'/replyAll', self::prepareEmail());
     }
 
     /**
      * @throws Exception
      */
-    public function forward(): MsGraphAdmin
+    public function forward()
     {
         if (strlen($this->userId) === 0) {
             throw new Exception('userId is required.');
@@ -251,19 +251,19 @@ class Emails extends MsGraphAdmin
             throw new Exception('Body is only used for sending new emails, please use comment instead.');
         }
 
-        return MsGraphAdmin::post('users/'.$this->userId.'/messages/'.$this->id.'/forward', self::prepareEmail());
+        MsGraphAdmin::post('users/'.$this->userId.'/messages/'.$this->id.'/forward', self::prepareEmail());
     }
 
     /**
      * @throws Exception
      */
-    public function delete(string $id): MsGraphAdmin
+    public function delete(string $id)
     {
         if ($this->userId == null) {
             throw new Exception('userId is required.');
         }
 
-        return MsGraphAdmin::delete('users/'.$this->userId.'/messages/'.$id);
+        MsGraphAdmin::delete('users/'.$this->userId.'/messages/'.$id);
     }
 
     protected function prepareEmail(): array
