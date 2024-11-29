@@ -14,6 +14,5 @@ class NewMicrosoft365SignInEvent
 
     public function __construct(public array $token)
     {
-
     }
 }

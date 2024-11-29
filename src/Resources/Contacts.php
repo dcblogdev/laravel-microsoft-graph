@@ -40,7 +40,7 @@ class Contacts extends MsGraph
         return MsGraph::patch("me/contacts/$id", $data);
     }
 
-    public function delete(string $id): array
+    public function delete(string $id): string
     {
         return MsGraph::delete("me/contacts/$id");
     }

@@ -27,6 +27,8 @@ class Emails extends MsGraph
 
     private array $attachments = [];
 
+    private array $singleValueExtendedProperties = [];
+
     public function id(string $id): static
     {
         $this->id = $id;
@@ -79,6 +81,13 @@ class Emails extends MsGraph
     public function attachments(array $attachments): static
     {
         $this->attachments = $attachments;
+
+        return $this;
+    }
+
+    public function singleValueExtendedProperties(array $singleValueExtendedProperties): static
+    {
+        $this->singleValueExtendedProperties = $singleValueExtendedProperties;
 
         return $this;
     }
@@ -246,6 +255,7 @@ class Emails extends MsGraph
         $cc = $this->cc;
         $bcc = $this->bcc;
         $attachments = $this->attachments;
+        $singleValueExtendedProperties = $this->singleValueExtendedProperties;
 
         $toArray = [];
         foreach ($to as $email) {
@@ -264,13 +274,29 @@ class Emails extends MsGraph
 
         $attachmentArray = [];
         foreach ($attachments as $file) {
-            $path = pathinfo($file);
+            if (array_key_exists('name', $file) && array_key_exists('contentBytes', $file)) {
+                $attachmentArray[] = [
+                    '@odata.type' => '#microsoft.graph.fileAttachment',
+                    'name' => $file['name'],
+                    'contentBytes' => $file['contentBytes'],
+                ];
+            } else {
+                $path = pathinfo($file);
 
-            $attachmentArray[] = [
-                '@odata.type' => '#microsoft.graph.fileAttachment',
-                'name' => $path['basename'],
-                'contentType' => mime_content_type($file),
-                'contentBytes' => base64_encode(file_get_contents($file)),
+                $attachmentArray[] = [
+                    '@odata.type' => '#microsoft.graph.fileAttachment',
+                    'name' => $path['basename'],
+                    'contentType' => mime_content_type($file),
+                    'contentBytes' => base64_encode(file_get_contents($file)),
+                ];
+            }
+        }
+
+        $singleValueExtendedPropertiesarray = [];
+        foreach ($singleValueExtendedProperties as $value) {
+            $singleValueExtendedPropertiesarray[] = [
+                'id' => $value['id'],
+                'value' => $value['value'],
             ];
         }
 

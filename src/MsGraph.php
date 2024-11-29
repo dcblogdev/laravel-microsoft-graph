@@ -28,33 +28,35 @@ class MsGraph
 {
     public function contacts(): Contacts
     {
-        return new Contacts();
+        return new Contacts;
     }
 
     public function emails(): Emails
     {
-        return new Emails();
+        return new Emails;
     }
 
     public function files(): Files
     {
-        return new Files();
+        return new Files;
     }
 
     public function sites(): Sites
     {
-        return new Sites();
+        return new Sites;
     }
 
     public function tasklists(): TaskLists
     {
-        return new TaskLists();
+        return new TaskLists;
     }
 
     public function tasks(): Tasks
     {
-        return new Tasks();
+        return new Tasks;
     }
+
+    protected static $user;
 
     protected static string $baseUrl = 'https://graph.microsoft.com/v1.0/';
 
@@ -83,7 +85,17 @@ class MsGraph
     {
         self::$userModel = $model;
 
-        return new static();
+        return new static;
+    }
+
+    public static function login($user)
+    {
+        self::$user = $user;
+    }
+
+    public static function getUser()
+    {
+        return self::$user;
     }
 
     /**
@@ -116,7 +128,18 @@ class MsGraph
 
         if (request()->has('code')) {
 
-            $accessToken = $provider->getAccessToken('authorization_code', ['code' => request('code')]);
+            try {
+                $accessToken = $provider->getAccessToken('authorization_code', ['code' => request('code')]);
+            } catch (IdentityProviderException $e) {
+
+                $response = $e->getResponseBody();
+
+                $errorMessage = "{$response['error']} {$response['error_description']}\n".
+                    'Error Code: '.($response['error_codes'][0] ?? 'N/A')."\n".
+                    'More Info: '.($response['error_uri'] ?? 'N/A');
+
+                throw new Exception($errorMessage);
+            }
 
             if (auth()->check()) {
                 $this->storeToken(
@@ -171,8 +194,8 @@ class MsGraph
         $token = $this->getTokenData($id);
         $id = $this->getUserId($id);
 
-        if ($redirectWhenNotConnected) {
-            if (! $this->isConnected()) {
+        if ($this->getUser() === null && $redirectWhenNotConnected) {
+            if (! $this->isConnected($id)) {
                 return redirect()->away(config('msgraph.redirectUri'));
             }
         }
@@ -197,7 +220,7 @@ class MsGraph
         return MsGraphToken::where('user_id', $id)->where('refresh_token', '<>', '')->first();
     }
 
-    public function storeToken(string $access_token, string $refresh_token, string $expires, int $id, string $email): MsGraphToken
+    public function storeToken(string $access_token, string $refresh_token, string $expires, string $id, string $email): MsGraphToken
     {
         return MsGraphToken::updateOrCreate(['user_id' => $id], [
             'user_id' => $id,
@@ -324,6 +347,10 @@ class MsGraph
 
     protected function getUserId(?string $id = null): ?string
     {
+        if ($this->getUser() !== null) {
+            $id = $this->getUser()->id;
+        }
+
         if ($id === null) {
             $id = auth()->id();
         }
@@ -334,6 +361,9 @@ class MsGraph
     protected function getProvider(): GenericProvider
     {
         app()->singleton(GenericProvider::class, function () {
+
+            $codeVerifier = bin2hex(random_bytes(32));
+
             return new GenericProvider([
                 'clientId' => config('msgraph.clientId'),
                 'clientSecret' => config('msgraph.clientSecret'),
@@ -342,6 +372,10 @@ class MsGraph
                 'urlAccessToken' => config('msgraph.urlAccessToken'),
                 'urlResourceOwnerDetails' => config('msgraph.urlResourceOwnerDetails'),
                 'scopes' => config('msgraph.scopes'),
+                'code_challenge_method' => 'S256',
+                'code_challenge' => rtrim(
+                    strtr(base64_encode(hash('sha256', $codeVerifier, true)), '+/', '-_'), '='
+                ),
             ]);
         });
 
