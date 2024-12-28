@@ -109,7 +109,7 @@ class Emails extends MsGraph
     /**
      * @throws Exception
      */
-    public function get(string $folderId = '', array $params = []): MsGraph
+    public function get(string $folderId = '', array $params = []): array
     {
         $top = request('top', $this->top);
         $skip = request('skip', $this->skip);
