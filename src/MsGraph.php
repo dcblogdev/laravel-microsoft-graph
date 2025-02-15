@@ -219,6 +219,10 @@ class MsGraph
     {
         $id = $this->getUserId($id);
 
+        if ($id === null) {
+            return null;
+        }
+
         return MsGraphToken::where('user_id', $id)->where('refresh_token', '<>', '')->first();
     }
 
