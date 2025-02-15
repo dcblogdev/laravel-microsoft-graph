@@ -34,6 +34,64 @@ test('get contacts with params', function () {
         ->and($response['total'])->toBe(10);
 });
 
+test('getParams returns default values when no params provided', function () {
+
+    $contacts = new Contacts();
+    $reflection = new ReflectionMethod(Contacts::class, 'getParams');
+    $response = $reflection->invoke($contacts, [], 25);
+
+    parse_str($response, $parsedParams);
+
+    expect($parsedParams)->toMatchArray([
+        '$orderby' => 'displayName',
+        '$top' => '25',
+        '$skip' => '0',
+        '$count' => 'true',
+    ]);
+});
+
+test('getParams includes custom top parameter', function () {
+    $contacts = new Contacts();
+    $reflection = new ReflectionMethod(Contacts::class, 'getParams');
+    $response = $reflection->invoke($contacts, ['$top' => 10], 25);
+
+    parse_str($response, $parsedParams);
+
+    expect($parsedParams)->toMatchArray([
+        '$top' => '10',
+        '$skip' => '0',
+        '$count' => 'true',
+    ]);
+});
+
+test('getParams includes custom skip parameter', function () {
+    $contacts = new Contacts();
+    $reflection = new ReflectionMethod(Contacts::class, 'getParams');
+    $response = $reflection->invoke($contacts, ['$skip' => 15], 25);
+
+    parse_str($response, $parsedParams);
+
+    expect($parsedParams)->toMatchArray([
+        '$top' => '25',
+        '$skip' => '15',
+        '$count' => 'true',
+    ]);
+});
+
+test('getParams forces count to be true when missing', function () {
+    $contacts = new Contacts();
+    $reflection = new ReflectionMethod(Contacts::class, 'getParams');
+    $response = $reflection->invoke($contacts, ['$top' => 10, '$skip' => 5], 25);
+
+    parse_str($response, $parsedParams);
+
+    expect($parsedParams)->toMatchArray([
+        '$top' => '10',
+        '$skip' => '5',
+        '$count' => 'true',
+    ]);
+});
+
 test('find method retrieves a specific contact', function () {
 
     MsGraph::shouldReceive('get')
