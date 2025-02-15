@@ -61,7 +61,7 @@ class Contacts extends MsGraph
                 '$count' => 'true',
             ]);
         } else {
-            //ensure $top, $skip and $count are part of params
+            // ensure $top, $skip and $count are part of params
             if (! in_array('$top', $params)) {
                 $params['$top'] = $perPage;
             }

@@ -18,7 +18,7 @@ class NewMicrosoft365SignInListener
             'password' => '',
         ]);
 
-        (new MsGraph())->storeToken(
+        (new MsGraph)->storeToken(
             $event->token['accessToken'],
             $event->token['refreshToken'],
             $event->token['expires'],
