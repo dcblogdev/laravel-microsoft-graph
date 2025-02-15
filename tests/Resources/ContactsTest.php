@@ -36,7 +36,7 @@ test('get contacts with params', function () {
 
 test('getParams returns default values when no params provided', function () {
 
-    $contacts = new Contacts();
+    $contacts = new Contacts;
     $reflection = new ReflectionMethod(Contacts::class, 'getParams');
     $response = $reflection->invoke($contacts, [], 25);
 
@@ -51,7 +51,7 @@ test('getParams returns default values when no params provided', function () {
 });
 
 test('getParams includes custom top parameter', function () {
-    $contacts = new Contacts();
+    $contacts = new Contacts;
     $reflection = new ReflectionMethod(Contacts::class, 'getParams');
     $response = $reflection->invoke($contacts, ['$top' => 10], 25);
 
@@ -65,7 +65,7 @@ test('getParams includes custom top parameter', function () {
 });
 
 test('getParams includes custom skip parameter', function () {
-    $contacts = new Contacts();
+    $contacts = new Contacts;
     $reflection = new ReflectionMethod(Contacts::class, 'getParams');
     $response = $reflection->invoke($contacts, ['$skip' => 15], 25);
 
@@ -79,7 +79,7 @@ test('getParams includes custom skip parameter', function () {
 });
 
 test('getParams forces count to be true when missing', function () {
-    $contacts = new Contacts();
+    $contacts = new Contacts;
     $reflection = new ReflectionMethod(Contacts::class, 'getParams');
     $response = $reflection->invoke($contacts, ['$top' => 10, '$skip' => 5], 25);
 

@@ -49,9 +49,6 @@ class Contacts extends MsGraph
     {
         $skip = $params['skip'] ?? 0;
         $page = request('p', $skip);
-//        if ($page > 0) {
-//            $page--;
-//        }
 
         if ($params == []) {
             $params = http_build_query([
