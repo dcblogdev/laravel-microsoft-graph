@@ -9,9 +9,9 @@ class Emails extends MsGraphAdmin
 {
     private string $userId = '';
 
-    private string $top = '';
+    private string $top = '100';
 
-    private string $skip = '';
+    private string $skip = '0';
 
     private string $subject = '';
 
@@ -129,8 +129,12 @@ class Emails extends MsGraphAdmin
             $params = http_build_query($params);
         }
 
-        //get messages from folderId
+        // get messages from folderId
         $emails = MsGraphAdmin::get('users/'.$this->userId.'/messages?'.$params);
+
+        if (isset($emails->error)) {
+            throw new Exception("Graph API Error, code: {$emails->error->code}, Message: {$emails->error->message}");
+        }
 
         $data = MsGraphAdmin::getPagination($emails, $top, $skip);
 
@@ -163,21 +167,21 @@ class Emails extends MsGraphAdmin
     {
         $attachments = self::findAttachments($email['id']);
 
-        //replace every case of <img='cid:' with the base64 image
+        // replace every case of <img='cid:' with the base64 image
         $email['body']['content'] = preg_replace_callback(
             '~cid.*?"~',
             function (array $m) use ($attachments) {
-                //remove the last quote
+                // remove the last quote
                 $parts = explode('"', $m[0]);
 
-                //remove cid:
+                // remove cid:
                 $contentId = str_replace('cid:', '', $parts[0]);
 
-                //loop over the attachments
+                // loop over the attachments
                 foreach ($attachments['value'] as $file) {
-                    //if there is a match
+                    // if there is a match
                     if ($file['contentId'] == $contentId) {
-                        //return a base64 image with a quote
+                        // return a base64 image with a quote
                         return 'data:'.$file['contentType'].';base64,'.$file['contentBytes'].'"';
                     }
                 }
@@ -217,7 +221,7 @@ class Emails extends MsGraphAdmin
     /**
      * @throws Exception
      */
-    public function reply()
+    public function reply(): MsGraphAdmin
     {
         if (strlen($this->userId) === 0) {
             throw new Exception('userId is required.');
@@ -237,7 +241,7 @@ class Emails extends MsGraphAdmin
     /**
      * @throws Exception
      */
-    public function forward()
+    public function forward(): MsGraphAdmin
     {
         if (strlen($this->userId) === 0) {
             throw new Exception('userId is required.');
@@ -257,7 +261,7 @@ class Emails extends MsGraphAdmin
     /**
      * @throws Exception
      */
-    public function delete(string $id)
+    public function delete(string $id): MsGraphAdmin
     {
         if ($this->userId == null) {
             throw new Exception('userId is required.');
@@ -297,12 +301,12 @@ class Emails extends MsGraphAdmin
             }
         }
 
-        $attachmentarray = [];
+        $attachmentArray = [];
         if ($attachments != null) {
             foreach ($attachments as $file) {
                 $path = pathinfo($file);
 
-                $attachmentarray[] = [
+                $attachmentArray[] = [
                     '@odata.type' => '#microsoft.graph.fileAttachment',
                     'name' => $path['basename'],
                     'contentType' => mime_content_type($file),
@@ -330,8 +334,8 @@ class Emails extends MsGraphAdmin
         if ($bccArray != null) {
             $envelope['message']['bccRecipients'] = $bccArray;
         }
-        if ($attachmentarray != null) {
-            $envelope['message']['attachments'] = $attachmentarray;
+        if ($attachmentArray != null) {
+            $envelope['message']['attachments'] = $attachmentArray;
         }
         if ($comment != null) {
             $envelope['comment'] = $comment;

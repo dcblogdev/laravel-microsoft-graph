@@ -23,6 +23,8 @@ use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Http;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Provider\GenericProvider;
+use Microsoft\Graph\Model\User;
+use TestUser;
 
 class MsGraph
 {
@@ -56,7 +58,7 @@ class MsGraph
         return new Tasks;
     }
 
-    protected static $user;
+    protected static User|TestUser|null $user = null;
 
     protected static string $baseUrl = 'https://graph.microsoft.com/v1.0/';
 
@@ -88,12 +90,12 @@ class MsGraph
         return new static;
     }
 
-    public static function login($user)
+    public static function login(User|TestUser|null $user): void
     {
         self::$user = $user;
     }
 
-    public static function getUser()
+    public static function getUser(): User|TestUser|null
     {
         return self::$user;
     }
@@ -281,7 +283,7 @@ class MsGraph
         if (in_array($function, $options)) {
             return self::guzzle($function, $path, $data, $headers, $id);
         } else {
-            //request verb is not in the $options array
+            // request verb is not in the $options array
             throw new Exception($function.' is not a valid HTTP Verb');
         }
     }

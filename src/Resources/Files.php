@@ -53,7 +53,7 @@ class Files extends MsGraph
 
         return MsGraph::post($path, [
             'name' => $name,
-            'folder' => new \stdClass(),
+            'folder' => new \stdClass,
             '@microsoft.graph.conflictBehavior' => $behavior,
         ]);
     }

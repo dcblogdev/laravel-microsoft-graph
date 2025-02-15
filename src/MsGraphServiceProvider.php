@@ -75,7 +75,7 @@ class MsGraphServiceProvider extends ServiceProvider
                 $clientId = config('msgraph.clientId');
                 $clientSecret = config('msgraph.clientSecret');
 
-                $guzzle = new Client();
+                $guzzle = new Client;
                 $response = $guzzle->post("https://login.microsoftonline.com/$tenantId/oauth2/v2.0/token",
                     [
                         'headers' => [

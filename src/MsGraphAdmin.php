@@ -22,32 +22,32 @@ class MsGraphAdmin
 {
     public function calendarEvents(): CalendarEvents
     {
-        return new CalendarEvents();
+        return new CalendarEvents;
     }
 
     public function calendars(): Calendars
     {
-        return new Calendars();
+        return new Calendars;
     }
 
     public function contacts(): Contacts
     {
-        return new Contacts();
+        return new Contacts;
     }
 
     public function emails(): Emails
     {
-        return new Emails();
+        return new Emails;
     }
 
     public function events(): Events
     {
-        return new Events();
+        return new Events;
     }
 
     public function files(): Files
     {
-        return new Files();
+        return new Files;
     }
 
     protected static string $baseUrl = 'https://graph.microsoft.com/v1.0/';
@@ -136,7 +136,7 @@ class MsGraphAdmin
 
     protected function storeToken(string $access_token, string $refresh_token, string $expires): MsGraphToken
     {
-        //Create or update a new record for admin token
+        // Create or update a new record for admin token
         return MsGraphToken::updateOrCreate(['user_id' => null], [
             'email' => 'application_token', // Placeholder name
             'access_token' => $access_token,
@@ -157,7 +157,7 @@ class MsGraphAdmin
         if (in_array($function, $options)) {
             return self::guzzle($function, $path, $data);
         } else {
-            //request verb is not in the $options array
+            // request verb is not in the $options array
             throw new Exception($function.' is not a valid HTTP Verb');
         }
     }

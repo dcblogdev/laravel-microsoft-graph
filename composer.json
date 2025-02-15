@@ -64,9 +64,14 @@
     }
   },
   "scripts": {
-    "pest": "vendor/bin/pest --parallel",
-    "pest-cov": "vendor/bin/pest --coverage",
-    "pest-type": "vendor/bin/pest --type-coverage",
-    "pint": "vendor/bin/pint"
+    "lint": "vendor/bin/pint",
+    "test": "vendor/bin/pest --parallel",
+    "type-coverage": "vendor/bin/pest --coverage",
+    "test-coverage": "vendor/bin/pest --type-coverage",
+    "check": [
+      "@lint",
+      "@test-coverage",
+      "@type-coverage"
+    ]
   }
 }
