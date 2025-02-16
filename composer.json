@@ -1,77 +1,77 @@
 {
-  "name": "dcblogdev/laravel-microsoft-graph",
-  "description": "A Laravel Microsoft Graph API (Office365) package",
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "David Carr",
-      "email": "dave@dcblog.dev",
-      "homepage": "https://dcblog.dev"
+    "name": "dcblogdev/laravel-microsoft-graph",
+    "description": "A Laravel Microsoft Graph API (Office365) package",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "David Carr",
+            "email": "dave@dcblog.dev",
+            "homepage": "https://dcblog.dev"
+        }
+    ],
+    "homepage": "https://github.com/dcblogdev/laravel-microsoft-graph",
+    "keywords": [
+        "Laravel",
+        "MsGraph",
+        "Graph",
+        "Microsoft Graph",
+        "Office365",
+        "Microsoft365"
+    ],
+    "require": {
+        "illuminate/support": "^10.0|^11.0|^12.0",
+        "league/oauth2-client": "^2",
+        "guzzlehttp/guzzle": "7.x",
+        "ext-json": "*",
+        "ext-fileinfo": "*",
+        "ext-curl": "*",
+        "shitware-ltd/flysystem-msgraph": "^1.0",
+        "microsoft/microsoft-graph": "^1.110|^2.26"
+    },
+    "require-dev": {
+        "orchestra/testbench": "v8.0|v9.0|^10.0",
+        "pestphp/pest": "^v2.34|^3.7",
+        "pestphp/pest-plugin-laravel": "v2.4|^3.1",
+        "laravel/pint": "^1.13",
+        "mockery/mockery": "^1.6",
+        "pestphp/pest-plugin-type-coverage": "^2.8|^3.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Dcblogdev\\MsGraph\\": "src/",
+            "Dcblogdev\\MsGraph\\Tests\\": "tests"
+        }
+    },
+    "autoload-dev": {
+        "classmap": [
+            "tests/TestCase.php"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Dcblogdev\\MsGraph\\MsGraphServiceProvider"
+            ],
+            "aliases": {
+                "MsGraph": "Dcblogdev\\MsGraph\\Facades\\MsGraph",
+                "MsGraphAdmin": "Dcblogdev\\MsGraph\\Facades\\MsGraphAdmin"
+            }
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "scripts": {
+        "lint": "vendor/bin/pint",
+        "test": "vendor/bin/pest --parallel",
+        "type-coverage": "vendor/bin/pest --coverage",
+        "test-coverage": "vendor/bin/pest --type-coverage",
+        "check": [
+            "@lint",
+            "@test-coverage",
+            "@type-coverage"
+        ]
     }
-  ],
-  "homepage": "https://github.com/dcblogdev/laravel-microsoft-graph",
-  "keywords": [
-    "Laravel",
-    "MsGraph",
-    "Graph",
-    "Microsoft Graph",
-    "Office365",
-    "Microsoft365"
-  ],
-  "require": {
-    "illuminate/support": "^10.0|^11.0",
-    "league/oauth2-client": "^2",
-    "guzzlehttp/guzzle": "7.x",
-    "ext-json": "*",
-    "ext-fileinfo": "*",
-    "ext-curl": "*",
-    "shitware-ltd/flysystem-msgraph": "^1.0",
-    "microsoft/microsoft-graph": "^1.110"
-  },
-  "require-dev": {
-    "orchestra/testbench": "v8.0|v9.0",
-    "pestphp/pest": "^v2.34",
-    "pestphp/pest-plugin-laravel": "v2.4",
-    "laravel/pint": "^1.13",
-    "mockery/mockery": "^1.6",
-    "pestphp/pest-plugin-type-coverage": "^2.8"
-  },
-  "autoload": {
-    "psr-4": {
-      "Dcblogdev\\MsGraph\\": "src/",
-      "Dcblogdev\\MsGraph\\Tests\\": "tests"
-    }
-  },
-  "autoload-dev": {
-    "classmap": [
-      "tests/TestCase.php"
-    ]
-  },
-  "extra": {
-    "laravel": {
-      "providers": [
-        "Dcblogdev\\MsGraph\\MsGraphServiceProvider"
-      ],
-      "aliases": {
-        "MsGraph": "Dcblogdev\\MsGraph\\Facades\\MsGraph",
-        "MsGraphAdmin": "Dcblogdev\\MsGraph\\Facades\\MsGraphAdmin"
-      }
-    }
-  },
-  "config": {
-    "allow-plugins": {
-      "pestphp/pest-plugin": true
-    }
-  },
-  "scripts": {
-    "lint": "vendor/bin/pint",
-    "test": "vendor/bin/pest --parallel",
-    "type-coverage": "vendor/bin/pest --coverage",
-    "test-coverage": "vendor/bin/pest --type-coverage",
-    "check": [
-      "@lint",
-      "@test-coverage",
-      "@type-coverage"
-    ]
-  }
 }
