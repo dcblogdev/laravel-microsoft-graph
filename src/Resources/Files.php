@@ -75,7 +75,6 @@ class Files extends MsGraph
     public function upload(string $name, string $uploadPath, string $path = '', string $type = 'me', string $behavior = 'rename'): void
     {
         $uploadSession = $this->createUploadSession($name, $path, $type, $behavior);
-        dd($uploadSession);
         $uploadUrl = $uploadSession['uploadUrl'];
 
         $fragSize = 320 * 1024;
