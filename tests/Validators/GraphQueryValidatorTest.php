@@ -29,7 +29,7 @@ test('can validate', function () {
 });
 
 test('cannot validate none existing params', function () {
-    $response = GraphQueryValidator::validate([
+    GraphQueryValidator::validate([
         '$tops' => 10,
         '$skip' => 5,
         '$filter' => 'name eq \'test\'',
@@ -40,4 +40,4 @@ test('cannot validate none existing params', function () {
         '$search' => 'test',
         '$format' => 'pdf',
     ]);
-})->throws(InvalidArgumentException::class, 'Invalid query parameters: $tops. Allowed parameters: $top, $skip, $filter, $orderby, $select, $expand, $count, $search, $format.');
+})->throws(InvalidArgumentException::class, 'Invalid parameters: $tops. Allowed parameters: $top, $skip, $filter, $orderby, $select, $expand, $count, $search, $format.');
