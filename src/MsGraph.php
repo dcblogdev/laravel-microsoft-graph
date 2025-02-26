@@ -9,7 +9,7 @@ namespace Dcblogdev\MsGraph;
 use Dcblogdev\MsGraph\Events\NewMicrosoft365SignInEvent;
 use Dcblogdev\MsGraph\Models\MsGraphToken;
 use Dcblogdev\MsGraph\Resources\Contacts;
-use Dcblogdev\MsGraph\Resources\Emails;
+use Dcblogdev\MsGraph\Resources\Emails\Emails;
 use Dcblogdev\MsGraph\Resources\Files;
 use Dcblogdev\MsGraph\Resources\Sites;
 use Dcblogdev\MsGraph\Resources\Tasks\TaskLists;
@@ -340,7 +340,8 @@ class MsGraph
             return $responseObject;
 
         } catch (ClientException $e) {
-            return json_decode(($e->getResponse()->getBody()->getContents()));
+            throw new Exception($e->getMessage());
+            //return json_decode(($e->getResponse()->getBody()->getContents()));
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
         }
