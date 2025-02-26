@@ -1,12 +1,17 @@
 <?php
 
-namespace Dcblogdev\MsGraph\Resources;
+namespace Dcblogdev\MsGraph\Resources\Emails;
 
 use Dcblogdev\MsGraph\Facades\MsGraph;
 use Exception;
 
 class Emails extends MsGraph
 {
+    public function folders(): Folders
+    {
+        return new Folders;
+    }
+
     private string $top = '';
 
     private string $skip = '';
