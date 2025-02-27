@@ -267,22 +267,6 @@ MsGraph::emails()->folders()->find($id)
 MsGraph::emails()->folders()->findByName($name)
 ```
 
-## Get emails from folder
-
-```php
-
-//optional parameters
-$params = [
-    '$skip' => $skip,
-    '$top' => $limit,
-    '$count' => 'true',
-];
-
-MsGraph::emails()->folders()->emails($folderId, $params);
-```
-
-
-
 ## Create folder
 
 ```php
