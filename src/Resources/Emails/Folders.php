@@ -3,7 +3,6 @@
 namespace Dcblogdev\MsGraph\Resources\Emails;
 
 use Dcblogdev\MsGraph\Facades\MsGraph;
-use Dcblogdev\MsGraph\Validators\EmailFolderCopyValidator;
 use Dcblogdev\MsGraph\Validators\EmailFolderStoreValidator;
 use Dcblogdev\MsGraph\Validators\EmailFolderUpdateValidator;
 use Dcblogdev\MsGraph\Validators\GraphQueryValidator;
@@ -51,18 +50,18 @@ class Folders extends MsGraph
         return MsGraph::patch('me/mailFolders/'.$id, $data);
     }
 
-    public function copy(array $data, string $id): array
+    public function copy(string $sourceId, string $destinationId): array
     {
-        EmailFolderCopyValidator::validate($data);
-
-        return MsGraph::post('me/mailFolders/'.$id.'/copy', $data);
+        return MsGraph::post('me/mailFolders/'.$sourceId.'/copy', [
+            'destinationId' => $destinationId,
+        ]);
     }
 
-    public function move(array $data, string $id): array
+    public function move(string $sourceId, string $destinationId): array
     {
-        EmailFolderCopyValidator::validate($data);
-
-        return MsGraph::post('me/mailFolders/'.$id.'/copy', $data);
+        return MsGraph::post('me/mailFolders/'.$sourceId.'/copy', [
+            'destinationId' => $destinationId,
+        ]);
     }
 
     public function delete(string $id): void

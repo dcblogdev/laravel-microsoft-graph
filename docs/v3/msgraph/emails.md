@@ -229,3 +229,74 @@ To delete an email call **->delete($id)** followed by the id of the email.
 ```php
 MsGraph::emails()->delete($id);
 ```
+
+> Added in version v4.0.6 
+# Email Folders
+
+## Get folders
+
+By default, folders are not sorted, change to true to sort folders into a custom list specified in priorityOrder
+
+This is the default order when none specified.
+
+```php
+$priorityOrder = [
+    'Inbox' => 1,
+    'Archive' => 2,
+    'Drafts' => 3,
+    'Sent Items' => 4,
+    'Deleted Items' => 5,
+    'Conversation History' => 6,
+    'Junk Email' => 7,
+];
+
+MsGraph::emails()->folders()->get(array $params = [], bool $sort = false, array $priorityOrder = [])
+```
+
+## Get folder
+
+```php
+MsGraph::emails()->folders()->find($id)
+```
+
+## Create folder
+
+```php
+
+$data = [
+    'displayName' => 'Test Folder',
+    'isHidden' => false
+];
+
+MsGraph::emails()->folders()->store($data)
+```
+
+## Update folder
+
+```php
+
+$data = [
+    'displayName' => 'Test Folder',
+    'isHidden' => false
+];
+
+MsGraph::emails()->folders()->update($data, $id)
+```
+
+## Copy folder
+
+```php
+MsGraph::emails()->folders()->copy($sourceId, $destinationId)
+```
+
+## Move folder
+
+```php
+MsGraph::emails()->folders()->move($sourceId, $destinationId)
+```
+
+## Delete folder
+
+```php
+MsGraph::emails()->folders()->delete($id)
+```
