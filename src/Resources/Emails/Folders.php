@@ -36,6 +36,12 @@ class Folders extends MsGraph
         return MsGraph::get('me/mailFolders/'.$id);
     }
 
+    public function findByName(string $name): array
+    {
+        $response = MsGraph::get("me/mailFolders?\$filter=startswith(displayName,'$name')");
+        return $response['value'][0] ?? [];
+    }
+
     public function store(array $data): array
     {
         EmailFolderStoreValidator::validate($data);
