@@ -14,11 +14,13 @@ MsGraph::emails();
 
 Return a list of emails
 
+If no options are set emails are loaded from the inbox folder.
+
 ```php
-MsGraph::emails()->get();
+MsGraph::emails()->get($folderIdOrName = 'Inbox', $params = []);
 ```
 
-By default, only 10 emails are returned this can be changed by either using GET requests or pass an array of option to get()
+By default, only 25 emails are returned this can be changed by either using GET requests or pass an array of option to get()
 
 Option 1: GET Request
 
@@ -34,21 +36,21 @@ The default array that is used internally is below, you can override these optio
 
 ```php
 [
-    "\$orderby" => "displayName",
-    "\$top" => $top,
-    "\$skip" => $skip,
-    "\$count" => "true",
+    '$orderby' => "displayName",
+    '$top' => $top,
+    '$skip' => $skip,
+    '$count' => "true",
 ]
 ```
 
 This would look like this:
 
 ```php
-MsGraph::emails()->get([
-    "\$orderby" => "displayName",
-    "\$top" => 15,
-    "\$skip" => 0,
-    "\$count" => "true",
+MsGraph::emails()->get('Inbox', [
+    '$orderby' => "displayName",
+    '$top' => 15,
+    '$skip' => 0,
+    '$count' => "true",
 ]);
 ```
 
@@ -258,6 +260,28 @@ MsGraph::emails()->folders()->get(array $params = [], bool $sort = false, array 
 ```php
 MsGraph::emails()->folders()->find($id)
 ```
+
+## Get folder by name
+
+```php
+MsGraph::emails()->folders()->findByName($name)
+```
+
+## Get emails from folder
+
+```php
+
+//optional parameters
+$params = [
+    '$skip' => $skip,
+    '$top' => $limit,
+    '$count' => 'true',
+];
+
+MsGraph::emails()->folders()->emails($folderId, $params);
+```
+
+
 
 ## Create folder
 

@@ -3,6 +3,7 @@
 namespace Dcblogdev\MsGraph\Resources\Emails;
 
 use Dcblogdev\MsGraph\Facades\MsGraph;
+use Dcblogdev\MsGraph\Validators\GraphQueryValidator;
 use Exception;
 
 class Emails extends MsGraph
@@ -114,42 +115,39 @@ class Emails extends MsGraph
     /**
      * @throws Exception
      */
-    public function get(string $folderId = '', array $params = []): array
+    public function get(string $folderIdOrName = 'Inbox', array $params = []): array
     {
+        GraphQueryValidator::validate($params);
+
         $top = request('top', $this->top);
         $skip = request('skip', $this->skip);
 
-        if ($top === null) {
-            $top = 100;
+        if ($top === '') {
+            $top = 25;
         }
 
-        if ($skip === null) {
+        if ($skip === '') {
             $skip = 0;
         }
 
         if ($params === []) {
-            $params = http_build_query([
+            $params = [
                 '$top' => $top,
                 '$skip' => $skip,
                 '$count' => 'true',
-            ]);
-        } else {
-            $params = http_build_query($params);
+            ];
         }
 
-        $folder = $folderId == '' ? 'Inbox' : $folderId;
-
-        // get inbox from folders list
-        $folder = MsGraph::get("me/mailFolders?\$filter=startswith(displayName,'$folder')");
-
-        if (isset($folder['value'][0])) {
-            // folder id
-            $folderId = $folder['value'][0]['id'];
-
-            // get messages from folderId
-            return MsGraph::get("me/mailFolders/$folderId/messages?".$params);
+        if ($this->isId($folderIdOrName)) {
+            $folder = MsGraph::emails()->folders()->find($folderIdOrName);
         } else {
-            throw new Exception('email folder not found');
+            $folder = MsGraph::emails()->folders()->findByName($folderIdOrName);
+        }
+
+        if ($folder !== []) {
+            return MsGraph::get("me/mailFolders/".$folder['id']."/messages?".http_build_query($params));
+        } else {
+            throw new Exception('Email folder not found');
         }
     }
 
@@ -338,5 +336,11 @@ class Emails extends MsGraph
         }
 
         return $envelope;
+    }
+
+    private function isId(string $value): bool
+    {
+        // IDs are long, contain uppercase/lowercase letters, numbers, hyphens, dots, underscores, and end with '='
+        return preg_match('/^[A-Za-z0-9\-_]+={0,2}$/', $value) && strlen($value) > 50;
     }
 }
