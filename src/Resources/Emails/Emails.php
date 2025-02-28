@@ -151,14 +151,23 @@ class Emails extends MsGraph
         }
     }
 
-    public function find(string $id): array
+    public function find(string $id, bool $markAsRead = false): array
     {
+        if ($markAsRead) {
+            self::markAsRead($id);
+        }
+
         return MsGraph::get('me/messages/'.$id);
     }
 
     public function findAttachments(string $id): array
     {
         return MsGraph::get('me/messages/'.$id.'/attachments');
+    }
+
+    public function findAttachment(string $id, string $attachmentId): array
+    {
+        return MsGraph::get('me/messages/'.$id.'/attachments/'.$attachmentId);
     }
 
     public function findInlineAttachments(array $email): array
@@ -190,6 +199,16 @@ class Emails extends MsGraph
         );
 
         return $email;
+    }
+
+    public function markAsRead(string $id): void
+    {
+        MsGraph::patch('me/messages/'.$id, ['isRead' => true]);
+    }
+
+    public function markAsUnread(string $id): void
+    {
+        MsGraph::patch('me/messages/'.$id, ['isRead' => false]);
     }
 
     /**

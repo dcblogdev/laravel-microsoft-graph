@@ -136,12 +136,44 @@ To view an email call **->find($id)** followed by the id of the email.
 MsGraph::emails()->find($id);
 ```
 
+> From version v4.0.6, mark email as read when viewing it.
+
+```php
+MsGraph::emails()->find($id, bool $markAsRead = false);
+```
+
 Retrieve the emails using singleValueExtendedProperties.
 
 ```php
 MsGraph::emails()->get([
   '\$filter' => 'singleValueExtendedProperties/Any(ep: ep/id eq \'String {00020329-0000-0000-C000-000000000046} Name CustomProperty\' and ep/value eq \'CustomValue\')'
 ]);
+```
+
+## Get Email Attachments
+
+Get email attachments
+```php
+MsGraph::emails()->findAttachment($id);
+```
+
+## Get Email Attachment
+
+Get email attachment by its id
+```php
+MsGraph::emails()->findAttachment($id, $attachmentId);
+```
+
+## Mark email as read
+
+```php
+MsGraph::emails()->markAsRead($id);
+```
+
+## Mark email as unread
+
+```php
+MsGraph::emails()->markAsUnread($id);
 ```
 
 ## Send Email
