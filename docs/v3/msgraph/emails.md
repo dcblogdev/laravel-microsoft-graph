@@ -170,7 +170,7 @@ MsGraph::emails()->findAttachment($id, $attachmentId);
 MsGraph::emails()->markAsRead($id);
 ```
 
-## Mark email as Unread
+## Mark email as unread
 
 ```php
 MsGraph::emails()->markAsUnread($id);
