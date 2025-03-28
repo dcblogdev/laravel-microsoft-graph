@@ -7,9 +7,13 @@ use Exception;
 
 class Emails extends MsGraph
 {
+    private ?bool $delta = null;
+
     private string $top = '';
 
     private string $skip = '';
+
+    private string $search = '';
 
     private string $subject = '';
 
@@ -97,6 +101,13 @@ class Emails extends MsGraph
         return $this;
     }
 
+    public function delta(?bool $delta = true): static
+    {
+        $this->delta = $delta;
+
+        return $this;
+    }
+
     /**
      * @throws Exception
      */
@@ -104,6 +115,11 @@ class Emails extends MsGraph
     {
         $top = request('top', $this->top);
         $skip = request('skip', $this->skip);
+        $search = request('search', $this->search);
+
+        if (filled($search) && $this->delta) {
+            throw new Exception('Search is not supported in delta queries.');
+        }
 
         if ($top === null) {
             $top = 100;
@@ -125,15 +141,16 @@ class Emails extends MsGraph
 
         $folder = $folderId == '' ? 'Inbox' : $folderId;
 
-        //get inbox from folders list
+        // get inbox from folders list
         $folder = MsGraph::get("me/mailFolders?\$filter=startswith(displayName,'$folder')");
 
         if (isset($folder['value'][0])) {
-            //folder id
+            // folder id
             $folderId = $folder['value'][0]['id'];
+            $messages = $this->delta ? 'messages/delta' : 'messages';
 
-            //get messages from folderId
-            return MsGraph::get("me/mailFolders/$folderId/messages?".$params);
+            // get messages from folderId
+            return MsGraph::get("me/mailFolders/$folderId/$messages?".$params);
         } else {
             throw new Exception('email folder not found');
         }
@@ -153,21 +170,21 @@ class Emails extends MsGraph
     {
         $attachments = self::findAttachments($email['id']);
 
-        //replace every case of <img='cid:' with the base64 image
+        // replace every case of <img='cid:' with the base64 image
         $email['body']['content'] = preg_replace_callback(
             '~cid.*?"~',
             function (array $m) use ($attachments) {
-                //remove the last quote
+                // remove the last quote
                 $parts = explode('"', $m[0]);
 
-                //remove cid:
+                // remove cid:
                 $contentId = str_replace('cid:', '', $parts[0]);
 
-                //loop over the attachments
+                // loop over the attachments
                 foreach ($attachments['value'] as $file) {
-                    //if there is a match
+                    // if there is a match
                     if ($file['contentId'] == $contentId) {
-                        //return a base64 image with a quote
+                        // return a base64 image with a quote
                         return 'data:'.$file['contentType'].';base64,'.$file['contentBytes'].'"';
                     }
                 }
