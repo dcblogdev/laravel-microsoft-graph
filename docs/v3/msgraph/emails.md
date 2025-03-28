@@ -14,11 +14,13 @@ MsGraph::emails();
 
 Return a list of emails
 
+If no options are set emails are loaded from the inbox folder.
+
 ```php
-MsGraph::emails()->get();
+MsGraph::emails()->get($folderIdOrName = 'Inbox', $params = []);
 ```
 
-By default, only 10 emails are returned this can be changed by either using GET requests or pass an array of option to get()
+By default, only 25 emails are returned this can be changed by either using GET requests or pass an array of option to get()
 
 Option 1: GET Request
 
@@ -34,21 +36,21 @@ The default array that is used internally is below, you can override these optio
 
 ```php
 [
-    "\$orderby" => "displayName",
-    "\$top" => $top,
-    "\$skip" => $skip,
-    "\$count" => "true",
+    '$orderby' => "displayName",
+    '$top' => $top,
+    '$skip' => $skip,
+    '$count' => "true",
 ]
 ```
 
 This would look like this:
 
 ```php
-MsGraph::emails()->get([
-    "\$orderby" => "displayName",
-    "\$top" => 15,
-    "\$skip" => 0,
-    "\$count" => "true",
+MsGraph::emails()->get('Inbox', [
+    '$orderby' => "displayName",
+    '$top' => 15,
+    '$skip' => 0,
+    '$count' => "true",
 ]);
 ```
 
@@ -134,6 +136,46 @@ To view an email call **->find($id)** followed by the id of the email.
 MsGraph::emails()->find($id);
 ```
 
+> From version v4.0.6, mark email as read when viewing it.
+
+```php
+MsGraph::emails()->find($id, bool $markAsRead = false);
+```
+
+Retrieve the emails using singleValueExtendedProperties.
+
+```php
+MsGraph::emails()->get([
+  '\$filter' => 'singleValueExtendedProperties/Any(ep: ep/id eq \'String {00020329-0000-0000-C000-000000000046} Name CustomProperty\' and ep/value eq \'CustomValue\')'
+]);
+```
+
+## Get Email Attachments
+
+Get email attachments
+```php
+MsGraph::emails()->findAttachment($id);
+```
+
+## Get Email Attachment
+
+Get email attachment by its id
+```php
+MsGraph::emails()->findAttachment($id, $attachmentId);
+```
+
+## Mark email as read
+
+```php
+MsGraph::emails()->markAsRead($id);
+```
+
+## Mark email as unread
+
+```php
+MsGraph::emails()->markAsUnread($id);
+```
+
 ## Send Email
 
 To send an email the format is different to normal calls. The format is to call multiple methods to set the email properties.
@@ -172,6 +214,22 @@ MsGraph::emails()
 ->send()
 ```
 
+singleValueExtendedProperties() can be used to add custom properties to the email.
+
+```php
+MsGraph::emails()
+->to(['email@domains.com'])
+->subject('the subject')
+->body('the content')
+->singleValueExtendedProperties([
+    [
+        "id" => "String {00020329-0000-0000-C000-000000000046} Name CustomProperty",
+        "value" => "CustomValue"
+    ]
+])
+->send()
+```
+
 ## Forward Email
 
 To forward to an email call **->forward()** and use **->comment()** instead of **->body()**.
@@ -206,6 +264,79 @@ To delete an email call **->delete($id)** followed by the id of the email.
 MsGraph::emails()->delete($id);
 ```
 
+> Added in version v4.0.6 
+# Email Folders
 
+## Get folders
 
+By default, folders are not sorted, change to true to sort folders into a custom list specified in priorityOrder
 
+This is the default order when none specified.
+
+```php
+$priorityOrder = [
+    'Inbox' => 1,
+    'Archive' => 2,
+    'Drafts' => 3,
+    'Sent Items' => 4,
+    'Deleted Items' => 5,
+    'Conversation History' => 6,
+    'Junk Email' => 7,
+];
+
+MsGraph::emails()->folders()->get(array $params = [], bool $sort = false, array $priorityOrder = [])
+```
+
+## Get folder
+
+```php
+MsGraph::emails()->folders()->find($id)
+```
+
+## Get folder by name
+
+```php
+MsGraph::emails()->folders()->findByName($name)
+```
+
+## Create folder
+
+```php
+
+$data = [
+    'displayName' => 'Test Folder',
+    'isHidden' => false
+];
+
+MsGraph::emails()->folders()->store($data)
+```
+
+## Update folder
+
+```php
+
+$data = [
+    'displayName' => 'Test Folder',
+    'isHidden' => false
+];
+
+MsGraph::emails()->folders()->update($data, $id)
+```
+
+## Copy folder
+
+```php
+MsGraph::emails()->folders()->copy($sourceId, $destinationId)
+```
+
+## Move folder
+
+```php
+MsGraph::emails()->folders()->move($sourceId, $destinationId)
+```
+
+## Delete folder
+
+```php
+MsGraph::emails()->folders()->delete($id)
+```

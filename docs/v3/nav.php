@@ -26,6 +26,10 @@ return [
                 'url' => 'msgraph/middleware',
             ],
             [
+                'name' => 'Queues',
+                'url' => 'msgraph/queues',
+            ],
+            [
                 'name' => 'Login with MsGraph',
                 'url' => 'msgraph/login-with-msgraph',
             ],

@@ -18,7 +18,7 @@ Get files from a group:
 MsGraph::files()->getFiles($path = null, $type = "groups/$groupId");
 ```
 
-To work with emails first call **->files()** followed by a method.
+To work with files first call **->files()** followed by a method.
 
 ```php
 MsGraph::files();
@@ -86,7 +86,7 @@ MsGraph::files()->rename($name, $id);
 
 ## Upload file
 
-passes the name and the uploadPath (where the file is on your server) and the path to where the file will be stored if no path is provided the root is used.
+Pass the name and the uploadPath (where the file is on your server) and the path to where the file will be stored. If no path is provided the root is used.
 
 ```php
 MsGraph::files()->upload($name, $uploadPath, $path = null);

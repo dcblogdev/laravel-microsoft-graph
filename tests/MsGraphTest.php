@@ -3,9 +3,10 @@
 use Dcblogdev\MsGraph\Facades\MsGraph as MsGraphFacade;
 use Dcblogdev\MsGraph\Models\MsGraphToken;
 use Dcblogdev\MsGraph\MsGraph;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Redirector;
-use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+use Illuminate\Support\Facades\Auth;
 use League\OAuth2\Client\Provider\GenericProvider;
 use League\OAuth2\Client\Token\AccessToken;
 use Mockery\MockInterface;
@@ -69,7 +70,7 @@ test('connect with invalid code throws IdentityProviderException', function () {
 
     MsGraphFacade::connect();
 
-})->throws(IdentityProviderException::class);
+})->throws(Exception::class);
 
 test('can connect with valid code', function () {
 
@@ -170,4 +171,80 @@ test('can store token data', function () {
         'expires' => $expires,
         'refresh_token' => $refreshToken,
     ]);
+});
+
+class TestUser extends Authenticatable
+{
+    protected $fillable = ['id', 'email'];
+}
+
+test('can login and set user', function () {
+    $user = new TestUser(['id' => 1, 'email' => 'test@example.com']);
+
+    MsGraphFacade::login($user);
+
+    expect(MsGraphFacade::getUser())->toBe($user);
+});
+
+test('getUser returns null when no user is logged in', function () {
+    MsGraphFacade::login(null); // Reset the user
+    expect(MsGraphFacade::getUser())->toBeNull();
+});
+
+test('getAccessToken uses logged in user when available', function () {
+    $user = new TestUser(['id' => 1, 'email' => 'test@example.com']);
+
+    MsGraphFacade::login($user);
+
+    MsGraphToken::create([
+        'user_id' => $user->id,
+        'access_token' => 'test_token',
+        'refresh_token' => 'refresh_token',
+        'expires' => strtotime('+1 day'),
+    ]);
+
+    $token = MsGraphFacade::getAccessToken();
+
+    expect($token)->toBe('test_token');
+});
+
+test('getUserId returns logged in user id when available', function () {
+    $user = new TestUser(['id' => 1, 'email' => 'test@example.com']);
+
+    MsGraphFacade::login($user);
+
+    $reflection = new ReflectionClass(MsGraphFacade::getFacadeRoot());
+    $method = $reflection->getMethod('getUserId');
+    $method->setAccessible(true);
+
+    $userId = $method->invoke(MsGraphFacade::getFacadeRoot());
+
+    expect($userId)->toBe('1');
+});
+
+test('getUserId falls back to auth id when no user is logged in', function () {
+    MsGraphFacade::login(null); // Reset the user
+
+    $user = new TestUser(['id' => 2, 'email' => 'test2@example.com']);
+    Auth::shouldReceive('id')->andReturn(2);
+
+    $reflection = new ReflectionClass(MsGraphFacade::getFacadeRoot());
+    $method = $reflection->getMethod('getUserId');
+    $method->setAccessible(true);
+
+    $userId = $method->invoke(MsGraphFacade::getFacadeRoot());
+
+    expect($userId)->toBe('2');
+});
+
+test('getAccessToken redirects when user is not connected and redirectWhenNotConnected is true', function () {
+    config(['msgraph.redirectUri' => 'http://example.com/redirect']);
+
+    MsGraphFacade::login(null); // Reset the user
+    Auth::shouldReceive('id')->andReturn(null);
+
+    $response = MsGraphFacade::getAccessToken(null, true);
+
+    expect($response)->toBeInstanceOf(RedirectResponse::class)
+        ->and($response->getTargetUrl())->toBe('http://example.com/redirect');
 });

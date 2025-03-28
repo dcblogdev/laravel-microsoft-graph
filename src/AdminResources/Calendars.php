@@ -9,9 +9,9 @@ class Calendars extends MsGraphAdmin
 {
     private string $userId = '';
 
-    private string $top = '';
+    private string $top = '100';
 
-    private string $skip = '';
+    private string $skip = '0';
 
     public function userid(string $userId): static
     {
@@ -58,6 +58,10 @@ class Calendars extends MsGraphAdmin
         }
 
         $calendars = MsGraphAdmin::get("users/$this->userId/calendars?$params");
+
+        if (isset($calendars->error)) {
+            throw new Exception("Graph API Error, code: {$calendars->error->code}, Message: {$calendars->error->message}");
+        }
 
         $data = MsGraphAdmin::getPagination($calendars, $top, $skip);
 

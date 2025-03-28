@@ -40,7 +40,7 @@ class Contacts extends MsGraph
         return MsGraph::patch("me/contacts/$id", $data);
     }
 
-    public function delete(string $id): array
+    public function delete(string $id): string
     {
         return MsGraph::delete("me/contacts/$id");
     }
@@ -49,9 +49,6 @@ class Contacts extends MsGraph
     {
         $skip = $params['skip'] ?? 0;
         $page = request('p', $skip);
-        if ($page > 0) {
-            $page--;
-        }
 
         if ($params == []) {
             $params = http_build_query([
@@ -62,15 +59,15 @@ class Contacts extends MsGraph
             ]);
         } else {
             // ensure $top, $skip and $count are part of params
-            if (! in_array('$top', $params)) {
+            if (! array_key_exists('$top', $params)) {
                 $params['$top'] = $perPage;
             }
 
-            if (! in_array('$skip', $params)) {
+            if (! array_key_exists('$skip', $params)) {
                 $params['$skip'] = $page;
             }
 
-            if (! in_array('$count', $params)) {
+            if (! array_key_exists('$count', $params)) {
                 $params['$count'] = 'true';
             }
 

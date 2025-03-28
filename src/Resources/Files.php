@@ -42,12 +42,12 @@ class Files extends MsGraph
         return redirect()->away($id['@microsoft.graph.downloadUrl']);
     }
 
-    public function deleteFile(string $id, string $type = 'me'): array
+    public function deleteFile(string $id, string $type = 'me'): string
     {
         return MsGraph::delete($type."/drive/items/$id");
     }
 
-    public function createFolder(string $name, string $path, string $type = 'me', string $behavior = 'rename'): array
+    public function createFolder(string $name, string $path = '', string $type = 'me', string $behavior = 'rename'): array
     {
         $path = $path === '' ? $type.'/drive/root/children' : $type.'/drive/root:'.$this->forceStartingSlash($path).':/children';
 
