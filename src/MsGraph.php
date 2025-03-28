@@ -28,32 +28,32 @@ class MsGraph
 {
     public function contacts(): Contacts
     {
-        return new Contacts();
+        return new Contacts;
     }
 
     public function emails(): Emails
     {
-        return new Emails();
+        return new Emails;
     }
 
     public function files(): Files
     {
-        return new Files();
+        return new Files;
     }
 
     public function sites(): Sites
     {
-        return new Sites();
+        return new Sites;
     }
 
     public function tasklists(): TaskLists
     {
-        return new TaskLists();
+        return new TaskLists;
     }
 
     public function tasks(): Tasks
     {
-        return new Tasks();
+        return new Tasks;
     }
 
     protected static string $baseUrl = 'https://graph.microsoft.com/v1.0/';
@@ -83,7 +83,7 @@ class MsGraph
     {
         self::$userModel = $model;
 
-        return new static();
+        return new static;
     }
 
     /**
@@ -258,7 +258,7 @@ class MsGraph
         if (in_array($function, $options)) {
             return self::guzzle($function, $path, $data, $headers, $id);
         } else {
-            //request verb is not in the $options array
+            // request verb is not in the $options array
             throw new Exception($function.' is not a valid HTTP Verb');
         }
     }

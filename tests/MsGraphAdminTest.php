@@ -9,7 +9,7 @@ beforeEach(function () {
 });
 
 test('can initalise', function () {
-    $this->assertInstanceOf(MsGraphAdmin::class, new MsGraphAdmin());
+    $this->assertInstanceOf(MsGraphAdmin::class, new MsGraphAdmin);
 });
 
 test('can refresh token', function () {

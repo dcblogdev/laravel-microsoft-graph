@@ -64,7 +64,7 @@ class Tasks extends MsGraph
                 '$skip' => $page,
             ];
         } else {
-            //ensure $top, $skip and $count are part of params
+            // ensure $top, $skip and $count are part of params
             if (! in_array('$top', $params)) {
                 $params['$top'] = $perPage;
             }

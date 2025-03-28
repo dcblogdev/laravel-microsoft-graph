@@ -129,7 +129,7 @@ class Emails extends MsGraphAdmin
             $params = http_build_query($params);
         }
 
-        //get messages from folderId
+        // get messages from folderId
         $emails = MsGraphAdmin::get('users/'.$this->userId.'/messages?'.$params);
 
         $data = MsGraphAdmin::getPagination($emails, $top, $skip);
@@ -163,21 +163,21 @@ class Emails extends MsGraphAdmin
     {
         $attachments = self::findAttachments($email['id']);
 
-        //replace every case of <img='cid:' with the base64 image
+        // replace every case of <img='cid:' with the base64 image
         $email['body']['content'] = preg_replace_callback(
             '~cid.*?"~',
             function (array $m) use ($attachments) {
-                //remove the last quote
+                // remove the last quote
                 $parts = explode('"', $m[0]);
 
-                //remove cid:
+                // remove cid:
                 $contentId = str_replace('cid:', '', $parts[0]);
 
-                //loop over the attachments
+                // loop over the attachments
                 foreach ($attachments['value'] as $file) {
-                    //if there is a match
+                    // if there is a match
                     if ($file['contentId'] == $contentId) {
-                        //return a base64 image with a quote
+                        // return a base64 image with a quote
                         return 'data:'.$file['contentType'].';base64,'.$file['contentBytes'].'"';
                     }
                 }
