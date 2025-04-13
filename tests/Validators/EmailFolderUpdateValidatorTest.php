@@ -4,11 +4,11 @@ use Dcblogdev\MsGraph\Validators\EmailFolderUpdateValidator;
 
 test('valid parameters are accepted', function () {
     $response = EmailFolderUpdateValidator::validate([
-        'displayName' => 'demo'
+        'displayName' => 'demo',
     ]);
 
     expect($response)->toEqual([
-        'displayName' => 'demo'
+        'displayName' => 'demo',
     ]);
 });
 

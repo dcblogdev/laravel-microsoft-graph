@@ -7,11 +7,15 @@ use Exception;
 
 class Emails extends MsGraphAdmin
 {
+    private ?bool $delta = null;
+
     private string $userId = '';
 
     private string $top = '100';
 
     private string $skip = '0';
+
+    private string $search = '';
 
     private string $subject = '';
 
@@ -106,6 +110,13 @@ class Emails extends MsGraphAdmin
         return $this;
     }
 
+    public function delta(?bool $delta = true): static
+    {
+        $this->delta = $delta;
+
+        return $this;
+    }
+
     /**
      * @throws Exception
      */
@@ -117,6 +128,11 @@ class Emails extends MsGraphAdmin
 
         $top = request('top', $this->top);
         $skip = request('skip', $this->skip);
+        $search = request('search', $this->search);
+
+        if (filled($search) && $this->delta) {
+            throw new Exception('Search is not supported in delta queries.');
+        }
 
         if ($params == []) {
             $params = http_build_query([
@@ -130,7 +146,8 @@ class Emails extends MsGraphAdmin
         }
 
         // get messages from folderId
-        $emails = MsGraphAdmin::get('users/'.$this->userId.'/messages?'.$params);
+        $messages = $this->delta ? 'messages/delta' : 'messages';
+        $emails = MsGraphAdmin::get('users/'.$this->userId.'/'.$messages.'?'.$params);
 
         if (isset($emails->error)) {
             throw new Exception("Graph API Error, code: {$emails->error->code}, Message: {$emails->error->message}");

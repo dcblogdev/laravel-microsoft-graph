@@ -8,14 +8,13 @@ use Exception;
 
 class Emails extends MsGraph
 {
-    public function folders(): Folders
-    {
-        return new Folders;
-    }
+    private ?bool $delta = null;
 
     private string $top = '';
 
     private string $skip = '';
+
+    private string $search = '';
 
     private string $subject = '';
 
@@ -91,6 +90,11 @@ class Emails extends MsGraph
         return $this;
     }
 
+    public function folders(): Folders
+    {
+        return new Folders;
+    }
+
     public function singleValueExtendedProperties(array $singleValueExtendedProperties): static
     {
         $this->singleValueExtendedProperties = $singleValueExtendedProperties;
@@ -112,6 +116,13 @@ class Emails extends MsGraph
         return $this;
     }
 
+    public function delta(?bool $delta = true): static
+    {
+        $this->delta = $delta;
+
+        return $this;
+    }
+
     /**
      * @throws Exception
      */
@@ -121,6 +132,11 @@ class Emails extends MsGraph
 
         $top = request('top', $this->top);
         $skip = request('skip', $this->skip);
+        $search = request('search', $this->search);
+
+        if (filled($search) && $this->delta) {
+            throw new Exception('Search is not supported in delta queries.');
+        }
 
         if ($top === '') {
             $top = 25;
@@ -138,16 +154,28 @@ class Emails extends MsGraph
             ];
         }
 
-        if ($this->isId($folderIdOrName)) {
-            $folder = MsGraph::emails()->folders()->find($folderIdOrName);
-        } else {
-            $folder = MsGraph::emails()->folders()->findByName($folderIdOrName);
-        }
+        $folder = $folderId == '' ? 'Inbox' : $folderId;
 
-        if ($folder !== []) {
-            return MsGraph::get("me/mailFolders/".$folder['id']."/messages?".http_build_query($params));
-        } else {
-            throw new Exception('Email folder not found');
+        // get inbox from folders list
+        $folder = MsGraph::get("me/mailFolders?\$filter=startswith(displayName,'$folder')");
+
+        if (isset($folder['value'][0])) {
+            // folder id
+            $folderId = $folder['value'][0]['id'];
+            $messages = $this->delta ? 'messages/delta' : 'messages';
+
+            // get messages from folderId
+            if ($this->isId($folderIdOrName)) {
+                $folder = MsGraph::emails()->folders()->find($folderIdOrName);
+            } else {
+                $folder = MsGraph::emails()->folders()->findByName($folderIdOrName);
+            }
+
+            if ($folder !== []) {
+                return MsGraph::get('me/mailFolders/'.$folder['id']."/{$messages}?".http_build_query($params));
+            } else {
+                throw new Exception('Email folder not found');
+            }
         }
     }
 

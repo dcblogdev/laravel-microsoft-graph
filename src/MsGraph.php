@@ -341,7 +341,7 @@ class MsGraph
 
         } catch (ClientException $e) {
             throw new Exception($e->getMessage());
-            //return json_decode(($e->getResponse()->getBody()->getContents()));
+            // return json_decode(($e->getResponse()->getBody()->getContents()));
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
         }

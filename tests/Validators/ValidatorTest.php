@@ -10,6 +10,6 @@ test('can validate', function () {
 
 test('cannot validate none existing params', function () {
     Validator::validate([
-        '$top' => 10
+        '$top' => 10,
     ]);
 })->throws(InvalidArgumentException::class, 'Invalid parameters: $top. Allowed parameters: .');
