@@ -7,6 +7,7 @@ use Dcblogdev\MsGraph\Console\Commands\MsGraphKeepAliveCommand;
 use Dcblogdev\MsGraph\Facades\MsGraph as MsGraphFacade;
 use GuzzleHttp\Client;
 use Illuminate\Filesystem\FilesystemAdapter;
+use Illuminate\Foundation\Application;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
@@ -65,7 +66,7 @@ class MsGraphServiceProvider extends ServiceProvider
 
     public function registerFilesystem(): void
     {
-        Storage::extend('msgraph', function (string $app, array $config) {
+        Storage::extend('msgraph', function (Application $app, array $config) {
             $graph = new Graph;
 
             if (MsGraphFacade::isConnected()) {
