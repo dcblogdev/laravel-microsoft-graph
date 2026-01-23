@@ -154,7 +154,7 @@ class Emails extends MsGraph
             ];
         }
 
-        $folder = $folderId == '' ? 'Inbox' : $folderId;
+        $folder = $folderIdOrName == '' ? 'Inbox' : $folderIdOrName;
 
         // get inbox from folders list
         $folder = MsGraph::get("me/mailFolders?\$filter=startswith(displayName,'$folder')");
