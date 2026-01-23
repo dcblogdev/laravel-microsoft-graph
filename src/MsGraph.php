@@ -23,8 +23,7 @@ use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Http;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Provider\GenericProvider;
-use Microsoft\Graph\Model\User;
-use TestUser;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class MsGraph
 {
@@ -58,7 +57,7 @@ class MsGraph
         return new Tasks;
     }
 
-    protected static User|TestUser|null $user = null;
+    protected static Authenticatable|null $user = null;
 
     protected static string $baseUrl = 'https://graph.microsoft.com/v1.0/';
 
@@ -90,12 +89,12 @@ class MsGraph
         return new static;
     }
 
-    public static function login(User|TestUser|null $user): void
+    public static function login(Authenticatable|null $user): void
     {
         self::$user = $user;
     }
 
-    public static function getUser(): User|TestUser|null
+    public static function getUser(): Authenticatable|null
     {
         return self::$user;
     }
